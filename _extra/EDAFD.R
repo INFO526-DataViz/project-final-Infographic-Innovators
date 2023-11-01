@@ -64,7 +64,7 @@ plot_correlation(aircraft_crashes)
 
 ###### Possible questions and how we can visualize them ----
 
-# How have the number of crashes and injuries evolved over time?
+# How have the number of crashes and injuries evolved over time? Q2
 # Time-based Analysis -Visualization: Line graphs with "Event date" on the x-axis and counts of crashes or injuries on the y-axis. This can help in visualizing trends over time.
 
 
@@ -72,7 +72,7 @@ plot_correlation(aircraft_crashes)
 #   Injury Severity Analysis-Visualization: Stacked bar charts or pie charts representing the proportion of fatal, serious, and minor injuries for each crash.
 
 
-# Which types of events lead to the most injuries or fatalities?
+# Which types of events lead to the most injuries or fatalities? plus Q2
 #   Event Type Analysis- Visualization: Bar graphs with "Event type" on the x-axis and counts of injuries or fatalities on the y-axis. 
 
 
