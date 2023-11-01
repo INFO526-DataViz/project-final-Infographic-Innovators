@@ -51,6 +51,11 @@ plot_bar(aircraft_crashes)
 
 plot_correlation(aircraft_crashes)
 
+# Event type below
+# ACC accident
+# ICC incident
+# OCC occurence
+
 # categories to look at 
 # Event date, serious injury count, fatal injury count, minor injury count, event type, latitude, longitude, 
 
