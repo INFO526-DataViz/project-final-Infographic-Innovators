@@ -16,16 +16,39 @@ library(tidyverse)
 ```{r}
 #| label: load-dataset
 #| message: false
+#| # GETTING THE LIBRARIES
+
+flights_ntsb <- read_csv("data/flight_crash_data_NTSB.csv")
+# View(flights_ntsb)
+head(flights_ntsb)
+structure(flights_ntsb)
+
 ```
 
-A brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.
+We had to submit a formal request to the National Transportation Safety Board (NSTB) to obtain the raw dataset. This dataset is for the United States of America only. The data dimensions is a tibble of 89,134 rows and 38 columns, culminating 3,387,093 variables. The data goes back to 1-1-1980 until 12-31-2022.
 
-Make sure to load the data and use inline code for some of this information.
+Why Did We Chose The Data?
+
+After talking about places we've traveled, we chose the data as some of us are more comfortable with flying than others. We decided by looking at aircraft crash data that it could be a chance to get more informed about aircraft crashes within the United States. We wanted do timeseries analysis as well as geospatial analysis and this data presented itself as a great opportunity to do both.
 
 ## Questions
 
 The two questions you want to answer.
 
+Question 1
+
+How have the number of crashes and injuries evolved over time?
+
+Time-based Analysis -Visualization: Line graphs with "Event date" on the x-axis, stacked time series count showing highest injury count, and counts of crashes or injuries on the y-axis. This can help in visualizing trends over time.
+
+Question 2
+
+Where do most aircraft crashes occur?
+
+Geographical Analysis-Visualization: A geographical heatmap or scatter plot using latitude and longitude to pinpoint crash locations. Areas with a high concentration of crashes will be highlighted.
+
 ## Analysis plan
 
 -   A plan for answering each of the questions including the variables involved, variables to be created (if any), external data to be merged in (if any).
+
+shiny app
