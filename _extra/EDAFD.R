@@ -76,7 +76,7 @@ plot_correlation(aircraft_crashes)
 #   Event Type Analysis- Visualization: Bar graphs with "Event type" on the x-axis and counts of injuries or fatalities on the y-axis. 
 
 
-# Where do most aircraft crashes occur?
+# Where do most aircraft crashes occur? #question 1 
 #   Geographical Analysis-Visualization: A geographical heatmap or scatter plot using latitude and longitude to pinpoint crash locations. Areas with a high concentration of crashes will be highlighted.
 
 
@@ -84,7 +84,7 @@ plot_correlation(aircraft_crashes)
 #   Correlation Analysis-Visualization: A matrix plot or correlation heatmap showing correlations between different event types and injury counts.
 
 
-# Are there specific months or seasons that witness a higher number of crashes?
+# Are there specific months or seasons that witness a higher number of crashes? - #plus q 1 
 #   Monthly or Seasonal Trends-Visualization: Bar graphs or line graphs showing crash counts per month or season.
 
 
