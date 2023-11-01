@@ -51,4 +51,10 @@ Geographical Analysis-Visualization: A geographical heatmap or scatter plot usin
 
 -   A plan for answering each of the questions including the variables involved, variables to be created (if any), external data to be merged in (if any).
 
-shiny app
+data cleaning and data wrangling - new columns and removing columns - removing NAs,
+
+weather condition for q2  - rayshader as a possibility to display
+
+shiny app - how will we use to display - year or decade
+
+weekly plan of attack -
