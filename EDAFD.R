@@ -53,5 +53,35 @@ plot_bar(aircraft_crashes)
 
 plot_correlation(aircraft_crashes)
 
+# categories to look at 
+# Event date, serious injury count, fatal injury count, minor injury count, event type, latitude, longitude, 
 
+###### Possible questions and how we can visualize them ----
+
+# How have the number of crashes and injuries evolved over time?
+# Time-based Analysis -Visualization: Line graphs with "Event date" on the x-axis and counts of crashes or injuries on the y-axis. This can help in visualizing trends over time.
+
+
+# What is the distribution of injury severity (fatal, serious, minor) for the aircraft crashes?
+#   Injury Severity Analysis-Visualization: Stacked bar charts or pie charts representing the proportion of fatal, serious, and minor injuries for each crash.
+
+
+# Which types of events lead to the most injuries or fatalities?
+#   Event Type Analysis- Visualization: Bar graphs with "Event type" on the x-axis and counts of injuries or fatalities on the y-axis. 
+
+
+# Where do most aircraft crashes occur?
+#   Geographical Analysis-Visualization: A geographical heatmap or scatter plot using latitude and longitude to pinpoint crash locations. Areas with a high concentration of crashes will be highlighted.
+
+
+# Is there a correlation between the event type and the severity of injuries?
+#   Correlation Analysis-Visualization: A matrix plot or correlation heatmap showing correlations between different event types and injury counts.
+
+
+# Are there specific months or seasons that witness a higher number of crashes?
+#   Monthly or Seasonal Trends-Visualization: Bar graphs or line graphs showing crash counts per month or season.
+
+
+# Are there specific regions that experience more crashes during particular times or seasons?
+#   Spatial-Temporal Analysis-Visualization: Animated scatter plots or heatmaps over time on a geographical map to visualize the temporal and spatial distribution of crashes.
 
