@@ -56,6 +56,9 @@ plot_correlation(aircraft_crashes)
 # ICC incident
 # OCC occurence
 
+# https://www.ntsb.gov/Pages/AviationDownloadDataDictionary.aspx
+
+
 # categories to look at 
 # Event date, serious injury count, fatal injury count, minor injury count, event type, latitude, longitude, 
 
