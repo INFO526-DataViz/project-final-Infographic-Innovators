@@ -33,10 +33,10 @@ plot_missing(aircraft_crashes)
 skim(aircraft_crashes)
 #At this point we can remove any empty variables 
 
-# Calculate correlations
+# Calculate correlations - https://github.com/business-science/correlationfunnel
 correlations <- cor(aircraft_crashes[, sapply(aircraft_crashes, is.numeric)], use="complete.obs")
 
-# Eisenhower Box visualization - couldn't get this to work 
+# Eisenhower Box visualization - couldn't get this package or code to work 
 # correlation_funnel(correlations)
 # plot_correlation_funnel(dfcor)
 # dfcor <- as.data.frame(correlations)
