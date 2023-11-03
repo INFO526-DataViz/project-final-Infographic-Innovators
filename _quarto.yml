@@ -2,11 +2,11 @@ project:
   type: website
 
 website:
-  title: Project Title
+  title: Pattern Pioneers
   navbar:
     right:
       - icon: github
-        href: https://github.com/INFO526-DataViz/project-01
+        href: https://github.com/INFO526-DataViz/project-final-Infographic-Innovators
     left:
       - text: Project
         href: index.qmd
