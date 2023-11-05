@@ -19,28 +19,53 @@ execute:
 #| code-fold: true
 #| code-summary: "Installed Packages"
 
-### GETTING THE LIBRARIES
+# GETTING THE LIBRARIES
 if (!require(pacman))
   install.packages(pacman)
 
 pacman::p_load(tidyverse,
+               formattable,
                tidytuesdayR,
+               janitor,
                dlookr,
-               formattable)
+               here)
 ```
 
 ## Dataset
 
 ```{r load_dataset, message=FALSE, output=FALSE}
-flights_ntsb <- read_csv("data/flight_crash_data_NTSB.csv")
+# Reading the data using read_csv
+flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
 
-head(flights_ntsb)
-structure(flights_ntsb)
+flights_ntsb <- flights_ntsb |>
+  clean_names()
 ```
+
+## Background
 
 We had to submit a formal request to the National Transportation Safety Board (NSTB) to obtain the raw dataset. This dataset is for the United States of America only. The data dimensions is a tibble of 89,134 rows and 38 columns, culminating 3,387,093 variables. The data goes back to 1-1-1980 until 12-31-2022.
 
-## Background
+```{r diagnose_flights, message=FALSE}
+#| code-fold: true
+#| code-summary: "Flights Report Data Diagnosis Code"
+
+# Getting basic information about the dataset
+
+flights_ntsb |>
+  diagnose() |>
+  formattable()
+```
+
+```{r describe_flights, message=FALSE}
+#| code-fold: true
+#| code-summary: "Flights Report Data Describe Code"
+
+# Getting basic statistical information about the dataset
+
+flights_ntsb |>
+  describe() |>
+  formattable()
+```
 
 ## Value
 
