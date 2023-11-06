@@ -43,7 +43,7 @@ flights_ntsb <- flights_ntsb |>
 
 ## Background
 
-We had to submit a formal request to the National Transportation Safety Board (NSTB) to obtain the raw dataset. This dataset is for the United States of America only. The data dimensions is a tibble of 89,134 rows and 38 columns, culminating 3,387,093 variables. The data goes back to 1-1-1980 until 12-31-2022.
+We had to submit a query to the National Transportation Safety Board ([NSTB](https://www.ntsb.gov/Pages/AviationQueryV2.aspx)) to obtain the raw dataset. This dataset is for the United States of America only. The data dimensions is a tibble of 89,134 rows and 38 columns, culminating 3,387,093 variables. The data goes back to 1-1-1980 until 12-31-2022.
 
 ```{r diagnose_flights, message=FALSE}
 #| code-fold: true
@@ -69,29 +69,29 @@ flights_ntsb |>
 
 ## Value
 
-After talking about places we've traveled, we chose the data as some of us are more comfortable with flying than others. We decided by looking at aircraft crash data that it could be a chance to get more informed about aircraft crashes within the United States. We wanted do timeseries analysis as well as geospatial analysis and this data presented itself as a great opportunity to do both.
+After talking about places we've traveled to, we chose the data as some of us are more comfortable with flying than others. We decided by looking at aircraft crash data that it could be a chance to get more informed about aircraft crashes within the United States. We wanted do timeseries analysis as well as geospatial analysis and this data presented itself as a great opportunity to do both.
 
 ## Questions
 
 The two questions to be answered are:
 
-**Question 1**
+### Question 1
 
-How have the number of crashes and injuries evolved over time?
+What is the historical trend in aircraft crashes and injuries, including the distribution of injury severity (fatal, serious, minor)? Additionally, which events lead to the most injuries or fatalities?
 
-Time-based Analysis -Visualization: Line graphs with "Event date" on the x-axis, stacked time series count showing highest injury count, and counts of crashes or injuries on the y-axis. This can help in visualizing trends over time.
+### Question 2
 
-**Question 2**
-
-Where do most aircraft crashes occur?
-
-Geographical Analysis-Visualization: A geographical heatmap or scatter plot using latitude and longitude to pinpoint crash locations. Areas with a high concentration of crashes will be highlighted.
+Where are the most common locations for aircraft crashes, and are there any specific connections like months, weather conditions associated with crash frequencies?
 
 ## Analysis plan
 
 ### **Approach for question 1**
 
+Time-based Analysis -Visualization: Line graphs with "Event date" on the x-axis, stacked time series count showing highest injury count, and counts of crashes or injuries on the y-axis. This can help in visualizing trends over time.
+
 ### **Approach for question 2**
+
+Geographical Analysis-Visualization: A geographical heatmap or scatter plot using latitude and longitude to pinpoint crash locations. Areas with a high concentration of crashes will be highlighted.
 
 data cleaning and data wrangling - new columns and removing columns - removing NAs,
 
