@@ -71,9 +71,7 @@ flights_ntsb |>
 
 ## Value
 
-Our project's primary goal is to conduct an in-depth analysis of aircraft crash incidents within the United States to uncover temporal trends and geographical patterns. This objective is fueled by our diverse personal experiences with air travel, which range from enthusiasm to apprehension. By examining the data, we hope to gain a clearer understanding of the factors contributing to these incidents and alleviate some of the concerns regarding aviation safety.
-
-After talking about places we've traveled to, we chose the data as some of us are more comfortable with flying than others. We decided by looking at aircraft crash data that it could be a chance to get more informed about aircraft crashes within the United States. We wanted do timeseries analysis as well as geospatial analysis and this data presented itself as a great opportunity to do both.
+Our project's primary goal is to conduct an in-depth analysis of aircraft crash incidents within the United States to uncover temporal trends and geographical patterns. This objective is fueled by our diverse personal experiences with air travel, which range from enthusiasm to apprehension. This stems from talking about places we've traveled to, we chose the data as some of us are more comfortable with flying than others. We decided by looking at aircraft crash data that it could be a chance to get more informed about aircraft crashes within the United States. By examining the data, we hope to gain a clearer understanding of the factors contributing to these incidents and alleviate some of the concerns regarding aviation safety. We wanted do timeseries analysis as well as geospatial analysis and this data presented itself as a great opportunity to do both.
 
 ## Questions
 
