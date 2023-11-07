@@ -93,6 +93,8 @@ In this Question, we visualize the trend in aircraft crashes historically. We ar
 
 We will also discuss on what probable events lead to most injuries and/or fatalities in a flight crash. We are visualising this trend using Time-Series Analysis where we can compare the different crashes that occur over time and further classify the type of crash and number of injuries that took place. Our Approach to this problem is by implementing Line Graphs which can show the different Crash date based on the column `event date` and stacking a Time-Series Plot and finding the highest number of injury count and classifying them into their individual injury-type. This can help us not only show the number of crashes happening per year but also have them sorted based on their fatality type.
 
+Additionally, we want to sort different types of crashes based on different event types which is represented using the column `event_type`. Here, we will visualse plane crashes based on the different types of occurences or events that were the probable cause for the accident and how much damage the plane took due to the accident.
+
 ### Approach for question 2
 
 Geographical Analysis-Visualization: A geographical heatmap or scatter plot using latitude and longitude to pinpoint crash locations. Areas with a high concentration of crashes will be highlighted.
@@ -102,7 +104,7 @@ Geographical Analysis-Visualization: A geographical heatmap or scatter plot usin
 ### Plan of Attack
 
 |               Week                | Weekly Tasks                                                                          | Persons in Charge |  Backup  |
-|:--------------:|-------------------------|:--------------:|:--------------:|
+|:---------------:|-----------------------|:---------------:|:---------------:|
 |       until November 8^th^        | Explore and finalize the dataset and the problem statements                           |     Everyone      | Everyone |
 |                \-                 | Complete the proposal and assign some high-level tasks                                |     Everyone      | Everyone |
 |     November 9^th^ to 15^th^      | Getting to know about Shiny application                                               |        TBD        |   TBD    |
