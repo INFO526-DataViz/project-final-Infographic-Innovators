@@ -71,7 +71,7 @@ flights_ntsb |>
 
 ## Value
 
-Our project's primary goal is to conduct an in-depth analysis of aircraft crash incidents within the United States to uncover temporal trends and geographical patterns. This objective is fueled by our diverse personal experiences with air travel, which range from enthusiasm to apprehension. This stems from talking about places we've traveled to, we chose the data as some of us are more comfortable with flying than others. We decided by looking at aircraft crash data that it could be a chance to get more informed about aircraft crashes within the United States. By examining the data, we hope to gain a clearer understanding of the factors contributing to these incidents and alleviate some of the concerns regarding aviation safety. We wanted do timeseries analysis as well as geospatial analysis and this data presented itself as a great opportunity to do both.
+Our project's primary goal is to conduct an in-depth analysis of aircraft crash incidents within the United States to uncover temporal trends and geographical patterns. This objective is fueled by our diverse personal experiences with air travel, which range from enthusiasm to apprehension. This stems from talking about places we've traveled to, we chose the data as some of us are more comfortable with flying than others. We decided by looking at aircraft crash data that it could be a chance to get more informed about aircraft crashes within the United States. By examining the data, we hope to gain a clearer understanding of the factors contributing to these incidents and alleviate some of the concerns regarding aviation safety. We wanted do timeseries analysis as well as geospatial analysis and this data presented itself as a great opportunity to do both. We intend to design a shiny app so that we can display the a timeseries change of crashes throughout the years.
 
 ## Questions
 
@@ -94,14 +94,6 @@ Time-based Analysis -Visualization: Line graphs with "Event date" on the x-axis,
 ### Approach for question 2
 
 Geographical Analysis-Visualization: A geographical heatmap or scatter plot using latitude and longitude to pinpoint crash locations. Areas with a high concentration of crashes will be highlighted.
-
-data cleaning and data wrangling - new columns and removing columns - removing NAs,
-
-weather condition for q2 - rayshader as a possibility to display
-
-shiny app - how will we use to display - year or decade
-
-weekly plan of attack -
 
 ## Implementation
 
