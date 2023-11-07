@@ -85,11 +85,11 @@ Where are the most common locations for aircraft crashes, and are there any spec
 
 ## Analysis plan
 
-### **Approach for question 1**
+### Approach for question 1
 
 Time-based Analysis -Visualization: Line graphs with "Event date" on the x-axis, stacked time series count showing highest injury count, and counts of crashes or injuries on the y-axis. This can help in visualizing trends over time.
 
-### **Approach for question 2**
+### Approach for question 2
 
 Geographical Analysis-Visualization: A geographical heatmap or scatter plot using latitude and longitude to pinpoint crash locations. Areas with a high concentration of crashes will be highlighted.
 
@@ -104,5 +104,27 @@ weekly plan of attack -
 ## Implementation
 
 ### Plan of Attack
+
+|               Week                | Weekly Tasks                                                                          | Persons in Charge |  Backup  |
+|:------------------:|---------------------------------|:----------------:|:-------------:|
+|       until November 8^th^        | Explore and finalize the dataset and the problem statements                           |     Everyone      | Everyone |
+|                \-                 | Complete the proposal and assign some high-level tasks                                |     Everyone      | Everyone |
+|     November 9^th^ to 15^th^      | Getting to know about Shiny application                                               |        TBD        |   TBD    |
+|                \-                 | Data cleaning and Data pre-processing                                                 |        TBD        |   TBD    |
+|                \-                 | Question specific exploration and data categorization \<change to question specific\> |        TBD        |   TBD    |
+|     November 16^th^ to 22^nd^     | Generating plots for Q1                                                               |        TBD        |   TBD    |
+|                \-                 | Generating plots for Q2                                                               |        TBD        |   TBD    |
+|                \-                 | Exploring on how to integrate our specific visualizations and shiny                   |        TBD        |   TBD    |
+|     November 23^rd^ to 29^th^     | Generating remaining parts of the plots for Q1 and Q2                                 |        TBD        |   TBD    |
+|                \-                 | Improving the generated plots                                                         |        TBD        |   TBD    |
+|                \-                 | Start integrating shiny and our visualizations                                        |        TBD        |   TBD    |
+| November 30^th^ to December 6^th^ | Refining the code for code review with comments                                       |        TBD        |   TBD    |
+|                \-                 | Having some base functions to use themes interchangably                               |        TBD        |   TBD    |
+|                \-                 | Continue with the integration of shiny and our plots                                  |        TBD        |   TBD    |
+|     December 7^th^ to 13^th^      | Complete the shiny application with multiple user functionality                       |        TBD        |   TBD    |
+|                \-                 | Review the generated plots and shiny integration                                      |        TBD        |   TBD    |
+|                \-                 | Write-up and presentation for the project                                             |     Everyone      | Everyone |
+
+: {.hover}
 
 ### Repo Organization
