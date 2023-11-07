@@ -41,9 +41,11 @@ flights_ntsb <- flights_ntsb |>
   clean_names()
 ```
 
+In preparation for our analysis, we loaded the data and preliminarily reviewed its structure and contents. For example, using inline code such as clean_names, diagnose, describe, and formattable. We obtained an overview of the dataset's variables and initial statistics. This preliminary step confirmed the dataset's suitability for answering our research questions, which revolve around identifying temporal patterns, assessing regional safety performance, and evaluating the effectiveness of safety regulations over the past four decades.
+
 ## Background
 
-We had to submit a query to the National Transportation Safety Board ([NSTB](https://www.ntsb.gov/Pages/AviationQueryV2.aspx)) to obtain the raw dataset. This dataset is for the United States of America only. The data dimensions is a tibble of 89,134 rows and 38 columns, culminating 3,387,093 variables. The data goes back to 1-1-1980 until 12-31-2022.
+The dataset central to our investigation was procured through a formal request to the National Transportation Safety Board ([NSTB](https://www.ntsb.gov/Pages/AviationQueryV2.aspx)). It encompasses detailed records of aircraft crashes in the U.S. from January 1, 1980, to December 31, 2022. The dataset is structured as a tibble with 89,134 rows and 38 columns, amounting to 3,387,093 individual data points. This rich dataset is ideal for our purposes because it enables both time-series and geospatial analyses---methods we believe are critical for understanding the dynamics and spatial distribution of aircraft accidents over time.
 
 ```{r diagnose_flights, message=FALSE}
 #| code-fold: true
@@ -68,6 +70,8 @@ flights_ntsb |>
 ```
 
 ## Value
+
+Our project's primary goal is to conduct an in-depth analysis of aircraft crash incidents within the United States to uncover temporal trends and geographical patterns. This objective is fueled by our diverse personal experiences with air travel, which range from enthusiasm to apprehension. By examining the data, we hope to gain a clearer understanding of the factors contributing to these incidents and alleviate some of the concerns regarding aviation safety.
 
 After talking about places we've traveled to, we chose the data as some of us are more comfortable with flying than others. We decided by looking at aircraft crash data that it could be a chance to get more informed about aircraft crashes within the United States. We wanted do timeseries analysis as well as geospatial analysis and this data presented itself as a great opportunity to do both.
 
@@ -106,7 +110,7 @@ weekly plan of attack -
 ### Plan of Attack
 
 |               Week                | Weekly Tasks                                                                          | Persons in Charge |  Backup  |
-|:------------------:|---------------------------------|:----------------:|:-------------:|
+|:--------------:|-------------------------|:--------------:|:--------------:|
 |       until November 8^th^        | Explore and finalize the dataset and the problem statements                           |     Everyone      | Everyone |
 |                \-                 | Complete the proposal and assign some high-level tasks                                |     Everyone      | Everyone |
 |     November 9^th^ to 15^th^      | Getting to know about Shiny application                                               |        TBD        |   TBD    |
