@@ -89,7 +89,6 @@ Where are the most common locations for aircraft crashes, and are there any spec
 
 ### Approach for question 1
 
-Time-based Analysis -Visualization: Line graphs with "Event date" on the x-axis, stacked time series count showing highest injury count, and counts of crashes or injuries on the y-axis. This can help in visualizing trends over time.
 
 ### Approach for question 2
 
