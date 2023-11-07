@@ -89,6 +89,9 @@ Where are the most common locations for aircraft crashes, and are there any spec
 
 ### Approach for question 1
 
+In this Question, we visualize the trend in aircraft crashes historically. We are going to plot this trend based on different aspects like Severity of Injury which is represented using column `highest_injury_level`. Here they classify a particular injury as a `minor injury`, `serious injury` and `fatal injury` based on the number of casualties that occurred in the crash.
+
+We will also discuss on what probable events lead to most injuries and/or fatalities in a flight crash. We are visualising this trend using Time-Series Analysis where we can compare the different crashes that occur over time and further classify the type of crash and number of injuries that took place. Our Approach to this problem is by implementing Line Graphs which can show the different Crash date based on the column `event date` and stacking a Time-Series Plot and finding the highest number of injury count and classifying them into their individual injury-type. This can help us not only show the number of crashes happening per year but also have them sorted based on their fatality type.
 
 ### Approach for question 2
 
