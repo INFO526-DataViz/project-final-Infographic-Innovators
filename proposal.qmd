@@ -1,5 +1,5 @@
 ---
-title: "Proposal title"
+title: "Comprehensive analysis of air crash data"
 subtitle: "Proposal"
 format:
   html:
@@ -128,3 +128,17 @@ weekly plan of attack -
 : {.hover}
 
 ### Repo Organization
+
+-   **'data/':** Used for storing any necessary data files for the project, such as input files.
+
+-   **'images/':**
+
+-   **'presentation_files/':**
+
+-   **'\_extra/':**
+
+-   **'\_freeze/':**
+
+-   **'\_site/':**
+
+-   **'.github/':**
