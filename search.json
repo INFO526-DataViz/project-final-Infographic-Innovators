@@ -1,0 +1,149 @@
+[
+  {
+    "objectID": "proposal.html",
+    "href": "proposal.html",
+    "title": "Comprehensive analysis of aircraft crash data",
+    "section": "",
+    "text": "Installed Packages\n# GETTING THE LIBRARIES\nif (!require(pacman))\n  install.packages(pacman)\n\npacman::p_load(formattable,\n               tidyverse,\n               janitor,\n               dlookr,\n               here)"
+  },
+  {
+    "objectID": "proposal.html#high-level-goal",
+    "href": "proposal.html#high-level-goal",
+    "title": "Comprehensive analysis of aircraft crash data",
+    "section": "High Level Goal",
+    "text": "High Level Goal\nBuild a Shiny app where users can look at different plots to analyze the flight crashes occurred in the United States form 1980 to 2022."
+  },
+  {
+    "objectID": "proposal.html#dataset",
+    "href": "proposal.html#dataset",
+    "title": "Comprehensive analysis of aircraft crash data",
+    "section": "Dataset",
+    "text": "Dataset\n\n# Reading the data using read_csv\nflights_ntsb &lt;- read_csv(here(\"data\", \"flight_crash_data_NTSB.csv\"))\n\n#selecting columns\nflights_ntsb |&gt;\n  select(\n    EventType, EventDate,\n    City, State,\n    Country, HasSafetyRec,\n    ReportType, HighestInjuryLevel,\n    FatalInjuryCount, SeriousInjuryCount,\n    MinorInjuryCount, ProbableCause,\n    Latitude, Longitude,\n    AirCraftCategory, AirportID,\n    AirportName, AmateurBuilt,\n    NumberOfEngines, AirCraftDamage,\n    WeatherCondition\n  )\n\nflights_ntsb &lt;- flights_ntsb |&gt;\n  clean_names()\n\nIn preparation for our analysis, we loaded the data and preliminary reviewed its structure and contents. For example, using inline code such as clean_names, diagnose, describe, and formattable. We obtained an overview of the dataset’s variables and initial statistics. This preliminary step confirmed the dataset’s suitability for answering our research questions, which revolve around identifying temporal patterns and finding relations between parameters that effect crashes."
+  },
+  {
+    "objectID": "proposal.html#background",
+    "href": "proposal.html#background",
+    "title": "Comprehensive analysis of aircraft crash data",
+    "section": "Background",
+    "text": "Background\nThe dataset central to our investigation was procured through a request to the National Transportation Safety Board (NSTB). It encompasses detailed records of aircraft crashes in the U.S. from January 1, 1980, to December 31, 2022. The dataset is structured as a tibble with 89,134 rows and 38 columns, out of which a few unnecessary columns has been removed for our purpose which resulted in a tibble with 89,134 rows and 21 columns. This rich dataset is ideal for our purpose because it enables both time-series, geo-spatial analysis and also other factors that affect the crashes - methods we believe are critical for understanding the dynamics and geo-spatial distribution of aircraft accidents over time.\n\n\nFlights Report Data Diagnosis Code\n# Getting basic information about the dataset\n\nflights_ntsb |&gt;\n  diagnose() |&gt;\n  formattable()\n\n\n\n\n\n\n\nvariables\n\n\ntypes\n\n\nmissing_count\n\n\nmissing_percent\n\n\nunique_count\n\n\nunique_rate\n\n\n\n\n\n\nntsb_no\n\n\ncharacter\n\n\n0\n\n\n0.000000e+00\n\n\n89132\n\n\n9.999776e-01\n\n\n\n\nevent_type\n\n\ncharacter\n\n\n8\n\n\n8.975251e-03\n\n\n3\n\n\n3.365719e-05\n\n\n\n\nmkey\n\n\nnumeric\n\n\n0\n\n\n0.000000e+00\n\n\n89134\n\n\n1.000000e+00\n\n\n\n\nevent_date\n\n\nPOSIXct\n\n\n0\n\n\n0.000000e+00\n\n\n80322\n\n\n9.011376e-01\n\n\n\n\ncity\n\n\ncharacter\n\n\n8\n\n\n8.975251e-03\n\n\n19038\n\n\n2.135885e-01\n\n\n\n\nstate\n\n\ncharacter\n\n\n155\n\n\n1.738955e-01\n\n\n58\n\n\n6.507057e-04\n\n\n\n\ncountry\n\n\ncharacter\n\n\n0\n\n\n0.000000e+00\n\n\n1\n\n\n1.121906e-05\n\n\n\n\nreport_no\n\n\ncharacter\n\n\n88902\n\n\n9.973972e+01\n\n\n231\n\n\n2.591604e-03\n\n\n\n\nn\n\n\ncharacter\n\n\n6\n\n\n6.731438e-03\n\n\n80098\n\n\n8.986245e-01\n\n\n\n\nhas_safety_rec\n\n\nlogical\n\n\n0\n\n\n0.000000e+00\n\n\n2\n\n\n2.243813e-05\n\n\n\n\nreport_type\n\n\ncharacter\n\n\n1\n\n\n1.121906e-03\n\n\n5\n\n\n5.609532e-05\n\n\n\n\noriginal_publish_date\n\n\nPOSIXct\n\n\n12847\n\n\n1.441313e+01\n\n\n2903\n\n\n3.256894e-02\n\n\n\n\nhighest_injury_level\n\n\ncharacter\n\n\n126\n\n\n1.413602e-01\n\n\n5\n\n\n5.609532e-05\n\n\n\n\nfatal_injury_count\n\n\nnumeric\n\n\n0\n\n\n0.000000e+00\n\n\n52\n\n\n5.833913e-04\n\n\n\n\nserious_injury_count\n\n\nnumeric\n\n\n0\n\n\n0.000000e+00\n\n\n24\n\n\n2.692575e-04\n\n\n\n\nminor_injury_count\n\n\nnumeric\n\n\n0\n\n\n0.000000e+00\n\n\n49\n\n\n5.497341e-04\n\n\n\n\nprobable_cause\n\n\ncharacter\n\n\n29568\n\n\n3.317253e+01\n\n\n56119\n\n\n6.296026e-01\n\n\n\n\nevent_id\n\n\ncharacter\n\n\n81421\n\n\n9.134674e+01\n\n\n7714\n\n\n8.654386e-02\n\n\n\n\nlatitude\n\n\nnumeric\n\n\n0\n\n\n0.000000e+00\n\n\n61321\n\n\n6.879642e-01\n\n\n\n\nlongitude\n\n\nnumeric\n\n\n0\n\n\n0.000000e+00\n\n\n62243\n\n\n6.983082e-01\n\n\n\n\nmake\n\n\ncharacter\n\n\n19\n\n\n2.131622e-02\n\n\n8997\n\n\n1.009379e-01\n\n\n\n\nmodel\n\n\ncharacter\n\n\n39\n\n\n4.375435e-02\n\n\n12763\n\n\n1.431889e-01\n\n\n\n\nair_craft_category\n\n\ncharacter\n\n\n13\n\n\n1.458478e-02\n\n\n38\n\n\n4.263244e-04\n\n\n\n\nairport_id\n\n\ncharacter\n\n\n40230\n\n\n4.513429e+01\n\n\n9656\n\n\n1.083313e-01\n\n\n\n\nairport_name\n\n\ncharacter\n\n\n32675\n\n\n3.665829e+01\n\n\n25807\n\n\n2.895304e-01\n\n\n\n\namateur_built\n\n\ncharacter\n\n\n0\n\n\n0.000000e+00\n\n\n7\n\n\n7.853344e-05\n\n\n\n\nnumber_of_engines\n\n\ncharacter\n\n\n1546\n\n\n1.734467e+00\n\n\n40\n\n\n4.487625e-04\n\n\n\n\nscheduled\n\n\ncharacter\n\n\n78948\n\n\n8.857226e+01\n\n\n4\n\n\n4.487625e-05\n\n\n\n\npurpose_of_flight\n\n\ncharacter\n\n\n2970\n\n\n3.332062e+00\n\n\n132\n\n\n1.480916e-03\n\n\n\n\nfar\n\n\ncharacter\n\n\n599\n\n\n6.720219e-01\n\n\n68\n\n\n7.628963e-04\n\n\n\n\nair_craft_damage\n\n\ncharacter\n\n\n21\n\n\n2.356003e-02\n\n\n29\n\n\n3.253528e-04\n\n\n\n\nweather_condition\n\n\ncharacter\n\n\n173\n\n\n1.940898e-01\n\n\n7\n\n\n7.853344e-05\n\n\n\n\noperator\n\n\ncharacter\n\n\n49541\n\n\n5.558036e+01\n\n\n34396\n\n\n3.858909e-01\n\n\n\n\nreport_status\n\n\ncharacter\n\n\n0\n\n\n0.000000e+00\n\n\n3\n\n\n3.365719e-05\n\n\n\n\nrep_gen_flag\n\n\nlogical\n\n\n0\n\n\n0.000000e+00\n\n\n2\n\n\n2.243813e-05\n\n\n\n\ndocket_url\n\n\ncharacter\n\n\n67918\n\n\n7.619764e+01\n\n\n21217\n\n\n2.380349e-01\n\n\n\n\ndocket_publish_date\n\n\ncharacter\n\n\n67918\n\n\n7.619764e+01\n\n\n18454\n\n\n2.070366e-01\n\n\n\n\nx38\n\n\nlogical\n\n\n89134\n\n\n1.000000e+02\n\n\n1\n\n\n1.121906e-05\n\n\n\n\n\n\n\n\n\nFlights Report Data Describe Code\n# Getting basic statistical information about the dataset\n\nflights_ntsb |&gt;\n  describe() |&gt;\n  formattable()\n\n\n\n\n\n\n\ndescribed_variables\n\n\nn\n\n\nna\n\n\nmean\n\n\nsd\n\n\nse_mean\n\n\nIQR\n\n\nskewness\n\n\nkurtosis\n\n\np00\n\n\np01\n\n\np05\n\n\np10\n\n\np20\n\n\np25\n\n\np30\n\n\np40\n\n\np50\n\n\np60\n\n\np70\n\n\np75\n\n\np80\n\n\np90\n\n\np95\n\n\np99\n\n\np100\n\n\n\n\n\n\nmkey\n\n\n89134\n\n\n0\n\n\n55806.2415913\n\n\n3.601919e+04\n\n\n1.206458e+02\n\n\n57033.50000\n\n\n0.4562199\n\n\n-0.7658746\n\n\n2292\n\n\n3202.33\n\n\n6830.6500\n\n\n11433.3000\n\n\n20585.60000\n\n\n25193.25\n\n\n29857.90000\n\n\n39519.20000\n\n\n52000.50000\n\n\n63033.80000\n\n\n73493.10000\n\n\n82226.75000\n\n\n90689.40000\n\n\n104484.70000\n\n\n126878.35000\n\n\n131513.67000\n\n\n1.928810e+05\n\n\n\n\nfatal_injury_count\n\n\n89134\n\n\n0\n\n\n0.3635538\n\n\n2.251023e+00\n\n\n7.539771e-03\n\n\n0.00000\n\n\n65.0525849\n\n\n5829.4997911\n\n\n0\n\n\n0.00\n\n\n0.0000\n\n\n0.0000\n\n\n0.00000\n\n\n0.00\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n1.00000\n\n\n2.00000\n\n\n4.00000\n\n\n2.650000e+02\n\n\n\n\nserious_injury_count\n\n\n89134\n\n\n0\n\n\n0.1950210\n\n\n7.612223e-01\n\n\n2.549704e-03\n\n\n0.00000\n\n\n37.6735358\n\n\n3044.1592155\n\n\n0\n\n\n0.00\n\n\n0.0000\n\n\n0.0000\n\n\n0.00000\n\n\n0.00\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n1.00000\n\n\n1.00000\n\n\n2.00000\n\n\n8.100000e+01\n\n\n\n\nminor_injury_count\n\n\n89134\n\n\n0\n\n\n0.3146386\n\n\n1.399480e+00\n\n\n4.687541e-03\n\n\n0.00000\n\n\n42.2960248\n\n\n3134.5922767\n\n\n0\n\n\n0.00\n\n\n0.0000\n\n\n0.0000\n\n\n0.00000\n\n\n0.00\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n1.00000\n\n\n2.00000\n\n\n3.00000\n\n\n1.370000e+02\n\n\n\n\nlatitude\n\n\n89134\n\n\n0\n\n\n988.6591476\n\n\n2.011036e+05\n\n\n6.735939e+02\n\n\n12.22944\n\n\n211.2932523\n\n\n44673.9778599\n\n\n0\n\n\n0.00\n\n\n0.0000\n\n\n0.0000\n\n\n21.31861\n\n\n29.18\n\n\n31.18077\n\n\n33.94250\n\n\n35.97083\n\n\n38.55095\n\n\n40.43017\n\n\n41.40944\n\n\n42.56583\n\n\n46.36235\n\n\n58.41937\n\n\n64.40744\n\n\n4.351119e+07\n\n\n\n\nlongitude\n\n\n89134\n\n\n0\n\n\n-123.9442394\n\n\n6.343362e+03\n\n\n2.124701e+01\n\n\n34.84990\n\n\n-149.6523980\n\n\n22435.0280916\n\n\n-1004241\n\n\n-158.58\n\n\n-147.7193\n\n\n-122.1001\n\n\n-116.60010\n\n\n-111.85\n\n\n-106.08916\n\n\n-96.58913\n\n\n-90.31158\n\n\n-84.50032\n\n\n-80.45880\n\n\n-77.00008\n\n\n-70.81000\n\n\n0.00000\n\n\n0.00000\n\n\n0.00000\n\n\n1.741242e+02"
+  },
+  {
+    "objectID": "proposal.html#value",
+    "href": "proposal.html#value",
+    "title": "Comprehensive analysis of aircraft crash data",
+    "section": "Value",
+    "text": "Value\nOur project’s primary goal is to conduct an in-depth analysis of aircraft crash incidents within the United States to uncover temporal trends and geographical patterns. This objective is fueled by our diverse personal experiences with air travel, which range from enthusiasm to apprehension. This stems from talking about places we’ve traveled to, we chose the data as some of us are more comfortable with flying than others. We decided by looking at aircraft crash data that it could be a chance to get more informed about aircraft crashes within the United States. By examining the data, we hope to gain a clearer understanding of the factors contributing to these incidents and alleviate some of the concerns regarding aviation safety. We wanted do time series analysis as well as geo-spatial analysis and this data presented itself as a great opportunity to do both. We intend to design a shiny app so that we can display the a time series change of crashes throughout the years."
+  },
+  {
+    "objectID": "proposal.html#problem-statement",
+    "href": "proposal.html#problem-statement",
+    "title": "Comprehensive analysis of aircraft crash data",
+    "section": "Problem Statement",
+    "text": "Problem Statement\nWe conducted Exploratory Data Analysis on the dataset and categorized our analysis into three main areas:\n\nExamining Aircraft Crashes, with a focus on their locations, timings, and consequences.\nInvestigating the Causes of Crashes.\nAssessing the Influence of Weather Conditions on Crashes."
+  },
+  {
+    "objectID": "proposal.html#plan-of-action",
+    "href": "proposal.html#plan-of-action",
+    "title": "Comprehensive analysis of aircraft crash data",
+    "section": "Plan of Action",
+    "text": "Plan of Action\n\nExamining Aircraft Crashes, with a focus on their locations, timings, and consequences\n\nHeat-Map - An Animated Heat-map of Aircraft Crashes in the United States Over Time:\nThe animated heat-map provides a dynamic and visually compelling representation of aircraft crashes across the United States. This data visualization leverages the latitude and longitude coordinates of crash locations and spans multiple years to reveal temporal patterns. This heat-map not only facilitates the identification of regions with higher crash frequencies but also offers insights into the evolving dynamics of air travel safety over time.\nTime-series Plot- Analysis of Aircraft Crashes and Fatalities:\nWe visualize the trend in aircraft crashes historically. We are going to plot this trend based on different aspects like total fatalities which is represented using column fatal_injury_count, serious_injury_count and minor_injury_count. Here they classify a particular injury count as a minor, serious and fatal injury based on the level of casualties that occurred in the crash. We also would like to highlight few notable airplane crashes in the history in our time-series analysis.\nRadial bar Plot - A Radial Perspective on Aircraft Crashes During Flight Phases:\nWe will be representing the count of crashes on the x-axis and the phases of flight (takeoff, landing etc,.) on the y-axis in a circular manner. We can transform the bar plot into a radial form, emphasizing the distribution of crashes during these critical flight stages. This visualization technique allows for a quick understanding of the relative frequency of crashes during takeoff and landing, enabling insights into the safety challenges faced during these flight phases.\n\n\n\nAnalysis of Causes of Crashes\n\nBar plot - Common Causes of Aircraft Crashes:\nThe bar plot offers an overview of the most common causes of aircraft crashes throughout the United States. Leveraging the probable_cause column, which contains concise descriptions of crash events, the bar plot employs text summarization techniques to extract and categorize these causes into manageable groups. This visualization provides a straightforward and insightful representation of the key factors contributing to aviation incidents, aiding in the identification of the primary causes that warrant further investigation.\nStacked Area Chart - Causes and Severity of Aircraft Crashes:\nThe stacked area chart delves into the relationship between specific crash causes and the severity of injuries incurred. Drawing from the probable_cause column, as well as the severity and event_date columns, this visualization quantifies the number of crashes attributed to each cause while distinguishing between varying levels of severity. By visualizing this data in a stacked area format, it becomes evident which causes are associated with more severe injuries and which contribute to milder consequences.\n\n\n\nAssessing the Influence of Weather Conditions on Crashes\n\nRadar Plot - Analysis of Aircraft Crashes by Month and Weather Conditions:\nUsing radar plot we would like to display multiple weather conditions on the axes of the plot, while the spokes represent different months. Each radar plot point signifies the frequency of crashes occurring in a specific month under a particular weather condition. This comprehensive visualization enables a quick assessment of the relationship between weather conditions, crash occurrences, and the month when the crash has occurred."
+  },
+  {
+    "objectID": "proposal.html#variables-of-focus-for-both-questions",
+    "href": "proposal.html#variables-of-focus-for-both-questions",
+    "title": "Comprehensive analysis of aircraft crash data",
+    "section": "Variables of focus for both questions",
+    "text": "Variables of focus for both questions\n\n\n\n\n\n\n\n\nVariable\nDescription\n\n\n\n\nevent_type\nType of event - accident, incident or occurrence\n\n\nevent_date\nDate time of when the event has occurred\n\n\ncity\nThe city or place location closest to the site of the event\n\n\nstate\nThe state in which the site of the event is present\n\n\nhighest_injury_level\nIndicate the highest level of injury among all injuries sustained as a result of the event\n\n\nfatal_injury_count\nThe total number of fatal injuries from an event\n\n\nserious_injury_count\nThe total number of serious injuries from an event\n\n\nminor_injury_count\nThe total number of minor injuries from an event\n\n\nprobable_cause\nThe probable cause for the aircraft crash as per the NTSB report\n\n\nlatitude\nLatitude for the event site in degrees and decimal degrees.\n\n\nlongitude\nLongitude for the event site in degrees and decimal degrees.\n\n\nweather_condition\nThe basic weather conditions at the time of the event"
+  },
+  {
+    "objectID": "proposal.html#implementation",
+    "href": "proposal.html#implementation",
+    "title": "Comprehensive analysis of aircraft crash data",
+    "section": "Implementation",
+    "text": "Implementation\n\nWeekly Plan\n\n\n\n\n\n\n\n\n\n\nWeek\nWeekly Tasks\nPersons in Charge\nBackup\n\n\n\n\nuntil November 8th\nExplore and finalize the data set and the problem statements\nEveryone\nEveryone\n\n\n-\nComplete the proposal and assign some high-level tasks\nEveryone\nEveryone\n\n\nNovember 9th to 15th\nGetting to know about Shiny application\nAntonio\nBharath\n\n\n-\nData cleaning and Data pre-processing\nThanoosha\nEshaan\n\n\n-\nQuestion specific exploration and data categorization\nThanoosha, Bharath\nAntonio, Eshaan\n\n\nNovember 16th to 22nd\nGenerating plots for Heat-Map and Time-Series\nAntonio, Bharath\nEshaan\n\n\n-\nGenerating plots for Radial bar Plot and Bar Plot\nEshaan, Antonio\nThanoosha\n\n\n-\nGenerating plots for Stacked Area Chart and Radar Plot\nThanoosha\nBharath\n\n\n-\nExploring on how to integrate our specific visualizations and shiny\nEshaan\nAntonio\n\n\nNovember 23rd to 29th\nGenerating remaining parts of the plots for all the plots\nEveryone\nEveryone\n\n\n-\nImproving the generated plots\nBharath\nThanoosha\n\n\n-\nStart integrating shiny and our visualizations\nEshaan\nAntonio\n\n\nNovember 30th to December 6th\nRefining the code for code review with comments\nEveryone\nEveryone\n\n\n-\nContinue with the integration of shiny and our plots\nBharath\nThanoosha\n\n\nDecember 7th to 13th\nComplete the shiny application with multiple user functionality\nAntonio\nEshaan\n\n\n-\nReview the generated plots and shiny integration\nThanoosha\nBharath\n\n\n-\nWrite-up and presentation for the project\nEveryone\nEveryone\n\n\n\n\n\nRepo Organization\nThe following are the folders involved in the Project repository.\n\n‘data/’: Used for storing any necessary data files for the project, such as input files.\n‘images/’: Used for storing image files used in the project.\n‘presentation_files/’: Folder for having presentation related files.\n‘_extra/’: Used to brainstorm our analysis which won’t impact our project workflow.\n‘_freeze/’: This folder is used to store the generated files during the build process. These files represent the frozen state of the website at a specific point in time.\n‘_site/’: Folder used to store the generated static website files after the site generator processes the quarto document.\n‘.github/’: Folder for storing github templates and workflow.\n\nWe will be creating few folders inside images/ folder for storing question specific images and presentation related images which are generated through out the plot. We will be creating images/Q1, images/Q2 and images/Presentation for those respective files.\n\n\n\n\n\n\nNote:\n\n\n\nThese are the planned approaches, and we intend to explore and solve the problem statement which we came up with. Parts of our approach might change in the final implementation."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Project title",
+    "section": "",
+    "text": "Add project abstract here."
+  },
+  {
+    "objectID": "index.html#abstract",
+    "href": "index.html#abstract",
+    "title": "Project title",
+    "section": "",
+    "text": "Add project abstract here."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "This project was developed by Infographic Innovators. For INFO 526 - Data Analysis & Visualization at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.\n\nTeam member 1: Eshaan Mathakari: First-year graduate student in Data Science at University of Arizona., github: @eshaanmathakari\nTeam member 2: Bharath Velamala, First-year graduate student in Data Science at University of Arizona., github: @bharath03-a\nTeam member 3: Thanoosha Naidu Karri, First-year graduate student in Data Science at University of Arizona., guthub: @thanooshakarri\nTeam member 4: Antonio Escalante Jr, First-year graduate student in Data Science at University of Arizona., github: @datalyticsintel"
+  },
+  {
+    "objectID": "presentation.html#quarto",
+    "href": "presentation.html#quarto",
+    "title": "Project title",
+    "section": "Quarto",
+    "text": "Quarto\n\nThe presentation is created using the Quarto CLI\n## sets the start of a new slide"
+  },
+  {
+    "objectID": "presentation.html#layouts",
+    "href": "presentation.html#layouts",
+    "title": "Project title",
+    "section": "Layouts",
+    "text": "Layouts\nYou can use plain text\n\n\n\nor bullet points1\n\n\nor in two columns\n\n\n\nlike\nthis\n\nAnd add footnotes"
+  },
+  {
+    "objectID": "presentation.html#code",
+    "href": "presentation.html#code",
+    "title": "Project title",
+    "section": "Code",
+    "text": "Code\n\n\n# A tibble: 2 × 5\n  term        estimate std.error statistic       p.value\n  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;\n1 (Intercept)   25.3      3.08        8.22 0.00000000358\n2 speed         -0.116    0.0642     -1.81 0.0806       \n\n\n# A tibble: 1 × 12\n  r.squared adj.r.squared sigma statistic p.value    df logLik   AIC   BIC\n      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1    0.0983        0.0682  5.82      3.27  0.0806     1  -101.  207.  212.\n# ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;"
+  },
+  {
+    "objectID": "presentation.html#plots",
+    "href": "presentation.html#plots",
+    "title": "Project title",
+    "section": "Plots",
+    "text": "Plots"
+  },
+  {
+    "objectID": "presentation.html#plot-and-text",
+    "href": "presentation.html#plot-and-text",
+    "title": "Project title",
+    "section": "Plot and text",
+    "text": "Plot and text\n\n\n\nSome text\ngoes here"
+  },
+  {
+    "objectID": "presentation.html#tables",
+    "href": "presentation.html#tables",
+    "title": "Project title",
+    "section": "Tables",
+    "text": "Tables\nIf you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,\n\n\n\n\n\nspecies\nisland\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\nsex\n\n\n\n\nAdelie\nTorgersen\n39.1\n18.7\n181\n3750\nmale\n\n\nAdelie\nTorgersen\n39.5\n17.4\n186\n3800\nfemale\n\n\nAdelie\nTorgersen\n40.3\n18.0\n195\n3250\nfemale\n\n\nAdelie\nTorgersen\nNA\nNA\nNA\nNA\nNA\n\n\nAdelie\nTorgersen\n36.7\n19.3\n193\n3450\nfemale\n\n\nAdelie\nTorgersen\n39.3\n20.6\n190\n3650\nmale"
+  },
+  {
+    "objectID": "presentation.html#images",
+    "href": "presentation.html#images",
+    "title": "Project title",
+    "section": "Images",
+    "text": "Images\n\nImage credit: Danielle Navarro, Percolate."
+  },
+  {
+    "objectID": "presentation.html#math-expressions",
+    "href": "presentation.html#math-expressions",
+    "title": "Project title",
+    "section": "Math Expressions",
+    "text": "Math Expressions\nYou can write LaTeX math expressions inside a pair of dollar signs, e.g. $\\alpha+\\beta$ renders \\(\\alpha + \\beta\\). You can use the display style with double dollar signs:\n$$\\bar{X}=\\frac{1}{n}\\sum_{i=1}^nX_i$$\n\\[\n\\bar{X}=\\frac{1}{n}\\sum_{i=1}^nX_i\n\\]\nLimitations:\n\nThe source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting $$ must appear in the very beginning of a line, followed immediately by a non-space character, and the ending $$ must be at the end of a line, led by a non-space character;\nThere should not be spaces after the opening $ or before the closing $."
+  },
+  {
+    "objectID": "presentation.html#feeling-adventurous",
+    "href": "presentation.html#feeling-adventurous",
+    "title": "Project title",
+    "section": "Feeling adventurous?",
+    "text": "Feeling adventurous?\n\nYou are welcomed to use the default styling of the slides. In fact, that’s what I expect majority of you will do. You will differentiate yourself with the content of your presentation.\nBut some of you might want to play around with slide styling. Some solutions for this can be found at https://quarto.org/docs/presentations/revealjs."
+  }
+]
