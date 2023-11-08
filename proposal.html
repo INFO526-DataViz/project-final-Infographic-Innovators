@@ -5651,8 +5651,8 @@ longitude
 <table class="table-hover table">
 <caption></caption>
 <colgroup>
-<col style="width: 36%">
-<col style="width: 63%">
+<col style="width: 19%">
+<col style="width: 80%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -5716,13 +5716,12 @@ longitude
 <h2 class="anchored" data-anchor-id="implementation">Implementation</h2>
 <section id="weekly-plan" class="level3">
 <h3 class="anchored" data-anchor-id="weekly-plan">Weekly Plan</h3>
-<table class="table-hover table">
-<caption></caption>
+<table class="table">
 <colgroup>
 <col style="width: 24%">
-<col style="width: 26%">
-<col style="width: 24%">
-<col style="width: 24%">
+<col style="width: 48%">
+<col style="width: 14%">
+<col style="width: 12%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -6361,7 +6360,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb5-138"><a href="#cb5-138"></a><span class="fu">## Variables of focus for both questions</span></span>
 <span id="cb5-139"><a href="#cb5-139"></a></span>
 <span id="cb5-140"><a href="#cb5-140"></a>| Variable             | Description                                                                                |</span>
-<span id="cb5-141"><a href="#cb5-141"></a>|--------------------------|----------------------------------------------|</span>
+<span id="cb5-141"><a href="#cb5-141"></a>|----------------------|--------------------------------------------------------------------------------------------|</span>
 <span id="cb5-142"><a href="#cb5-142"></a>| event_type           | Type of event - accident, incident or occurrence                                           |</span>
 <span id="cb5-143"><a href="#cb5-143"></a>| event_date           | Date time of when the event has occurred                                                   |</span>
 <span id="cb5-144"><a href="#cb5-144"></a>| city                 | The city or place location closest to the site of the event                                |</span>
@@ -6382,7 +6381,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb5-159"><a href="#cb5-159"></a><span class="fu">### Weekly Plan</span></span>
 <span id="cb5-160"><a href="#cb5-160"></a></span>
 <span id="cb5-161"><a href="#cb5-161"></a>|               Week                | Weekly Tasks                                                        | Persons in Charge  |     Backup      |</span>
-<span id="cb5-162"><a href="#cb5-162"></a>|:----------------:|-------------------|:----------------:|:----------------:|</span>
+<span id="cb5-162"><a href="#cb5-162"></a>|:---------------------------------:|---------------------------------------------------------------------|:------------------:|:---------------:|</span>
 <span id="cb5-163"><a href="#cb5-163"></a>|       until November 8^th^        | Explore and finalize the data set and the problem statements        |      Everyone      |    Everyone     |</span>
 <span id="cb5-164"><a href="#cb5-164"></a>|                <span class="sc">\-</span>                 | Complete the proposal and assign some high-level tasks              |      Everyone      |    Everyone     |</span>
 <span id="cb5-165"><a href="#cb5-165"></a>|     November 9^th^ to 15^th^      | Getting to know about Shiny application                             |      Antonio       |     Bharath     |</span>
@@ -6401,33 +6400,31 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb5-178"><a href="#cb5-178"></a>|                <span class="sc">\-</span>                 | Review the generated plots and shiny integration                    |     Thanoosha      |     Bharath     |</span>
 <span id="cb5-179"><a href="#cb5-179"></a>|                <span class="sc">\-</span>                 | Write-up and presentation for the project                           |      Everyone      |    Everyone     |</span>
 <span id="cb5-180"><a href="#cb5-180"></a></span>
-<span id="cb5-181"><a href="#cb5-181"></a>: {.hover}</span>
+<span id="cb5-181"><a href="#cb5-181"></a><span class="fu">### Repo Organization</span></span>
 <span id="cb5-182"><a href="#cb5-182"></a></span>
-<span id="cb5-183"><a href="#cb5-183"></a><span class="fu">### Repo Organization</span></span>
+<span id="cb5-183"><a href="#cb5-183"></a>The following are the folders involved in the Project repository.</span>
 <span id="cb5-184"><a href="#cb5-184"></a></span>
-<span id="cb5-185"><a href="#cb5-185"></a>The following are the folders involved in the Project repository.</span>
+<span id="cb5-185"><a href="#cb5-185"></a><span class="ss">-   </span>**&#39;data/&#39;:** Used for storing any necessary data files for the project, such as input files.</span>
 <span id="cb5-186"><a href="#cb5-186"></a></span>
-<span id="cb5-187"><a href="#cb5-187"></a><span class="ss">-   </span>**&#39;data/&#39;:** Used for storing any necessary data files for the project, such as input files.</span>
+<span id="cb5-187"><a href="#cb5-187"></a><span class="ss">-   </span>**&#39;images/&#39;:** Used for storing image files used in the project.</span>
 <span id="cb5-188"><a href="#cb5-188"></a></span>
-<span id="cb5-189"><a href="#cb5-189"></a><span class="ss">-   </span>**&#39;images/&#39;:** Used for storing image files used in the project.</span>
+<span id="cb5-189"><a href="#cb5-189"></a><span class="ss">-   </span>**&#39;presentation_files/&#39;:** Folder for having presentation related files.</span>
 <span id="cb5-190"><a href="#cb5-190"></a></span>
-<span id="cb5-191"><a href="#cb5-191"></a><span class="ss">-   </span>**&#39;presentation_files/&#39;:** Folder for having presentation related files.</span>
+<span id="cb5-191"><a href="#cb5-191"></a><span class="ss">-   </span>**&#39;\_extra/&#39;:** Used to brainstorm our analysis which won&#39;t impact our project workflow.</span>
 <span id="cb5-192"><a href="#cb5-192"></a></span>
-<span id="cb5-193"><a href="#cb5-193"></a><span class="ss">-   </span>**&#39;\_extra/&#39;:** Used to brainstorm our analysis which won&#39;t impact our project workflow.</span>
+<span id="cb5-193"><a href="#cb5-193"></a><span class="ss">-   </span>**&#39;\_freeze/&#39;:** This folder is used to store the generated files during the build process. These files represent the frozen state of the website at a specific point in time.</span>
 <span id="cb5-194"><a href="#cb5-194"></a></span>
-<span id="cb5-195"><a href="#cb5-195"></a><span class="ss">-   </span>**&#39;\_freeze/&#39;:** This folder is used to store the generated files during the build process. These files represent the frozen state of the website at a specific point in time.</span>
+<span id="cb5-195"><a href="#cb5-195"></a><span class="ss">-   </span>**&#39;\_site/&#39;:** Folder used to store the generated static website files after the site generator processes the quarto document.</span>
 <span id="cb5-196"><a href="#cb5-196"></a></span>
-<span id="cb5-197"><a href="#cb5-197"></a><span class="ss">-   </span>**&#39;\_site/&#39;:** Folder used to store the generated static website files after the site generator processes the quarto document.</span>
+<span id="cb5-197"><a href="#cb5-197"></a><span class="ss">-   </span>**&#39;.github/&#39;:** Folder for storing github templates and workflow.</span>
 <span id="cb5-198"><a href="#cb5-198"></a></span>
-<span id="cb5-199"><a href="#cb5-199"></a><span class="ss">-   </span>**&#39;.github/&#39;:** Folder for storing github templates and workflow.</span>
+<span id="cb5-199"><a href="#cb5-199"></a>We will be creating few folders inside <span class="in">`images/`</span> folder for storing question specific images and presentation related images which are generated through out the plot. We will be creating <span class="in">`images/Q1`</span>, <span class="in">`images/Q2`</span> and <span class="in">`images/Presentation`</span> for those respective files.</span>
 <span id="cb5-200"><a href="#cb5-200"></a></span>
-<span id="cb5-201"><a href="#cb5-201"></a>We will be creating few folders inside <span class="in">`images/`</span> folder for storing question specific images and presentation related images which are generated through out the plot. We will be creating <span class="in">`images/Q1`</span>, <span class="in">`images/Q2`</span> and <span class="in">`images/Presentation`</span> for those respective files.</span>
-<span id="cb5-202"><a href="#cb5-202"></a></span>
-<span id="cb5-203"><a href="#cb5-203"></a>::: callout-note</span>
-<span id="cb5-204"><a href="#cb5-204"></a><span class="fu">## Note:</span></span>
-<span id="cb5-205"><a href="#cb5-205"></a></span>
-<span id="cb5-206"><a href="#cb5-206"></a>These are the planned approaches, and we intend to explore and solve the problem statement which we came up with. Parts of our approach might change in the final implementation.</span>
-<span id="cb5-207"><a href="#cb5-207"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-201"><a href="#cb5-201"></a>::: callout-note</span>
+<span id="cb5-202"><a href="#cb5-202"></a><span class="fu">## Note:</span></span>
+<span id="cb5-203"><a href="#cb5-203"></a></span>
+<span id="cb5-204"><a href="#cb5-204"></a>These are the planned approaches, and we intend to explore and solve the problem statement which we came up with. Parts of our approach might change in the final implementation.</span>
+<span id="cb5-205"><a href="#cb5-205"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
