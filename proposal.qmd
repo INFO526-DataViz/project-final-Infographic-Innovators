@@ -46,7 +46,7 @@ Build a Shiny app where users can look at different plots to analyze the flight 
 flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
 
 #selecting columns
-flights_ntsb |>
+flights_ntsb <- flights_ntsb |>
   select(
     EventType, EventDate,
     City, State,
@@ -59,9 +59,7 @@ flights_ntsb |>
     AirportName, AmateurBuilt,
     NumberOfEngines, AirCraftDamage,
     WeatherCondition
-  )
-
-flights_ntsb <- flights_ntsb |>
+  ) |>
   clean_names()
 ```
 
