@@ -1,5 +1,5 @@
 ---
-title: "Comprehensive analysis of aircraft crash data"
+title: "From Takeoff to Touchdown: Dissecting Data on Air Disasters"
 subtitle: "INFO 526 - Project Final"
 author: 
   - name: "Infographic Innovators - Antonio, Bharath, Eshaan, Thanoosha"
