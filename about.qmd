@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-This project was developed by **Inforgraphic Innovators.** For [INFO 526 - Data Analysis & Visualization](#0) at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.
+This project was developed by **Infographic Innovators.** For [INFO 526 - Data Analysis & Visualization](#0) at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.
 
 -   Team member 1: Eshaan Mathakari: First-year graduate student in Data Science at University of Arizona., github: @eshaanmathakari
 

@@ -2,7 +2,7 @@
 title: "Comprehensive analysis of aircraft crash data"
 subtitle: "Proposal"
 author: 
-  - name: " Inforgraphic Innovators - Eshaan, Bharath, Thanoosha, Antonio"
+  - name: "Infographic Innovators - Antonio, Bharath, Eshaan, Thanoosha"
     affiliations:
       - name: "School of Information, University of Arizona"
 description: "A shiny app integration with aircraft crash analysis"
@@ -28,9 +28,8 @@ execute:
 if (!require(pacman))
   install.packages(pacman)
 
-pacman::p_load(tidyverse,
-               formattable,
-               tidytuesdayR,
+pacman::p_load(formattable,
+               tidyverse,
                janitor,
                dlookr,
                here)
@@ -45,6 +44,7 @@ Build a Shiny app where users can look at different plots to analyze the flight 
 ```{r load_dataset, message=FALSE, output=FALSE}
 # Reading the data using read_csv
 flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
+
 #selecting columns
 flights_ntsb |>
   select(
@@ -60,12 +60,12 @@ flights_ntsb |>
     NumberOfEngines, AirCraftDamage,
     WeatherCondition
   )
+
 flights_ntsb <- flights_ntsb |>
   clean_names()
-
 ```
 
-In preparation for our analysis, we loaded the data and preliminary reviewed its structure and contents. For example, using inline code such as clean_names, diagnose, describe, and formattable. We obtained an overview of the dataset's variables and initial statistics. This preliminary step confirmed the dataset's suitability for answering our research questions, which revolve around identifying temporal patterns and finding relations between parameters that effect crashes.
+In preparation for our analysis, we loaded the data and preliminary reviewed its structure and contents. For example, using inline code such as `clean_names`, `diagnose`, `describe`, and `formattable`. We obtained an overview of the dataset's variables and initial statistics. This preliminary step confirmed the dataset's suitability for answering our research questions, which revolve around identifying temporal patterns and finding relations between parameters that effect crashes.
 
 ## Background
 
@@ -99,41 +99,39 @@ Our project's primary goal is to conduct an in-depth analysis of aircraft crash 
 
 ## Problem Statement
 
-After performing Exploratory Data Analysis of the data set we organized our analysis into the following 3 categories:
+We conducted Exploratory Data Analysis on the dataset and categorized our analysis into three main areas:
 
--   Analysis of Aircraft Crashes focusing on where and when they happened and their impact.
-
--    Analysis of Causes of Crashes.
-
--   Analyzing how weather conditions impact crashes.
+-   Examining Aircraft Crashes, with a focus on their locations, timings, and consequences.
+-   Investigating the Causes of Crashes.
+-   Assessing the Influence of Weather Conditions on Crashes.
 
 ## Plan of Action
 
-#### Analysis of Aircraft Crashes focusing on where and when they happened and their impact
+### Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
 
-1.  **Heat-Map - An Animated Heatmap of Aircraft Crashes in the United States Over Time:**
+1.  **Heat-Map - An Animated Heat-map of Aircraft Crashes in the United States Over Time:**
 
-    The animated heatmap provides a dynamic and visually compelling representation of aircraft crashes across the United States. This data visualization leverages the latitude and longitude coordinates of crash locations and spans multiple years to reveal temporal patterns. This heatmap not only facilitates the identification of regions with higher crash frequencies but also offers insights into the evolving dynamics of air travel safety over time.
+    The animated heat-map provides a dynamic and visually compelling representation of aircraft crashes across the United States. This data visualization leverages the latitude and longitude coordinates of crash locations and spans multiple years to reveal temporal patterns. This heat-map not only facilitates the identification of regions with higher crash frequencies but also offers insights into the evolving dynamics of air travel safety over time.
 
 2.  **Time-series Plot- Analysis of Aircraft Crashes and Fatalities:**
 
-    We visualize the trend in aircraft crashes historically. We are going to plot this trend based on different aspects like total fatalities which is represented using column highest_injury_level. Here they classify a particular injury as a minor, serious and fatal injury based on the level of casualties that occurred in the crash. We are visualizing this trend using Time-Series Analysis where we can compare the different crashes that occur over time and further classify the type of crash and number of injuries that took place. This can help us not only show the number of crashes happening per year but also have them sorted based on their fatality type. We also would like to highlight few notable airplane crashes in the history in our time-series analysis.
+    We visualize the trend in aircraft crashes historically. We are going to plot this trend based on different aspects like total fatalities which is represented using column `fatal_injury_count`, `serious_injury_count` and `minor_injury_count`. Here they classify a particular injury count as a `minor`, `serious` and `fatal` injury based on the level of casualties that occurred in the crash. We also would like to highlight few notable airplane crashes in the history in our time-series analysis.
 
 3.  **Radial bar Plot - A Radial Perspective on Aircraft Crashes During Flight Phases:**
 
-    We will be representing the count of crashes on the x-axis and the phases of flight (takeoff, landing etc,.) on the y-axis in a circular manner. Utilizing the coord_polar() function, we can transform the bar plot into a radial form, emphasizing the distribution of crashes during these critical flight stages. This visualization technique allows for a quick understanding of the relative frequency of crashes during takeoff and landing, enabling insights into the safety challenges faced during these flight phases.
+    We will be representing the count of crashes on the x-axis and the phases of flight (`takeoff, landing` etc,.) on the y-axis in a circular manner. We can transform the bar plot into a radial form, emphasizing the distribution of crashes during these critical flight stages. This visualization technique allows for a quick understanding of the relative frequency of crashes during takeoff and landing, enabling insights into the safety challenges faced during these flight phases.
 
-#### Analysis of Causes of Crashes
+### Analysis of Causes of Crashes
 
-1.  **Barplot - Common Causes of Aircraft Crashes:**
+1.  **Bar plot - Common Causes of Aircraft Crashes:**
 
-    The barplot offers an overview of the most common causes of aircraft crashes throughout the United States. Leveraging the "Probable Cause" column, which contains concise descriptions of crash events, the barplot employs text summarization techniques to extract and categorize these causes into manageable groups. This visualization provides a straightforward and insightful representation of the key factors contributing to aviation incidents, aiding in the identification of the primary causes that warrant further investigation.
+    The bar plot offers an overview of the most common causes of aircraft crashes throughout the United States. Leveraging the `probable_cause` column, which contains concise descriptions of crash events, the bar plot employs text summarization techniques to extract and categorize these causes into manageable groups. This visualization provides a straightforward and insightful representation of the key factors contributing to aviation incidents, aiding in the identification of the primary causes that warrant further investigation.
 
 2.  **Stacked Area Chart - Causes and Severity of Aircraft Crashes:**
 
-    The stacked area chart delves into the relationship between specific crash causes and the severity of injuries incurred. Drawing from the "Probable Cause" column, as well as the "Severity" and "EventDate" columns, this visualization quantifies the number of crashes attributed to each cause while distinguishing between varying levels of severity. By visualizing this data in a stacked area format, it becomes evident which causes are associated with more severe injuries and which contribute to milder consequences.
+    The stacked area chart delves into the relationship between specific crash causes and the severity of injuries incurred. Drawing from the `probable_cause` column, as well as the `severity` and `event_date` columns, this visualization quantifies the number of crashes attributed to each cause while distinguishing between varying levels of severity. By visualizing this data in a stacked area format, it becomes evident which causes are associated with more severe injuries and which contribute to milder consequences.
 
-#### Analyzing how weather conditions impact crashes
+### Assessing the Influence of Weather Conditions on Crashes
 
 1.  **Radar Plot - Analysis of Aircraft Crashes by Month and Weather Conditions:**
 
@@ -152,12 +150,9 @@ After performing Exploratory Data Analysis of the data set we organized our anal
 | serious_injury_count | The total number of serious injuries from an event                                         |
 | minor_injury_count   | The total number of minor injuries from an event                                           |
 | probable_cause       | The probable cause for the aircraft crash as per the NTSB report                           |
-| has_safety_rec       | If the aircraft has a saftey record previously                                             |
 | latitude             | Latitude for the event site in degrees and decimal degrees.                                |
 | longitude            | Longitude for the event site in degrees and decimal degrees.                               |
 | weather_condition    | The basic weather conditions at the time of the event                                      |
-| air_craft_damage     | Indicate the severity of damage to the accident aircraft                                   |
-| operator             | The full name of the operator of the accident aircraft                                     |
 
 : {.hover}
 
@@ -165,25 +160,25 @@ After performing Exploratory Data Analysis of the data set we organized our anal
 
 ### Weekly Plan
 
-|               Week                | Weekly Tasks                                                                          | Persons in Charge |  Backup  |
+|               Week                | Weekly Tasks                                                        | Persons in Charge  |     Backup      |
 |:----------------:|-------------------|:----------------:|:----------------:|
-|       until November 8^th^        | Explore and finalize the dataset and the problem statements                           |     Everyone      | Everyone |
-|                \-                 | Complete the proposal and assign some high-level tasks                                |     Everyone      | Everyone |
-|     November 9^th^ to 15^th^      | Getting to know about Shiny application                                               |        TBD        |   TBD    |
-|                \-                 | Data cleaning and Data pre-processing                                                 |        TBD        |   TBD    |
-|                \-                 | Question specific exploration and data categorization \<change to question specific\> |        TBD        |   TBD    |
-|     November 16^th^ to 22^nd^     | Generating plots for Q1                                                               |        TBD        |   TBD    |
-|                \-                 | Generating plots for Q2                                                               |        TBD        |   TBD    |
-|                \-                 | Exploring on how to integrate our specific visualizations and shiny                   |        TBD        |   TBD    |
-|     November 23^rd^ to 29^th^     | Generating remaining parts of the plots for Q1 and Q2                                 |        TBD        |   TBD    |
-|                \-                 | Improving the generated plots                                                         |        TBD        |   TBD    |
-|                \-                 | Start integrating shiny and our visualizations                                        |        TBD        |   TBD    |
-| November 30^th^ to December 6^th^ | Refining the code for code review with comments                                       |        TBD        |   TBD    |
-|                \-                 | Having some base functions to use themes interchangably                               |        TBD        |   TBD    |
-|                \-                 | Continue with the integration of shiny and our plots                                  |        TBD        |   TBD    |
-|     December 7^th^ to 13^th^      | Complete the shiny application with multiple user functionality                       |        TBD        |   TBD    |
-|                \-                 | Review the generated plots and shiny integration                                      |        TBD        |   TBD    |
-|                \-                 | Write-up and presentation for the project                                             |     Everyone      | Everyone |
+|       until November 8^th^        | Explore and finalize the data set and the problem statements        |      Everyone      |    Everyone     |
+|                \-                 | Complete the proposal and assign some high-level tasks              |      Everyone      |    Everyone     |
+|     November 9^th^ to 15^th^      | Getting to know about Shiny application                             |      Antonio       |     Bharath     |
+|                \-                 | Data cleaning and Data pre-processing                               |     Thanoosha      |     Eshaan      |
+|                \-                 | Question specific exploration and data categorization               | Thanoosha, Bharath | Antonio, Eshaan |
+|     November 16^th^ to 22^nd^     | Generating plots for Heat-Map and Time-Series                       |  Antonio, Bharath  |     Eshaan      |
+|                \-                 | Generating plots for Radial bar Plot and Bar Plot                   |  Eshaan, Antonio   |    Thanoosha    |
+|                \-                 | Generating plots for Stacked Area Chart and Radar Plot              |     Thanoosha      |     Bharath     |
+|                \-                 | Exploring on how to integrate our specific visualizations and shiny |       Eshaan       |     Antonio     |
+|     November 23^rd^ to 29^th^     | Generating remaining parts of the plots for all the plots           |      Everyone      |    Everyone     |
+|                \-                 | Improving the generated plots                                       |      Bharath       |    Thanoosha    |
+|                \-                 | Start integrating shiny and our visualizations                      |       Eshaan       |     Antonio     |
+| November 30^th^ to December 6^th^ | Refining the code for code review with comments                     |      Everyone      |    Everyone     |
+|                \-                 | Continue with the integration of shiny and our plots                |      Bharath       |    Thanoosha    |
+|     December 7^th^ to 13^th^      | Complete the shiny application with multiple user functionality     |      Antonio       |     Eshaan      |
+|                \-                 | Review the generated plots and shiny integration                    |     Thanoosha      |     Bharath     |
+|                \-                 | Write-up and presentation for the project                           |      Everyone      |    Everyone     |
 
 : {.hover}
 
@@ -205,7 +200,7 @@ The following are the folders involved in the Project repository.
 
 -   **'.github/':** Folder for storing github templates and workflow.
 
-We will be creating few folders inside `images/` folder for storing question specific images and presentation related images which are generated through out the plot.
+We will be creating few folders inside `images/` folder for storing question specific images and presentation related images which are generated through out the plot. We will be creating `images/Q1`, `images/Q2` and `images/Presentation` for those respective files.
 
 ::: callout-note
 ## Note:
