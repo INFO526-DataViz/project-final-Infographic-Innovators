@@ -1,11 +1,11 @@
 ---
-title: "Comprehensive analysis of air crash data"
+title: "Comprehensive analysis of aircraft crash data"
 subtitle: "Proposal"
 author: 
   - name: " Inforgraphic Innovators - Eshaan, Bharath, Thanoosha, Antonio"
     affiliations:
       - name: "School of Information, University of Arizona"
-description: "A shiny app integration with air crash analysis"
+description: "A shiny app integration with aircraft crash analysis"
 format:
   html:
     code-tools: true
@@ -38,23 +38,38 @@ pacman::p_load(tidyverse,
 
 ## High Level Goal
 
-Build a Shiny app where users can look at different plots to visualize the flight crashes occurred in the United States form 1980 to 2022 and interpret.
+Build a Shiny app where users can look at different plots to analyze the flight crashes occurred in the United States form 1980 to 2022.
 
 ## Dataset
 
 ```{r load_dataset, message=FALSE, output=FALSE}
 # Reading the data using read_csv
 flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
-
+#selecting columns
+flights_ntsb |>
+  select(
+    EventType, EventDate,
+    City, State,
+    Country, HasSafetyRec,
+    ReportType, HighestInjuryLevel,
+    FatalInjuryCount, SeriousInjuryCount,
+    MinorInjuryCount, ProbableCause,
+    Latitude, Longitude,
+    AirCraftCategory, AirportID,
+    AirportName, AmateurBuilt,
+    NumberOfEngines, AirCraftDamage,
+    WeatherCondition
+  )
 flights_ntsb <- flights_ntsb |>
   clean_names()
+
 ```
 
-In preparation for our analysis, we loaded the data and preliminary reviewed its structure and contents. For example, using inline code such as clean_names, diagnose, describe, and formattable. We obtained an overview of the dataset's variables and initial statistics. This preliminary step confirmed the dataset's suitability for answering our research questions, which revolve around identifying temporal patterns, assessing regional safety performance, and evaluating the effectiveness of safety regulations over the past four decades.
+In preparation for our analysis, we loaded the data and preliminary reviewed its structure and contents. For example, using inline code such as clean_names, diagnose, describe, and formattable. We obtained an overview of the dataset's variables and initial statistics. This preliminary step confirmed the dataset's suitability for answering our research questions, which revolve around identifying temporal patterns and finding relations between parameters that effect crashes.
 
 ## Background
 
-The dataset central to our investigation was procured through a formal request to the National Transportation Safety Board ([NSTB](https://www.ntsb.gov/Pages/AviationQueryV2.aspx)). It encompasses detailed records of aircraft crashes in the U.S. from January 1, 1980, to December 31, 2022. The dataset is structured as a tibble with 89,134 rows and 38 columns, amounting to 3,387,093 individual data points. This rich dataset is ideal for our purposes because it enables both time-series and geo-spatial analyses---methods we believe are critical for understanding the dynamics and geo-spatial distribution of aircraft accidents over time.
+The dataset central to our investigation was procured through a request to the National Transportation Safety Board ([NSTB](https://www.ntsb.gov/Pages/AviationQueryV2.aspx)). It encompasses detailed records of aircraft crashes in the U.S. from January 1, 1980, to December 31, 2022. The dataset is structured as a tibble with 89,134 rows and 38 columns, out of which a few unnecessary columns has been removed for our purpose which resulted in a tibble with 89,134 rows and 21 columns. This rich dataset is ideal for our purpose because it enables both time-series, geo-spatial analysis and also other factors that affect the crashes - methods we believe are critical for understanding the dynamics and geo-spatial distribution of aircraft accidents over time.
 
 ```{r diagnose_flights, message=FALSE}
 #| code-fold: true
@@ -82,34 +97,52 @@ flights_ntsb |>
 
 Our project's primary goal is to conduct an in-depth analysis of aircraft crash incidents within the United States to uncover temporal trends and geographical patterns. This objective is fueled by our diverse personal experiences with air travel, which range from enthusiasm to apprehension. This stems from talking about places we've traveled to, we chose the data as some of us are more comfortable with flying than others. We decided by looking at aircraft crash data that it could be a chance to get more informed about aircraft crashes within the United States. By examining the data, we hope to gain a clearer understanding of the factors contributing to these incidents and alleviate some of the concerns regarding aviation safety. We wanted do time series analysis as well as geo-spatial analysis and this data presented itself as a great opportunity to do both. We intend to design a shiny app so that we can display the a time series change of crashes throughout the years.
 
-## Questions
+## Problem Statement
 
-The two questions to be answered are:
+After performing Exploratory Data Analysis of the data set we organized our analysis into the following 3 categories:
 
-### Question 1
+-   Analysis of Aircraft Crashes focusing on where and when they happened and their impact.
 
-What is the historical trend in aircraft crashes and injuries, including the distribution of injury severity (fatal, serious, minor)?
+-    Analysis of Causes of Crashes.
 
-### Question 2
+-   Analyzing how weather conditions impact crashes.
 
-Where are the most common locations for aircraft crashes, and are there any specific connections like months, weather conditions associated with crash frequencies?
+## Plan of Action
 
-## Analysis plan
+#### Analysis of Aircraft Crashes focusing on where and when they happened and their impact
 
-### Approach for question 1
+1.  **Heat-Map - An Animated Heatmap of Aircraft Crashes in the United States Over Time:**
 
-In this Question, we visualize the trend in aircraft crashes historically. We are going to plot this trend based on different aspects like Severity of Injury which is represented using column `highest_injury_level`. Here they classify a particular injury as a `minor`, `serious` and `fatal` injury based on the level of casualties that occurred in the crash. We are visualizing this trend using `Time-Series Analysis` where we can compare the different crashes that occur over time and further classify the type of crash and number of injuries that took place. This can help us not only show the number of crashes happening per year but also have them sorted based on their fatality type. We also would like to highlight few notable airplane crashes in the history in our time-series analysis.
+    The animated heatmap provides a dynamic and visually compelling representation of aircraft crashes across the United States. This data visualization leverages the latitude and longitude coordinates of crash locations and spans multiple years to reveal temporal patterns. This heatmap not only facilitates the identification of regions with higher crash frequencies but also offers insights into the evolving dynamics of air travel safety over time.
 
-Further, we also would like to show when and where these crashes occurred by employing geo-spatial analysis plotting a `scatter plot on a map`, if there are places where most crashes occur we will extend this approach to plot a bubble plot on a map as well. We also would like to display the distrubution crashes across different months using a `radar plot`. Additionally, we want to sort different types of crashes based on different event types which is represented using the column `event_type`. Here, we will visualize plane crashes based on the different types of occurrences or events and its effect on the different severity of injuries and total injuries employing a `Sankey plot`. All of these plots will be integrated into our final shiny app.
+2.  **Time-series Plot- Analysis of Aircraft Crashes and Fatalities:**
 
-### Approach for question 2
+    We visualize the trend in aircraft crashes historically. We are going to plot this trend based on different aspects like total fatalities which is represented using column highest_injury_level. Here they classify a particular injury as a minor, serious and fatal injury based on the level of casualties that occurred in the crash. We are visualizing this trend using Time-Series Analysis where we can compare the different crashes that occur over time and further classify the type of crash and number of injuries that took place. This can help us not only show the number of crashes happening per year but also have them sorted based on their fatality type. We also would like to highlight few notable airplane crashes in the history in our time-series analysis.
 
-Geographical Analysis-Visualization: A geographical heatmap or scatter plot using latitude and longitude to pinpoint crash locations. Areas with a high concentration of crashes will be highlighted.
+3.  **Radial bar Plot - A Radial Perspective on Aircraft Crashes During Flight Phases:**
 
-### Variables of focus for both questions
+    We will be representing the count of crashes on the x-axis and the phases of flight (takeoff, landing etc,.) on the y-axis in a circular manner. Utilizing the coord_polar() function, we can transform the bar plot into a radial form, emphasizing the distribution of crashes during these critical flight stages. This visualization technique allows for a quick understanding of the relative frequency of crashes during takeoff and landing, enabling insights into the safety challenges faced during these flight phases.
+
+#### Analysis of Causes of Crashes
+
+1.  **Barplot - Common Causes of Aircraft Crashes:**
+
+    The barplot offers an overview of the most common causes of aircraft crashes throughout the United States. Leveraging the "Probable Cause" column, which contains concise descriptions of crash events, the barplot employs text summarization techniques to extract and categorize these causes into manageable groups. This visualization provides a straightforward and insightful representation of the key factors contributing to aviation incidents, aiding in the identification of the primary causes that warrant further investigation.
+
+2.  **Stacked Area Chart - Causes and Severity of Aircraft Crashes:**
+
+    The stacked area chart delves into the relationship between specific crash causes and the severity of injuries incurred. Drawing from the "Probable Cause" column, as well as the "Severity" and "EventDate" columns, this visualization quantifies the number of crashes attributed to each cause while distinguishing between varying levels of severity. By visualizing this data in a stacked area format, it becomes evident which causes are associated with more severe injuries and which contribute to milder consequences.
+
+#### Analyzing how weather conditions impact crashes
+
+1.  **Radar Plot - Analysis of Aircraft Crashes by Month and Weather Conditions:**
+
+    Using radar plot we would like to display multiple weather conditions on the axes of the plot, while the spokes represent different months. Each radar plot point signifies the frequency of crashes occurring in a specific month under a particular weather condition. This comprehensive visualization enables a quick assessment of the relationship between weather conditions, crash occurrences, and the month when the crash has occurred.
+
+## Variables of focus for both questions
 
 | Variable             | Description                                                                                |
-|------------------------|-----------------------------------------------|
+|--------------------------|----------------------------------------------|
 | event_type           | Type of event - accident, incident or occurrence                                           |
 | event_date           | Date time of when the event has occurred                                                   |
 | city                 | The city or place location closest to the site of the event                                |
@@ -130,7 +163,7 @@ Geographical Analysis-Visualization: A geographical heatmap or scatter plot usin
 
 ## Implementation
 
-### Plan of Attack
+### Weekly Plan
 
 |               Week                | Weekly Tasks                                                                          | Persons in Charge |  Backup  |
 |:----------------:|-------------------|:----------------:|:----------------:|
