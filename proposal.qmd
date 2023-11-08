@@ -137,7 +137,7 @@ We conducted Exploratory Data Analysis on the dataset and categorized our analys
 
 Ultimately, we plan to utilize the interactive features of the Shiny application to present these plots in a user-friendly manner.
 
-### Variables of focus for
+### Variables of focus
 
 | Variable             | Description                                                                                |
 |------------------|------------------------------------------------------|
