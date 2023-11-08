@@ -138,7 +138,7 @@ We conducted Exploratory Data Analysis on the dataset and categorized our analys
 ## Variables of focus for both questions
 
 | Variable             | Description                                                                                |
-|--------------------------|----------------------------------------------|
+|----------------------|--------------------------------------------------------------------------------------------|
 | event_type           | Type of event - accident, incident or occurrence                                           |
 | event_date           | Date time of when the event has occurred                                                   |
 | city                 | The city or place location closest to the site of the event                                |
@@ -159,7 +159,7 @@ We conducted Exploratory Data Analysis on the dataset and categorized our analys
 ### Weekly Plan
 
 |               Week                | Weekly Tasks                                                        | Persons in Charge  |     Backup      |
-|:----------------:|-------------------|:----------------:|:----------------:|
+|:---------------------------------:|---------------------------------------------------------------------|:------------------:|:---------------:|
 |       until November 8^th^        | Explore and finalize the data set and the problem statements        |      Everyone      |    Everyone     |
 |                \-                 | Complete the proposal and assign some high-level tasks              |      Everyone      |    Everyone     |
 |     November 9^th^ to 15^th^      | Getting to know about Shiny application                             |      Antonio       |     Bharath     |
@@ -177,8 +177,6 @@ We conducted Exploratory Data Analysis on the dataset and categorized our analys
 |     December 7^th^ to 13^th^      | Complete the shiny application with multiple user functionality     |      Antonio       |     Eshaan      |
 |                \-                 | Review the generated plots and shiny integration                    |     Thanoosha      |     Bharath     |
 |                \-                 | Write-up and presentation for the project                           |      Everyone      |    Everyone     |
-
-: {.hover}
 
 ### Repo Organization
 
