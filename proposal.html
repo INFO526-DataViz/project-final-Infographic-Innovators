@@ -4621,7 +4621,7 @@ vertical-align: -.125em;
 <span id="cb2-2"><a href="#cb2-2"></a>flights_ntsb <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;flight_crash_data_NTSB.csv&quot;</span>))</span>
 <span id="cb2-3"><a href="#cb2-3"></a></span>
 <span id="cb2-4"><a href="#cb2-4"></a><span class="co">#selecting columns</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a>flights_ntsb <span class="sc">|&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>flights_ntsb <span class="ot">&lt;-</span> flights_ntsb <span class="sc">|&gt;</span></span>
 <span id="cb2-6"><a href="#cb2-6"></a>  <span class="fu">select</span>(</span>
 <span id="cb2-7"><a href="#cb2-7"></a>    EventType, EventDate,</span>
 <span id="cb2-8"><a href="#cb2-8"></a>    City, State,</span>
@@ -4634,10 +4634,8 @@ vertical-align: -.125em;
 <span id="cb2-15"><a href="#cb2-15"></a>    AirportName, AmateurBuilt,</span>
 <span id="cb2-16"><a href="#cb2-16"></a>    NumberOfEngines, AirCraftDamage,</span>
 <span id="cb2-17"><a href="#cb2-17"></a>    WeatherCondition</span>
-<span id="cb2-18"><a href="#cb2-18"></a>  )</span>
-<span id="cb2-19"><a href="#cb2-19"></a></span>
-<span id="cb2-20"><a href="#cb2-20"></a>flights_ntsb <span class="ot">&lt;-</span> flights_ntsb <span class="sc">|&gt;</span></span>
-<span id="cb2-21"><a href="#cb2-21"></a>  <span class="fu">clean_names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-18"><a href="#cb2-18"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-19"><a href="#cb2-19"></a>  <span class="fu">clean_names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>In preparation for our analysis, we loaded the data and preliminary reviewed its structure and contents. For example, using inline code such as <code>clean_names</code>, <code>diagnose</code>, <code>describe</code>, and <code>formattable</code>. We obtained an overview of the dataset’s variables and initial statistics. This preliminary step confirmed the dataset’s suitability for answering our research questions, which revolve around identifying temporal patterns and finding relations between parameters that effect crashes.</p>
 </section>
@@ -4681,26 +4679,6 @@ unique_rate
 <tbody>
 <tr>
 <td style="text-align:right;">
-ntsb_no
-</td>
-<td style="text-align:right;">
-character
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.000000e+00
-</td>
-<td style="text-align:right;">
-89132
-</td>
-<td style="text-align:right;">
-9.999776e-01
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
 event_type
 </td>
 <td style="text-align:right;">
@@ -4710,33 +4688,13 @@ character
 8
 </td>
 <td style="text-align:right;">
-8.975251e-03
+0.008975251
 </td>
 <td style="text-align:right;">
 3
 </td>
 <td style="text-align:right;">
 3.365719e-05
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-mkey
-</td>
-<td style="text-align:right;">
-numeric
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.000000e+00
-</td>
-<td style="text-align:right;">
-89134
-</td>
-<td style="text-align:right;">
-1.000000e+00
 </td>
 </tr>
 <tr>
@@ -4750,7 +4708,7 @@ POSIXct
 0
 </td>
 <td style="text-align:right;">
-0.000000e+00
+0.000000000
 </td>
 <td style="text-align:right;">
 80322
@@ -4770,7 +4728,7 @@ character
 8
 </td>
 <td style="text-align:right;">
-8.975251e-03
+0.008975251
 </td>
 <td style="text-align:right;">
 19038
@@ -4790,7 +4748,7 @@ character
 155
 </td>
 <td style="text-align:right;">
-1.738955e-01
+0.173895483
 </td>
 <td style="text-align:right;">
 58
@@ -4810,53 +4768,13 @@ character
 0
 </td>
 <td style="text-align:right;">
-0.000000e+00
+0.000000000
 </td>
 <td style="text-align:right;">
 1
 </td>
 <td style="text-align:right;">
 1.121906e-05
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-report_no
-</td>
-<td style="text-align:right;">
-character
-</td>
-<td style="text-align:right;">
-88902
-</td>
-<td style="text-align:right;">
-9.973972e+01
-</td>
-<td style="text-align:right;">
-231
-</td>
-<td style="text-align:right;">
-2.591604e-03
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-n
-</td>
-<td style="text-align:right;">
-character
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-6.731438e-03
-</td>
-<td style="text-align:right;">
-80098
-</td>
-<td style="text-align:right;">
-8.986245e-01
 </td>
 </tr>
 <tr>
@@ -4870,7 +4788,7 @@ logical
 0
 </td>
 <td style="text-align:right;">
-0.000000e+00
+0.000000000
 </td>
 <td style="text-align:right;">
 2
@@ -4890,33 +4808,13 @@ character
 1
 </td>
 <td style="text-align:right;">
-1.121906e-03
+0.001121906
 </td>
 <td style="text-align:right;">
 5
 </td>
 <td style="text-align:right;">
 5.609532e-05
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-original_publish_date
-</td>
-<td style="text-align:right;">
-POSIXct
-</td>
-<td style="text-align:right;">
-12847
-</td>
-<td style="text-align:right;">
-1.441313e+01
-</td>
-<td style="text-align:right;">
-2903
-</td>
-<td style="text-align:right;">
-3.256894e-02
 </td>
 </tr>
 <tr>
@@ -4930,7 +4828,7 @@ character
 126
 </td>
 <td style="text-align:right;">
-1.413602e-01
+0.141360199
 </td>
 <td style="text-align:right;">
 5
@@ -4950,7 +4848,7 @@ numeric
 0
 </td>
 <td style="text-align:right;">
-0.000000e+00
+0.000000000
 </td>
 <td style="text-align:right;">
 52
@@ -4970,7 +4868,7 @@ numeric
 0
 </td>
 <td style="text-align:right;">
-0.000000e+00
+0.000000000
 </td>
 <td style="text-align:right;">
 24
@@ -4990,7 +4888,7 @@ numeric
 0
 </td>
 <td style="text-align:right;">
-0.000000e+00
+0.000000000
 </td>
 <td style="text-align:right;">
 49
@@ -5010,33 +4908,13 @@ character
 29568
 </td>
 <td style="text-align:right;">
-3.317253e+01
+33.172526757
 </td>
 <td style="text-align:right;">
 56119
 </td>
 <td style="text-align:right;">
 6.296026e-01
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-event_id
-</td>
-<td style="text-align:right;">
-character
-</td>
-<td style="text-align:right;">
-81421
-</td>
-<td style="text-align:right;">
-9.134674e+01
-</td>
-<td style="text-align:right;">
-7714
-</td>
-<td style="text-align:right;">
-8.654386e-02
 </td>
 </tr>
 <tr>
@@ -5050,7 +4928,7 @@ numeric
 0
 </td>
 <td style="text-align:right;">
-0.000000e+00
+0.000000000
 </td>
 <td style="text-align:right;">
 61321
@@ -5070,53 +4948,13 @@ numeric
 0
 </td>
 <td style="text-align:right;">
-0.000000e+00
+0.000000000
 </td>
 <td style="text-align:right;">
 62243
 </td>
 <td style="text-align:right;">
 6.983082e-01
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-make
-</td>
-<td style="text-align:right;">
-character
-</td>
-<td style="text-align:right;">
-19
-</td>
-<td style="text-align:right;">
-2.131622e-02
-</td>
-<td style="text-align:right;">
-8997
-</td>
-<td style="text-align:right;">
-1.009379e-01
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-model
-</td>
-<td style="text-align:right;">
-character
-</td>
-<td style="text-align:right;">
-39
-</td>
-<td style="text-align:right;">
-4.375435e-02
-</td>
-<td style="text-align:right;">
-12763
-</td>
-<td style="text-align:right;">
-1.431889e-01
 </td>
 </tr>
 <tr>
@@ -5130,7 +4968,7 @@ character
 13
 </td>
 <td style="text-align:right;">
-1.458478e-02
+0.014584782
 </td>
 <td style="text-align:right;">
 38
@@ -5150,7 +4988,7 @@ character
 40230
 </td>
 <td style="text-align:right;">
-4.513429e+01
+45.134292189
 </td>
 <td style="text-align:right;">
 9656
@@ -5170,7 +5008,7 @@ character
 32675
 </td>
 <td style="text-align:right;">
-3.665829e+01
+36.658289766
 </td>
 <td style="text-align:right;">
 25807
@@ -5190,7 +5028,7 @@ character
 0
 </td>
 <td style="text-align:right;">
-0.000000e+00
+0.000000000
 </td>
 <td style="text-align:right;">
 7
@@ -5210,73 +5048,13 @@ character
 1546
 </td>
 <td style="text-align:right;">
-1.734467e+00
+1.734467207
 </td>
 <td style="text-align:right;">
 40
 </td>
 <td style="text-align:right;">
 4.487625e-04
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-scheduled
-</td>
-<td style="text-align:right;">
-character
-</td>
-<td style="text-align:right;">
-78948
-</td>
-<td style="text-align:right;">
-8.857226e+01
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-4.487625e-05
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-purpose_of_flight
-</td>
-<td style="text-align:right;">
-character
-</td>
-<td style="text-align:right;">
-2970
-</td>
-<td style="text-align:right;">
-3.332062e+00
-</td>
-<td style="text-align:right;">
-132
-</td>
-<td style="text-align:right;">
-1.480916e-03
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-far
-</td>
-<td style="text-align:right;">
-character
-</td>
-<td style="text-align:right;">
-599
-</td>
-<td style="text-align:right;">
-6.720219e-01
-</td>
-<td style="text-align:right;">
-68
-</td>
-<td style="text-align:right;">
-7.628963e-04
 </td>
 </tr>
 <tr>
@@ -5290,7 +5068,7 @@ character
 21
 </td>
 <td style="text-align:right;">
-2.356003e-02
+0.023560033
 </td>
 <td style="text-align:right;">
 29
@@ -5310,133 +5088,13 @@ character
 173
 </td>
 <td style="text-align:right;">
-1.940898e-01
+0.194089797
 </td>
 <td style="text-align:right;">
 7
 </td>
 <td style="text-align:right;">
 7.853344e-05
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-operator
-</td>
-<td style="text-align:right;">
-character
-</td>
-<td style="text-align:right;">
-49541
-</td>
-<td style="text-align:right;">
-5.558036e+01
-</td>
-<td style="text-align:right;">
-34396
-</td>
-<td style="text-align:right;">
-3.858909e-01
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-report_status
-</td>
-<td style="text-align:right;">
-character
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.000000e+00
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-3.365719e-05
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-rep_gen_flag
-</td>
-<td style="text-align:right;">
-logical
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.000000e+00
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-2.243813e-05
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-docket_url
-</td>
-<td style="text-align:right;">
-character
-</td>
-<td style="text-align:right;">
-67918
-</td>
-<td style="text-align:right;">
-7.619764e+01
-</td>
-<td style="text-align:right;">
-21217
-</td>
-<td style="text-align:right;">
-2.380349e-01
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-docket_publish_date
-</td>
-<td style="text-align:right;">
-character
-</td>
-<td style="text-align:right;">
-67918
-</td>
-<td style="text-align:right;">
-7.619764e+01
-</td>
-<td style="text-align:right;">
-18454
-</td>
-<td style="text-align:right;">
-2.070366e-01
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-x38
-</td>
-<td style="text-align:right;">
-logical
-</td>
-<td style="text-align:right;">
-89134
-</td>
-<td style="text-align:right;">
-1.000000e+02
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1.121906e-05
 </td>
 </tr>
 </tbody>
@@ -5541,86 +5199,6 @@ p100
 <tbody>
 <tr>
 <td style="text-align:right;">
-mkey
-</td>
-<td style="text-align:right;">
-89134
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-55806.2415913
-</td>
-<td style="text-align:right;">
-3.601919e+04
-</td>
-<td style="text-align:right;">
-1.206458e+02
-</td>
-<td style="text-align:right;">
-57033.50000
-</td>
-<td style="text-align:right;">
-0.4562199
-</td>
-<td style="text-align:right;">
--0.7658746
-</td>
-<td style="text-align:right;">
-2292
-</td>
-<td style="text-align:right;">
-3202.33
-</td>
-<td style="text-align:right;">
-6830.6500
-</td>
-<td style="text-align:right;">
-11433.3000
-</td>
-<td style="text-align:right;">
-20585.60000
-</td>
-<td style="text-align:right;">
-25193.25
-</td>
-<td style="text-align:right;">
-29857.90000
-</td>
-<td style="text-align:right;">
-39519.20000
-</td>
-<td style="text-align:right;">
-52000.50000
-</td>
-<td style="text-align:right;">
-63033.80000
-</td>
-<td style="text-align:right;">
-73493.10000
-</td>
-<td style="text-align:right;">
-82226.75000
-</td>
-<td style="text-align:right;">
-90689.40000
-</td>
-<td style="text-align:right;">
-104484.70000
-</td>
-<td style="text-align:right;">
-126878.35000
-</td>
-<td style="text-align:right;">
-131513.67000
-</td>
-<td style="text-align:right;">
-1.928810e+05
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
 fatal_injury_count
 </td>
 <td style="text-align:right;">
@@ -5642,10 +5220,10 @@ fatal_injury_count
 0.00000
 </td>
 <td style="text-align:right;">
-65.0525849
+65.05258
 </td>
 <td style="text-align:right;">
-5829.4997911
+5829.500
 </td>
 <td style="text-align:right;">
 0
@@ -5722,10 +5300,10 @@ serious_injury_count
 0.00000
 </td>
 <td style="text-align:right;">
-37.6735358
+37.67354
 </td>
 <td style="text-align:right;">
-3044.1592155
+3044.159
 </td>
 <td style="text-align:right;">
 0
@@ -5802,10 +5380,10 @@ minor_injury_count
 0.00000
 </td>
 <td style="text-align:right;">
-42.2960248
+42.29602
 </td>
 <td style="text-align:right;">
-3134.5922767
+3134.592
 </td>
 <td style="text-align:right;">
 0
@@ -5882,10 +5460,10 @@ latitude
 12.22944
 </td>
 <td style="text-align:right;">
-211.2932523
+211.29325
 </td>
 <td style="text-align:right;">
-44673.9778599
+44673.978
 </td>
 <td style="text-align:right;">
 0
@@ -5962,10 +5540,10 @@ longitude
 34.84990
 </td>
 <td style="text-align:right;">
--149.6523980
+-149.65240
 </td>
 <td style="text-align:right;">
-22435.0280916
+22435.028
 </td>
 <td style="text-align:right;">
 -1004241
@@ -6691,7 +6269,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb5-46"><a href="#cb5-46"></a>flights_ntsb <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;flight_crash_data_NTSB.csv&quot;</span>))</span>
 <span id="cb5-47"><a href="#cb5-47"></a></span>
 <span id="cb5-48"><a href="#cb5-48"></a><span class="co">#selecting columns</span></span>
-<span id="cb5-49"><a href="#cb5-49"></a>flights_ntsb <span class="sc">|&gt;</span></span>
+<span id="cb5-49"><a href="#cb5-49"></a>flights_ntsb <span class="ot">&lt;-</span> flights_ntsb <span class="sc">|&gt;</span></span>
 <span id="cb5-50"><a href="#cb5-50"></a>  <span class="fu">select</span>(</span>
 <span id="cb5-51"><a href="#cb5-51"></a>    EventType, EventDate,</span>
 <span id="cb5-52"><a href="#cb5-52"></a>    City, State,</span>
@@ -6704,154 +6282,152 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb5-59"><a href="#cb5-59"></a>    AirportName, AmateurBuilt,</span>
 <span id="cb5-60"><a href="#cb5-60"></a>    NumberOfEngines, AirCraftDamage,</span>
 <span id="cb5-61"><a href="#cb5-61"></a>    WeatherCondition</span>
-<span id="cb5-62"><a href="#cb5-62"></a>  )</span>
-<span id="cb5-63"><a href="#cb5-63"></a></span>
-<span id="cb5-64"><a href="#cb5-64"></a>flights_ntsb <span class="ot">&lt;-</span> flights_ntsb <span class="sc">|&gt;</span></span>
-<span id="cb5-65"><a href="#cb5-65"></a>  <span class="fu">clean_names</span>()</span>
-<span id="cb5-66"><a href="#cb5-66"></a><span class="in">```</span></span>
+<span id="cb5-62"><a href="#cb5-62"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb5-63"><a href="#cb5-63"></a>  <span class="fu">clean_names</span>()</span>
+<span id="cb5-64"><a href="#cb5-64"></a><span class="in">```</span></span>
+<span id="cb5-65"><a href="#cb5-65"></a></span>
+<span id="cb5-66"><a href="#cb5-66"></a>In preparation for our analysis, we loaded the data and preliminary reviewed its structure and contents. For example, using inline code such as <span class="in">`clean_names`</span>, <span class="in">`diagnose`</span>, <span class="in">`describe`</span>, and <span class="in">`formattable`</span>. We obtained an overview of the dataset&#39;s variables and initial statistics. This preliminary step confirmed the dataset&#39;s suitability for answering our research questions, which revolve around identifying temporal patterns and finding relations between parameters that effect crashes.</span>
 <span id="cb5-67"><a href="#cb5-67"></a></span>
-<span id="cb5-68"><a href="#cb5-68"></a>In preparation for our analysis, we loaded the data and preliminary reviewed its structure and contents. For example, using inline code such as <span class="in">`clean_names`</span>, <span class="in">`diagnose`</span>, <span class="in">`describe`</span>, and <span class="in">`formattable`</span>. We obtained an overview of the dataset&#39;s variables and initial statistics. This preliminary step confirmed the dataset&#39;s suitability for answering our research questions, which revolve around identifying temporal patterns and finding relations between parameters that effect crashes.</span>
+<span id="cb5-68"><a href="#cb5-68"></a><span class="fu">## Background</span></span>
 <span id="cb5-69"><a href="#cb5-69"></a></span>
-<span id="cb5-70"><a href="#cb5-70"></a><span class="fu">## Background</span></span>
+<span id="cb5-70"><a href="#cb5-70"></a>The dataset central to our investigation was procured through a request to the National Transportation Safety Board (<span class="co">[</span><span class="ot">NSTB</span><span class="co">](https://www.ntsb.gov/Pages/AviationQueryV2.aspx)</span>). It encompasses detailed records of aircraft crashes in the U.S. from January 1, 1980, to December 31, 2022. The dataset is structured as a tibble with 89,134 rows and 38 columns, out of which a few unnecessary columns has been removed for our purpose which resulted in a tibble with 89,134 rows and 21 columns. This rich dataset is ideal for our purpose because it enables both time-series, geo-spatial analysis and also other factors that affect the crashes - methods we believe are critical for understanding the dynamics and geo-spatial distribution of aircraft accidents over time.</span>
 <span id="cb5-71"><a href="#cb5-71"></a></span>
-<span id="cb5-72"><a href="#cb5-72"></a>The dataset central to our investigation was procured through a request to the National Transportation Safety Board (<span class="co">[</span><span class="ot">NSTB</span><span class="co">](https://www.ntsb.gov/Pages/AviationQueryV2.aspx)</span>). It encompasses detailed records of aircraft crashes in the U.S. from January 1, 1980, to December 31, 2022. The dataset is structured as a tibble with 89,134 rows and 38 columns, out of which a few unnecessary columns has been removed for our purpose which resulted in a tibble with 89,134 rows and 21 columns. This rich dataset is ideal for our purpose because it enables both time-series, geo-spatial analysis and also other factors that affect the crashes - methods we believe are critical for understanding the dynamics and geo-spatial distribution of aircraft accidents over time.</span>
-<span id="cb5-73"><a href="#cb5-73"></a></span>
-<span id="cb5-74"><a href="#cb5-74"></a><span class="in">```{r diagnose_flights, message=FALSE}</span></span>
-<span id="cb5-75"><a href="#cb5-75"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb5-76"><a href="#cb5-76"></a><span class="co">#| code-summary: &quot;Flights Report Data Diagnosis Code&quot;</span></span>
+<span id="cb5-72"><a href="#cb5-72"></a><span class="in">```{r diagnose_flights, message=FALSE}</span></span>
+<span id="cb5-73"><a href="#cb5-73"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb5-74"><a href="#cb5-74"></a><span class="co">#| code-summary: &quot;Flights Report Data Diagnosis Code&quot;</span></span>
+<span id="cb5-75"><a href="#cb5-75"></a></span>
+<span id="cb5-76"><a href="#cb5-76"></a><span class="co"># Getting basic information about the dataset</span></span>
 <span id="cb5-77"><a href="#cb5-77"></a></span>
-<span id="cb5-78"><a href="#cb5-78"></a><span class="co"># Getting basic information about the dataset</span></span>
-<span id="cb5-79"><a href="#cb5-79"></a></span>
-<span id="cb5-80"><a href="#cb5-80"></a>flights_ntsb <span class="sc">|&gt;</span></span>
-<span id="cb5-81"><a href="#cb5-81"></a>  <span class="fu">diagnose</span>() <span class="sc">|&gt;</span></span>
-<span id="cb5-82"><a href="#cb5-82"></a>  <span class="fu">formattable</span>()</span>
-<span id="cb5-83"><a href="#cb5-83"></a><span class="in">```</span></span>
-<span id="cb5-84"><a href="#cb5-84"></a></span>
-<span id="cb5-85"><a href="#cb5-85"></a><span class="in">```{r describe_flights, message=FALSE}</span></span>
-<span id="cb5-86"><a href="#cb5-86"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb5-87"><a href="#cb5-87"></a><span class="co">#| code-summary: &quot;Flights Report Data Describe Code&quot;</span></span>
+<span id="cb5-78"><a href="#cb5-78"></a>flights_ntsb <span class="sc">|&gt;</span></span>
+<span id="cb5-79"><a href="#cb5-79"></a>  <span class="fu">diagnose</span>() <span class="sc">|&gt;</span></span>
+<span id="cb5-80"><a href="#cb5-80"></a>  <span class="fu">formattable</span>()</span>
+<span id="cb5-81"><a href="#cb5-81"></a><span class="in">```</span></span>
+<span id="cb5-82"><a href="#cb5-82"></a></span>
+<span id="cb5-83"><a href="#cb5-83"></a><span class="in">```{r describe_flights, message=FALSE}</span></span>
+<span id="cb5-84"><a href="#cb5-84"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb5-85"><a href="#cb5-85"></a><span class="co">#| code-summary: &quot;Flights Report Data Describe Code&quot;</span></span>
+<span id="cb5-86"><a href="#cb5-86"></a></span>
+<span id="cb5-87"><a href="#cb5-87"></a><span class="co"># Getting basic statistical information about the dataset</span></span>
 <span id="cb5-88"><a href="#cb5-88"></a></span>
-<span id="cb5-89"><a href="#cb5-89"></a><span class="co"># Getting basic statistical information about the dataset</span></span>
-<span id="cb5-90"><a href="#cb5-90"></a></span>
-<span id="cb5-91"><a href="#cb5-91"></a>flights_ntsb <span class="sc">|&gt;</span></span>
-<span id="cb5-92"><a href="#cb5-92"></a>  <span class="fu">describe</span>() <span class="sc">|&gt;</span></span>
-<span id="cb5-93"><a href="#cb5-93"></a>  <span class="fu">formattable</span>()</span>
-<span id="cb5-94"><a href="#cb5-94"></a><span class="in">```</span></span>
+<span id="cb5-89"><a href="#cb5-89"></a>flights_ntsb <span class="sc">|&gt;</span></span>
+<span id="cb5-90"><a href="#cb5-90"></a>  <span class="fu">describe</span>() <span class="sc">|&gt;</span></span>
+<span id="cb5-91"><a href="#cb5-91"></a>  <span class="fu">formattable</span>()</span>
+<span id="cb5-92"><a href="#cb5-92"></a><span class="in">```</span></span>
+<span id="cb5-93"><a href="#cb5-93"></a></span>
+<span id="cb5-94"><a href="#cb5-94"></a><span class="fu">## Value</span></span>
 <span id="cb5-95"><a href="#cb5-95"></a></span>
-<span id="cb5-96"><a href="#cb5-96"></a><span class="fu">## Value</span></span>
+<span id="cb5-96"><a href="#cb5-96"></a>Our project&#39;s primary goal is to conduct an in-depth analysis of aircraft crash incidents within the United States to uncover temporal trends and geographical patterns. This objective is fueled by our diverse personal experiences with air travel, which range from enthusiasm to apprehension. This stems from talking about places we&#39;ve traveled to, we chose the data as some of us are more comfortable with flying than others. We decided by looking at aircraft crash data that it could be a chance to get more informed about aircraft crashes within the United States. By examining the data, we hope to gain a clearer understanding of the factors contributing to these incidents and alleviate some of the concerns regarding aviation safety. We wanted do time series analysis as well as geo-spatial analysis and this data presented itself as a great opportunity to do both. We intend to design a shiny app so that we can display the a time series change of crashes throughout the years.</span>
 <span id="cb5-97"><a href="#cb5-97"></a></span>
-<span id="cb5-98"><a href="#cb5-98"></a>Our project&#39;s primary goal is to conduct an in-depth analysis of aircraft crash incidents within the United States to uncover temporal trends and geographical patterns. This objective is fueled by our diverse personal experiences with air travel, which range from enthusiasm to apprehension. This stems from talking about places we&#39;ve traveled to, we chose the data as some of us are more comfortable with flying than others. We decided by looking at aircraft crash data that it could be a chance to get more informed about aircraft crashes within the United States. By examining the data, we hope to gain a clearer understanding of the factors contributing to these incidents and alleviate some of the concerns regarding aviation safety. We wanted do time series analysis as well as geo-spatial analysis and this data presented itself as a great opportunity to do both. We intend to design a shiny app so that we can display the a time series change of crashes throughout the years.</span>
+<span id="cb5-98"><a href="#cb5-98"></a><span class="fu">## Problem Statement</span></span>
 <span id="cb5-99"><a href="#cb5-99"></a></span>
-<span id="cb5-100"><a href="#cb5-100"></a><span class="fu">## Problem Statement</span></span>
+<span id="cb5-100"><a href="#cb5-100"></a>We conducted Exploratory Data Analysis on the dataset and categorized our analysis into three main areas:</span>
 <span id="cb5-101"><a href="#cb5-101"></a></span>
-<span id="cb5-102"><a href="#cb5-102"></a>We conducted Exploratory Data Analysis on the dataset and categorized our analysis into three main areas:</span>
-<span id="cb5-103"><a href="#cb5-103"></a></span>
-<span id="cb5-104"><a href="#cb5-104"></a><span class="ss">-   </span>Examining Aircraft Crashes, with a focus on their locations, timings, and consequences.</span>
-<span id="cb5-105"><a href="#cb5-105"></a><span class="ss">-   </span>Investigating the Causes of Crashes.</span>
-<span id="cb5-106"><a href="#cb5-106"></a><span class="ss">-   </span>Assessing the Influence of Weather Conditions on Crashes.</span>
+<span id="cb5-102"><a href="#cb5-102"></a><span class="ss">-   </span>Examining Aircraft Crashes, with a focus on their locations, timings, and consequences.</span>
+<span id="cb5-103"><a href="#cb5-103"></a><span class="ss">-   </span>Investigating the Causes of Crashes.</span>
+<span id="cb5-104"><a href="#cb5-104"></a><span class="ss">-   </span>Assessing the Influence of Weather Conditions on Crashes.</span>
+<span id="cb5-105"><a href="#cb5-105"></a></span>
+<span id="cb5-106"><a href="#cb5-106"></a><span class="fu">## Plan of Action</span></span>
 <span id="cb5-107"><a href="#cb5-107"></a></span>
-<span id="cb5-108"><a href="#cb5-108"></a><span class="fu">## Plan of Action</span></span>
+<span id="cb5-108"><a href="#cb5-108"></a><span class="fu">### Examining Aircraft Crashes, with a focus on their locations, timings, and consequences</span></span>
 <span id="cb5-109"><a href="#cb5-109"></a></span>
-<span id="cb5-110"><a href="#cb5-110"></a><span class="fu">### Examining Aircraft Crashes, with a focus on their locations, timings, and consequences</span></span>
+<span id="cb5-110"><a href="#cb5-110"></a><span class="ss">1.  </span>**Heat-Map - An Animated Heat-map of Aircraft Crashes in the United States Over Time:**</span>
 <span id="cb5-111"><a href="#cb5-111"></a></span>
-<span id="cb5-112"><a href="#cb5-112"></a><span class="ss">1.  </span>**Heat-Map - An Animated Heat-map of Aircraft Crashes in the United States Over Time:**</span>
+<span id="cb5-112"><a href="#cb5-112"></a>    The animated heat-map provides a dynamic and visually compelling representation of aircraft crashes across the United States. This data visualization leverages the latitude and longitude coordinates of crash locations and spans multiple years to reveal temporal patterns. This heat-map not only facilitates the identification of regions with higher crash frequencies but also offers insights into the evolving dynamics of air travel safety over time.</span>
 <span id="cb5-113"><a href="#cb5-113"></a></span>
-<span id="cb5-114"><a href="#cb5-114"></a>    The animated heat-map provides a dynamic and visually compelling representation of aircraft crashes across the United States. This data visualization leverages the latitude and longitude coordinates of crash locations and spans multiple years to reveal temporal patterns. This heat-map not only facilitates the identification of regions with higher crash frequencies but also offers insights into the evolving dynamics of air travel safety over time.</span>
+<span id="cb5-114"><a href="#cb5-114"></a><span class="ss">2.  </span>**Time-series Plot- Analysis of Aircraft Crashes and Fatalities:**</span>
 <span id="cb5-115"><a href="#cb5-115"></a></span>
-<span id="cb5-116"><a href="#cb5-116"></a><span class="ss">2.  </span>**Time-series Plot- Analysis of Aircraft Crashes and Fatalities:**</span>
+<span id="cb5-116"><a href="#cb5-116"></a>    We visualize the trend in aircraft crashes historically. We are going to plot this trend based on different aspects like total fatalities which is represented using column <span class="in">`fatal_injury_count`</span>, <span class="in">`serious_injury_count`</span> and <span class="in">`minor_injury_count`</span>. Here they classify a particular injury count as a <span class="in">`minor`</span>, <span class="in">`serious`</span> and <span class="in">`fatal`</span> injury based on the level of casualties that occurred in the crash. We also would like to highlight few notable airplane crashes in the history in our time-series analysis.</span>
 <span id="cb5-117"><a href="#cb5-117"></a></span>
-<span id="cb5-118"><a href="#cb5-118"></a>    We visualize the trend in aircraft crashes historically. We are going to plot this trend based on different aspects like total fatalities which is represented using column <span class="in">`fatal_injury_count`</span>, <span class="in">`serious_injury_count`</span> and <span class="in">`minor_injury_count`</span>. Here they classify a particular injury count as a <span class="in">`minor`</span>, <span class="in">`serious`</span> and <span class="in">`fatal`</span> injury based on the level of casualties that occurred in the crash. We also would like to highlight few notable airplane crashes in the history in our time-series analysis.</span>
+<span id="cb5-118"><a href="#cb5-118"></a><span class="ss">3.  </span>**Radial bar Plot - A Radial Perspective on Aircraft Crashes During Flight Phases:**</span>
 <span id="cb5-119"><a href="#cb5-119"></a></span>
-<span id="cb5-120"><a href="#cb5-120"></a><span class="ss">3.  </span>**Radial bar Plot - A Radial Perspective on Aircraft Crashes During Flight Phases:**</span>
+<span id="cb5-120"><a href="#cb5-120"></a>    We will be representing the count of crashes on the x-axis and the phases of flight (<span class="in">`takeoff, landing`</span> etc,.) on the y-axis in a circular manner. We can transform the bar plot into a radial form, emphasizing the distribution of crashes during these critical flight stages. This visualization technique allows for a quick understanding of the relative frequency of crashes during takeoff and landing, enabling insights into the safety challenges faced during these flight phases.</span>
 <span id="cb5-121"><a href="#cb5-121"></a></span>
-<span id="cb5-122"><a href="#cb5-122"></a>    We will be representing the count of crashes on the x-axis and the phases of flight (<span class="in">`takeoff, landing`</span> etc,.) on the y-axis in a circular manner. We can transform the bar plot into a radial form, emphasizing the distribution of crashes during these critical flight stages. This visualization technique allows for a quick understanding of the relative frequency of crashes during takeoff and landing, enabling insights into the safety challenges faced during these flight phases.</span>
+<span id="cb5-122"><a href="#cb5-122"></a><span class="fu">### Analysis of Causes of Crashes</span></span>
 <span id="cb5-123"><a href="#cb5-123"></a></span>
-<span id="cb5-124"><a href="#cb5-124"></a><span class="fu">### Analysis of Causes of Crashes</span></span>
+<span id="cb5-124"><a href="#cb5-124"></a><span class="ss">1.  </span>**Bar plot - Common Causes of Aircraft Crashes:**</span>
 <span id="cb5-125"><a href="#cb5-125"></a></span>
-<span id="cb5-126"><a href="#cb5-126"></a><span class="ss">1.  </span>**Bar plot - Common Causes of Aircraft Crashes:**</span>
+<span id="cb5-126"><a href="#cb5-126"></a>    The bar plot offers an overview of the most common causes of aircraft crashes throughout the United States. Leveraging the <span class="in">`probable_cause`</span> column, which contains concise descriptions of crash events, the bar plot employs text summarization techniques to extract and categorize these causes into manageable groups. This visualization provides a straightforward and insightful representation of the key factors contributing to aviation incidents, aiding in the identification of the primary causes that warrant further investigation.</span>
 <span id="cb5-127"><a href="#cb5-127"></a></span>
-<span id="cb5-128"><a href="#cb5-128"></a>    The bar plot offers an overview of the most common causes of aircraft crashes throughout the United States. Leveraging the <span class="in">`probable_cause`</span> column, which contains concise descriptions of crash events, the bar plot employs text summarization techniques to extract and categorize these causes into manageable groups. This visualization provides a straightforward and insightful representation of the key factors contributing to aviation incidents, aiding in the identification of the primary causes that warrant further investigation.</span>
+<span id="cb5-128"><a href="#cb5-128"></a><span class="ss">2.  </span>**Stacked Area Chart - Causes and Severity of Aircraft Crashes:**</span>
 <span id="cb5-129"><a href="#cb5-129"></a></span>
-<span id="cb5-130"><a href="#cb5-130"></a><span class="ss">2.  </span>**Stacked Area Chart - Causes and Severity of Aircraft Crashes:**</span>
+<span id="cb5-130"><a href="#cb5-130"></a>    The stacked area chart delves into the relationship between specific crash causes and the severity of injuries incurred. Drawing from the <span class="in">`probable_cause`</span> column, as well as the <span class="in">`severity`</span> and <span class="in">`event_date`</span> columns, this visualization quantifies the number of crashes attributed to each cause while distinguishing between varying levels of severity. By visualizing this data in a stacked area format, it becomes evident which causes are associated with more severe injuries and which contribute to milder consequences.</span>
 <span id="cb5-131"><a href="#cb5-131"></a></span>
-<span id="cb5-132"><a href="#cb5-132"></a>    The stacked area chart delves into the relationship between specific crash causes and the severity of injuries incurred. Drawing from the <span class="in">`probable_cause`</span> column, as well as the <span class="in">`severity`</span> and <span class="in">`event_date`</span> columns, this visualization quantifies the number of crashes attributed to each cause while distinguishing between varying levels of severity. By visualizing this data in a stacked area format, it becomes evident which causes are associated with more severe injuries and which contribute to milder consequences.</span>
+<span id="cb5-132"><a href="#cb5-132"></a><span class="fu">### Assessing the Influence of Weather Conditions on Crashes</span></span>
 <span id="cb5-133"><a href="#cb5-133"></a></span>
-<span id="cb5-134"><a href="#cb5-134"></a><span class="fu">### Assessing the Influence of Weather Conditions on Crashes</span></span>
+<span id="cb5-134"><a href="#cb5-134"></a><span class="ss">1.  </span>**Radar Plot - Analysis of Aircraft Crashes by Month and Weather Conditions:**</span>
 <span id="cb5-135"><a href="#cb5-135"></a></span>
-<span id="cb5-136"><a href="#cb5-136"></a><span class="ss">1.  </span>**Radar Plot - Analysis of Aircraft Crashes by Month and Weather Conditions:**</span>
+<span id="cb5-136"><a href="#cb5-136"></a>    Using radar plot we would like to display multiple weather conditions on the axes of the plot, while the spokes represent different months. Each radar plot point signifies the frequency of crashes occurring in a specific month under a particular weather condition. This comprehensive visualization enables a quick assessment of the relationship between weather conditions, crash occurrences, and the month when the crash has occurred.</span>
 <span id="cb5-137"><a href="#cb5-137"></a></span>
-<span id="cb5-138"><a href="#cb5-138"></a>    Using radar plot we would like to display multiple weather conditions on the axes of the plot, while the spokes represent different months. Each radar plot point signifies the frequency of crashes occurring in a specific month under a particular weather condition. This comprehensive visualization enables a quick assessment of the relationship between weather conditions, crash occurrences, and the month when the crash has occurred.</span>
+<span id="cb5-138"><a href="#cb5-138"></a><span class="fu">## Variables of focus for both questions</span></span>
 <span id="cb5-139"><a href="#cb5-139"></a></span>
-<span id="cb5-140"><a href="#cb5-140"></a><span class="fu">## Variables of focus for both questions</span></span>
-<span id="cb5-141"><a href="#cb5-141"></a></span>
-<span id="cb5-142"><a href="#cb5-142"></a>| Variable             | Description                                                                                |</span>
-<span id="cb5-143"><a href="#cb5-143"></a>|--------------------------|----------------------------------------------|</span>
-<span id="cb5-144"><a href="#cb5-144"></a>| event_type           | Type of event - accident, incident or occurrence                                           |</span>
-<span id="cb5-145"><a href="#cb5-145"></a>| event_date           | Date time of when the event has occurred                                                   |</span>
-<span id="cb5-146"><a href="#cb5-146"></a>| city                 | The city or place location closest to the site of the event                                |</span>
-<span id="cb5-147"><a href="#cb5-147"></a>| state                | The state in which the site of the event is present                                        |</span>
-<span id="cb5-148"><a href="#cb5-148"></a>| highest_injury_level | Indicate the highest level of injury among all injuries sustained as a result of the event |</span>
-<span id="cb5-149"><a href="#cb5-149"></a>| fatal_injury_count   | The total number of fatal injuries from an event                                           |</span>
-<span id="cb5-150"><a href="#cb5-150"></a>| serious_injury_count | The total number of serious injuries from an event                                         |</span>
-<span id="cb5-151"><a href="#cb5-151"></a>| minor_injury_count   | The total number of minor injuries from an event                                           |</span>
-<span id="cb5-152"><a href="#cb5-152"></a>| probable_cause       | The probable cause for the aircraft crash as per the NTSB report                           |</span>
-<span id="cb5-153"><a href="#cb5-153"></a>| latitude             | Latitude for the event site in degrees and decimal degrees.                                |</span>
-<span id="cb5-154"><a href="#cb5-154"></a>| longitude            | Longitude for the event site in degrees and decimal degrees.                               |</span>
-<span id="cb5-155"><a href="#cb5-155"></a>| weather_condition    | The basic weather conditions at the time of the event                                      |</span>
+<span id="cb5-140"><a href="#cb5-140"></a>| Variable             | Description                                                                                |</span>
+<span id="cb5-141"><a href="#cb5-141"></a>|--------------------------|----------------------------------------------|</span>
+<span id="cb5-142"><a href="#cb5-142"></a>| event_type           | Type of event - accident, incident or occurrence                                           |</span>
+<span id="cb5-143"><a href="#cb5-143"></a>| event_date           | Date time of when the event has occurred                                                   |</span>
+<span id="cb5-144"><a href="#cb5-144"></a>| city                 | The city or place location closest to the site of the event                                |</span>
+<span id="cb5-145"><a href="#cb5-145"></a>| state                | The state in which the site of the event is present                                        |</span>
+<span id="cb5-146"><a href="#cb5-146"></a>| highest_injury_level | Indicate the highest level of injury among all injuries sustained as a result of the event |</span>
+<span id="cb5-147"><a href="#cb5-147"></a>| fatal_injury_count   | The total number of fatal injuries from an event                                           |</span>
+<span id="cb5-148"><a href="#cb5-148"></a>| serious_injury_count | The total number of serious injuries from an event                                         |</span>
+<span id="cb5-149"><a href="#cb5-149"></a>| minor_injury_count   | The total number of minor injuries from an event                                           |</span>
+<span id="cb5-150"><a href="#cb5-150"></a>| probable_cause       | The probable cause for the aircraft crash as per the NTSB report                           |</span>
+<span id="cb5-151"><a href="#cb5-151"></a>| latitude             | Latitude for the event site in degrees and decimal degrees.                                |</span>
+<span id="cb5-152"><a href="#cb5-152"></a>| longitude            | Longitude for the event site in degrees and decimal degrees.                               |</span>
+<span id="cb5-153"><a href="#cb5-153"></a>| weather_condition    | The basic weather conditions at the time of the event                                      |</span>
+<span id="cb5-154"><a href="#cb5-154"></a></span>
+<span id="cb5-155"><a href="#cb5-155"></a>: {.hover}</span>
 <span id="cb5-156"><a href="#cb5-156"></a></span>
-<span id="cb5-157"><a href="#cb5-157"></a>: {.hover}</span>
+<span id="cb5-157"><a href="#cb5-157"></a><span class="fu">## Implementation</span></span>
 <span id="cb5-158"><a href="#cb5-158"></a></span>
-<span id="cb5-159"><a href="#cb5-159"></a><span class="fu">## Implementation</span></span>
+<span id="cb5-159"><a href="#cb5-159"></a><span class="fu">### Weekly Plan</span></span>
 <span id="cb5-160"><a href="#cb5-160"></a></span>
-<span id="cb5-161"><a href="#cb5-161"></a><span class="fu">### Weekly Plan</span></span>
-<span id="cb5-162"><a href="#cb5-162"></a></span>
-<span id="cb5-163"><a href="#cb5-163"></a>|               Week                | Weekly Tasks                                                        | Persons in Charge  |     Backup      |</span>
-<span id="cb5-164"><a href="#cb5-164"></a>|:----------------:|-------------------|:----------------:|:----------------:|</span>
-<span id="cb5-165"><a href="#cb5-165"></a>|       until November 8^th^        | Explore and finalize the data set and the problem statements        |      Everyone      |    Everyone     |</span>
-<span id="cb5-166"><a href="#cb5-166"></a>|                <span class="sc">\-</span>                 | Complete the proposal and assign some high-level tasks              |      Everyone      |    Everyone     |</span>
-<span id="cb5-167"><a href="#cb5-167"></a>|     November 9^th^ to 15^th^      | Getting to know about Shiny application                             |      Antonio       |     Bharath     |</span>
-<span id="cb5-168"><a href="#cb5-168"></a>|                <span class="sc">\-</span>                 | Data cleaning and Data pre-processing                               |     Thanoosha      |     Eshaan      |</span>
-<span id="cb5-169"><a href="#cb5-169"></a>|                <span class="sc">\-</span>                 | Question specific exploration and data categorization               | Thanoosha, Bharath | Antonio, Eshaan |</span>
-<span id="cb5-170"><a href="#cb5-170"></a>|     November 16^th^ to 22^nd^     | Generating plots for Heat-Map and Time-Series                       |  Antonio, Bharath  |     Eshaan      |</span>
-<span id="cb5-171"><a href="#cb5-171"></a>|                <span class="sc">\-</span>                 | Generating plots for Radial bar Plot and Bar Plot                   |  Eshaan, Antonio   |    Thanoosha    |</span>
-<span id="cb5-172"><a href="#cb5-172"></a>|                <span class="sc">\-</span>                 | Generating plots for Stacked Area Chart and Radar Plot              |     Thanoosha      |     Bharath     |</span>
-<span id="cb5-173"><a href="#cb5-173"></a>|                <span class="sc">\-</span>                 | Exploring on how to integrate our specific visualizations and shiny |       Eshaan       |     Antonio     |</span>
-<span id="cb5-174"><a href="#cb5-174"></a>|     November 23^rd^ to 29^th^     | Generating remaining parts of the plots for all the plots           |      Everyone      |    Everyone     |</span>
-<span id="cb5-175"><a href="#cb5-175"></a>|                <span class="sc">\-</span>                 | Improving the generated plots                                       |      Bharath       |    Thanoosha    |</span>
-<span id="cb5-176"><a href="#cb5-176"></a>|                <span class="sc">\-</span>                 | Start integrating shiny and our visualizations                      |       Eshaan       |     Antonio     |</span>
-<span id="cb5-177"><a href="#cb5-177"></a>| November 30^th^ to December 6^th^ | Refining the code for code review with comments                     |      Everyone      |    Everyone     |</span>
-<span id="cb5-178"><a href="#cb5-178"></a>|                <span class="sc">\-</span>                 | Continue with the integration of shiny and our plots                |      Bharath       |    Thanoosha    |</span>
-<span id="cb5-179"><a href="#cb5-179"></a>|     December 7^th^ to 13^th^      | Complete the shiny application with multiple user functionality     |      Antonio       |     Eshaan      |</span>
-<span id="cb5-180"><a href="#cb5-180"></a>|                <span class="sc">\-</span>                 | Review the generated plots and shiny integration                    |     Thanoosha      |     Bharath     |</span>
-<span id="cb5-181"><a href="#cb5-181"></a>|                <span class="sc">\-</span>                 | Write-up and presentation for the project                           |      Everyone      |    Everyone     |</span>
+<span id="cb5-161"><a href="#cb5-161"></a>|               Week                | Weekly Tasks                                                        | Persons in Charge  |     Backup      |</span>
+<span id="cb5-162"><a href="#cb5-162"></a>|:----------------:|-------------------|:----------------:|:----------------:|</span>
+<span id="cb5-163"><a href="#cb5-163"></a>|       until November 8^th^        | Explore and finalize the data set and the problem statements        |      Everyone      |    Everyone     |</span>
+<span id="cb5-164"><a href="#cb5-164"></a>|                <span class="sc">\-</span>                 | Complete the proposal and assign some high-level tasks              |      Everyone      |    Everyone     |</span>
+<span id="cb5-165"><a href="#cb5-165"></a>|     November 9^th^ to 15^th^      | Getting to know about Shiny application                             |      Antonio       |     Bharath     |</span>
+<span id="cb5-166"><a href="#cb5-166"></a>|                <span class="sc">\-</span>                 | Data cleaning and Data pre-processing                               |     Thanoosha      |     Eshaan      |</span>
+<span id="cb5-167"><a href="#cb5-167"></a>|                <span class="sc">\-</span>                 | Question specific exploration and data categorization               | Thanoosha, Bharath | Antonio, Eshaan |</span>
+<span id="cb5-168"><a href="#cb5-168"></a>|     November 16^th^ to 22^nd^     | Generating plots for Heat-Map and Time-Series                       |  Antonio, Bharath  |     Eshaan      |</span>
+<span id="cb5-169"><a href="#cb5-169"></a>|                <span class="sc">\-</span>                 | Generating plots for Radial bar Plot and Bar Plot                   |  Eshaan, Antonio   |    Thanoosha    |</span>
+<span id="cb5-170"><a href="#cb5-170"></a>|                <span class="sc">\-</span>                 | Generating plots for Stacked Area Chart and Radar Plot              |     Thanoosha      |     Bharath     |</span>
+<span id="cb5-171"><a href="#cb5-171"></a>|                <span class="sc">\-</span>                 | Exploring on how to integrate our specific visualizations and shiny |       Eshaan       |     Antonio     |</span>
+<span id="cb5-172"><a href="#cb5-172"></a>|     November 23^rd^ to 29^th^     | Generating remaining parts of the plots for all the plots           |      Everyone      |    Everyone     |</span>
+<span id="cb5-173"><a href="#cb5-173"></a>|                <span class="sc">\-</span>                 | Improving the generated plots                                       |      Bharath       |    Thanoosha    |</span>
+<span id="cb5-174"><a href="#cb5-174"></a>|                <span class="sc">\-</span>                 | Start integrating shiny and our visualizations                      |       Eshaan       |     Antonio     |</span>
+<span id="cb5-175"><a href="#cb5-175"></a>| November 30^th^ to December 6^th^ | Refining the code for code review with comments                     |      Everyone      |    Everyone     |</span>
+<span id="cb5-176"><a href="#cb5-176"></a>|                <span class="sc">\-</span>                 | Continue with the integration of shiny and our plots                |      Bharath       |    Thanoosha    |</span>
+<span id="cb5-177"><a href="#cb5-177"></a>|     December 7^th^ to 13^th^      | Complete the shiny application with multiple user functionality     |      Antonio       |     Eshaan      |</span>
+<span id="cb5-178"><a href="#cb5-178"></a>|                <span class="sc">\-</span>                 | Review the generated plots and shiny integration                    |     Thanoosha      |     Bharath     |</span>
+<span id="cb5-179"><a href="#cb5-179"></a>|                <span class="sc">\-</span>                 | Write-up and presentation for the project                           |      Everyone      |    Everyone     |</span>
+<span id="cb5-180"><a href="#cb5-180"></a></span>
+<span id="cb5-181"><a href="#cb5-181"></a>: {.hover}</span>
 <span id="cb5-182"><a href="#cb5-182"></a></span>
-<span id="cb5-183"><a href="#cb5-183"></a>: {.hover}</span>
+<span id="cb5-183"><a href="#cb5-183"></a><span class="fu">### Repo Organization</span></span>
 <span id="cb5-184"><a href="#cb5-184"></a></span>
-<span id="cb5-185"><a href="#cb5-185"></a><span class="fu">### Repo Organization</span></span>
+<span id="cb5-185"><a href="#cb5-185"></a>The following are the folders involved in the Project repository.</span>
 <span id="cb5-186"><a href="#cb5-186"></a></span>
-<span id="cb5-187"><a href="#cb5-187"></a>The following are the folders involved in the Project repository.</span>
+<span id="cb5-187"><a href="#cb5-187"></a><span class="ss">-   </span>**&#39;data/&#39;:** Used for storing any necessary data files for the project, such as input files.</span>
 <span id="cb5-188"><a href="#cb5-188"></a></span>
-<span id="cb5-189"><a href="#cb5-189"></a><span class="ss">-   </span>**&#39;data/&#39;:** Used for storing any necessary data files for the project, such as input files.</span>
+<span id="cb5-189"><a href="#cb5-189"></a><span class="ss">-   </span>**&#39;images/&#39;:** Used for storing image files used in the project.</span>
 <span id="cb5-190"><a href="#cb5-190"></a></span>
-<span id="cb5-191"><a href="#cb5-191"></a><span class="ss">-   </span>**&#39;images/&#39;:** Used for storing image files used in the project.</span>
+<span id="cb5-191"><a href="#cb5-191"></a><span class="ss">-   </span>**&#39;presentation_files/&#39;:** Folder for having presentation related files.</span>
 <span id="cb5-192"><a href="#cb5-192"></a></span>
-<span id="cb5-193"><a href="#cb5-193"></a><span class="ss">-   </span>**&#39;presentation_files/&#39;:** Folder for having presentation related files.</span>
+<span id="cb5-193"><a href="#cb5-193"></a><span class="ss">-   </span>**&#39;\_extra/&#39;:** Used to brainstorm our analysis which won&#39;t impact our project workflow.</span>
 <span id="cb5-194"><a href="#cb5-194"></a></span>
-<span id="cb5-195"><a href="#cb5-195"></a><span class="ss">-   </span>**&#39;\_extra/&#39;:** Used to brainstorm our analysis which won&#39;t impact our project workflow.</span>
+<span id="cb5-195"><a href="#cb5-195"></a><span class="ss">-   </span>**&#39;\_freeze/&#39;:** This folder is used to store the generated files during the build process. These files represent the frozen state of the website at a specific point in time.</span>
 <span id="cb5-196"><a href="#cb5-196"></a></span>
-<span id="cb5-197"><a href="#cb5-197"></a><span class="ss">-   </span>**&#39;\_freeze/&#39;:** This folder is used to store the generated files during the build process. These files represent the frozen state of the website at a specific point in time.</span>
+<span id="cb5-197"><a href="#cb5-197"></a><span class="ss">-   </span>**&#39;\_site/&#39;:** Folder used to store the generated static website files after the site generator processes the quarto document.</span>
 <span id="cb5-198"><a href="#cb5-198"></a></span>
-<span id="cb5-199"><a href="#cb5-199"></a><span class="ss">-   </span>**&#39;\_site/&#39;:** Folder used to store the generated static website files after the site generator processes the quarto document.</span>
+<span id="cb5-199"><a href="#cb5-199"></a><span class="ss">-   </span>**&#39;.github/&#39;:** Folder for storing github templates and workflow.</span>
 <span id="cb5-200"><a href="#cb5-200"></a></span>
-<span id="cb5-201"><a href="#cb5-201"></a><span class="ss">-   </span>**&#39;.github/&#39;:** Folder for storing github templates and workflow.</span>
+<span id="cb5-201"><a href="#cb5-201"></a>We will be creating few folders inside <span class="in">`images/`</span> folder for storing question specific images and presentation related images which are generated through out the plot. We will be creating <span class="in">`images/Q1`</span>, <span class="in">`images/Q2`</span> and <span class="in">`images/Presentation`</span> for those respective files.</span>
 <span id="cb5-202"><a href="#cb5-202"></a></span>
-<span id="cb5-203"><a href="#cb5-203"></a>We will be creating few folders inside <span class="in">`images/`</span> folder for storing question specific images and presentation related images which are generated through out the plot. We will be creating <span class="in">`images/Q1`</span>, <span class="in">`images/Q2`</span> and <span class="in">`images/Presentation`</span> for those respective files.</span>
-<span id="cb5-204"><a href="#cb5-204"></a></span>
-<span id="cb5-205"><a href="#cb5-205"></a>::: callout-note</span>
-<span id="cb5-206"><a href="#cb5-206"></a><span class="fu">## Note:</span></span>
-<span id="cb5-207"><a href="#cb5-207"></a></span>
-<span id="cb5-208"><a href="#cb5-208"></a>These are the planned approaches, and we intend to explore and solve the problem statement which we came up with. Parts of our approach might change in the final implementation.</span>
-<span id="cb5-209"><a href="#cb5-209"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-203"><a href="#cb5-203"></a>::: callout-note</span>
+<span id="cb5-204"><a href="#cb5-204"></a><span class="fu">## Note:</span></span>
+<span id="cb5-205"><a href="#cb5-205"></a></span>
+<span id="cb5-206"><a href="#cb5-206"></a>These are the planned approaches, and we intend to explore and solve the problem statement which we came up with. Parts of our approach might change in the final implementation.</span>
+<span id="cb5-207"><a href="#cb5-207"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
