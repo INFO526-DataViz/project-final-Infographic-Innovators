@@ -1,4 +1,4 @@
-# Comprehensive Analysis of Aerial Accidents Across America by Aircrafts
+# From Takeoff to Touchdown: Dissecting Data on Air Disasters
 
 This project was developed by **Inforgraphic Innovators.** For [INFO 526 - Data Analysis & Visualization](#0) at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.
 
