@@ -50,7 +50,7 @@ flights_ntsb <- flights_ntsb |>
   select(
     EventType, EventDate,
     City, State,
-    Country, HasSafetyRec,
+    HasSafetyRec,
     ReportType, HighestInjuryLevel,
     FatalInjuryCount, SeriousInjuryCount,
     MinorInjuryCount, ProbableCause,
@@ -61,13 +61,14 @@ flights_ntsb <- flights_ntsb |>
     WeatherCondition
   ) |>
   clean_names()
+flights_ntsb
 ```
 
 In preparation for our analysis, we loaded the data and preliminary reviewed its structure and contents. For example, using inline code such as `clean_names`, `diagnose`, `describe`, and `formattable`. We obtained an overview of the dataset's variables and initial statistics. This preliminary step confirmed the dataset's suitability for answering our research questions, which revolve around identifying temporal patterns and finding relations between parameters that effect crashes.
 
 ## Background
 
-The dataset central to our investigation was procured through a request to the National Transportation Safety Board ([NSTB](https://www.ntsb.gov/Pages/AviationQueryV2.aspx)). It encompasses detailed records of aircraft crashes in the U.S. from January 1, 1980, to December 31, 2022. The dataset is structured as a tibble with 89,134 rows and 38 columns, out of which a few unnecessary columns has been removed for our purpose which resulted in a tibble with 89,134 rows and 21 columns. This rich dataset is ideal for our purpose because it enables both time-series, geo-spatial analysis and also other factors that affect the crashes - methods we believe are critical for understanding the dynamics and geo-spatial distribution of aircraft accidents over time.
+The dataset central to our investigation was procured through a request to the National Transportation Safety Board ([NSTB](https://www.ntsb.gov/Pages/AviationQueryV2.aspx)). It encompasses detailed records of aircraft crashes in the U.S. from January 1, 1980, to December 31, 2022. The dataset is structured as a tibble with 89,134 rows and 38 columns, out of which a few unnecessary columns has been removed for our purpose which resulted in a tibble with 89,134 rows and 20 columns. This rich dataset is ideal for our purpose because it enables both time-series, geo-spatial analysis and also other factors that affect the crashes - methods we believe are critical for understanding the dynamics and geo-spatial distribution of aircraft accidents over time.
 
 ```{r diagnose_flights, message=FALSE}
 #| code-fold: true
@@ -140,7 +141,7 @@ Ultimately, we plan to utilize the interactive features of the Shiny application
 ### Variables of focus
 
 | Variable             | Description                                                                                |
-|------------------|------------------------------------------------------|
+|---------------------|---------------------------------------------------|
 | event_type           | Type of event - accident, incident or occurrence                                           |
 | event_date           | Date time of when the event has occurred                                                   |
 | city                 | The city or place location closest to the site of the event                                |
@@ -161,7 +162,7 @@ Ultimately, we plan to utilize the interactive features of the Shiny application
 ### Weekly Plan
 
 |               Week                | Weekly Tasks                                                        | Persons in Charge  |     Backup      |
-|:-------------:|---------------------------|:-------------:|:-------------:|
+|:---------------:|---------------------|:---------------:|:---------------:|
 |       until November 8^th^        | Explore and finalize the data set and the problem statements        |      Everyone      |    Everyone     |
 |                \-                 | Complete the proposal and assign some high-level tasks              |      Everyone      |    Everyone     |
 |     November 9^th^ to 15^th^      | Getting to know about Shiny application                             |      Antonio       |     Bharath     |
