@@ -17,7 +17,7 @@ pacman::p_load(tidyverse,
 ```
 
 ```{r new-dataset}
-edited_data <- read_csv("https://raw.githubusercontent.com/INFO526-DataViz/project-final-Infographic-Innovators/main/data/edited-flights-data.csv")
+edited_data <- read_csv("https://raw.githubusercontent.com/INFO526-DataViz/project-final-Infographic-Innovators/main/_extra/edited-flights-data.csv")
 ```
 
 ```{r radial-plot}
