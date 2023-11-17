@@ -1,0 +1,52 @@
+---
+title: "radial-bar-plot"
+author: "Eshaan Mathakari"
+editor: visual
+---
+
+```{r}
+pacman::p_load(tidyverse, 
+               ggplot2, 
+               here, 
+               highcharter, 
+               ggiraph,
+               dplyr)
+```
+
+```{r}
+flights_data <- read_csv("https://raw.githubusercontent.com/INFO526-DataViz/project-final-Infographic-Innovators/main/data/flight_crash_data_NTSB.csv")
+edited_data <- here("data", "edited-flights-data.csv")
+```
+```{r}
+glimpse(edited_data)
+# Define the keywords
+phases_keywords <- c("Cruise", "Maneuvering", "Approach", "Takeoff", "Climb", "Descent",
+                     "Landing", "Hover", "Standing", "Other", "Taxi", "Uncontrolled Descent",
+                     "Emergency", "Holding", "Unknown")
+
+# Filter the rows based on the keywords
+flights_data <- flights_data %>%
+  filter(grepl(paste(phases_keywords, collapse = "|"), ProbableCause)) %>%
+  mutate(phase = ProbableCause)
+
+# View the modified dataset
+head(flights_data)
+```
+
+```{r}
+
+
+# Radial bar plot
+ggplot(flights_data, aes(x = flights_data$EventType, y = crashes, fill = flights_data$EventType)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(start = 0) +
+  theme_minimal() +
+  labs(
+    title = "Crashes During Different Phases of Flight",
+    x = NULL,
+    y = NULL,
+    fill = NULL
+  )
+
+```
+
