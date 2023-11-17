@@ -4,7 +4,10 @@ author: "Eshaan Mathakari"
 editor: visual
 ---
 
-```{r}
+We will be representing the count of crashes on the x-axis and the phases of flight (takeoff, landing etc,.) on the y-axis in a circular manner. We can transform the bar plot into a radial form, emphasizing the distribution of crashes during these critical flight stages. This visualization technique allows for a quick understanding of the relative frequency of crashes during takeoff and landing, enabling insights into the safety challenges faced during these flight phases.
+highcharter, ggiraph - interactive plot
+
+```{r installing-packages}
 pacman::p_load(tidyverse, 
                ggplot2, 
                here, 
@@ -13,40 +16,62 @@ pacman::p_load(tidyverse,
                dplyr)
 ```
 
-```{r}
-flights_data <- read_csv("https://raw.githubusercontent.com/INFO526-DataViz/project-final-Infographic-Innovators/main/data/flight_crash_data_NTSB.csv")
-edited_data <- here("data", "edited-flights-data.csv")
-```
-```{r}
-glimpse(edited_data)
-# Define the keywords
-phases_keywords <- c("Cruise", "Maneuvering", "Approach", "Takeoff", "Climb", "Descent",
-                     "Landing", "Hover", "Standing", "Other", "Taxi", "Uncontrolled Descent",
-                     "Emergency", "Holding", "Unknown")
-
-# Filter the rows based on the keywords
-flights_data <- flights_data %>%
-  filter(grepl(paste(phases_keywords, collapse = "|"), ProbableCause)) %>%
-  mutate(phase = ProbableCause)
-
-# View the modified dataset
-head(flights_data)
+```{r new-dataset}
+edited_data <- read_csv("https://raw.githubusercontent.com/INFO526-DataViz/project-final-Infographic-Innovators/main/data/edited-flights-data.csv")
 ```
 
-```{r}
+```{r radial-plot}
+flight_phases <- c("Cruise", "Maneuvering", "Approach", "Takeoff", "Climb",
+                   "Descent", "Landing", "Hover", "Standing", "Other",
+                   "Taxi", "Uncontrolled Descent", "Emergency", "Holding", "Unknown")
 
+# Subset the data to include only the specified flight phases
+filtered_data <- edited_data[edited_data$Phase %in% flight_phases, ]
 
-# Radial bar plot
-ggplot(flights_data, aes(x = flights_data$EventType, y = crashes, fill = flights_data$EventType)) +
-  geom_bar(stat = "identity", width = 1) +
-  coord_polar(start = 0) +
+filtered_data$Phase <- factor(filtered_data$Phase, levels = flight_phases)
+
+radar_plot <- ggplot(filtered_data, aes(x = as.factor(Phase), y = ..count..)) +
+  geom_bar(stat = "count", fill = "skyblue") +
+  coord_polar() +
   theme_minimal() +
-  labs(
-    title = "Crashes During Different Phases of Flight",
-    x = NULL,
-    y = NULL,
-    fill = NULL
-  )
+  labs(title = "Radial Bar Plot of Flight Phases and Crash Counts",
+       x = "Flight Phase",
+       y = "Number of Crashes occuring")
+
+print(radar_plot)
+```
+```{r}
+flight_phases <- c("Cruise", "Maneuvering", "Approach", "Takeoff", "Landing")
+
+filtered_data <- edited_data[edited_data$Phase %in% flight_phases, ]
+
+# Create a factor variable for 'Phase' with a custom order
+filtered_data$Phase <- factor(filtered_data$Phase, levels = flight_phases)
+
+# Define colors for each flight phase
+phase_colors <- c("#00FA9A", "#9ACD32", "#FA8072", "#FF0000", "#DC143C")
+
+radial_bar_plot <- ggplot(filtered_data, aes(x = as.factor(Phase), fill = Phase)) +
+  geom_bar(width = 0.9, stat = "count") +
+  coord_polar(theta = "y") +
+  xlab("") + ylab("Count of Crashes") +
+  ggtitle("Count of Crashes by Flight Phase") +
+  geom_text(stat = "count", aes(label = ..count..),
+            position = position_stack(vjust = 0.5), size = 3) +
+  scale_fill_manual(values = phase_colors, name = "Flight Phase",
+                    labels = c("Cruise", "Maneuvering", "Approach", "Takeoff", "Landing")) +
+  theme_minimal() +
+  theme(legend.position = "bottom",  # Adjust legend position as needed
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_blank(),
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(size = 8),
+        axis.ticks = element_blank())
+
+# Display the plot
+print(radial_bar_plot)
+
 
 ```
 
