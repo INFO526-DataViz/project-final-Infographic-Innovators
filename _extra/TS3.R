@@ -1,3 +1,6 @@
+
+
+#load libraries ----
 if(!require(pacman))
   install.packages("pacman")
 pacman::p_load(tidyverse, 
@@ -21,7 +24,7 @@ fcdata <- read_csv("data/flight_crash_data_NTSB.csv")
 View(fcdata)
 
 
-# Aggregating data by year
+# Aggregating data by year----
 fcdata <- fcdata |>
   mutate(Year = year(EventDate)) |>
   group_by(Year) |>
@@ -30,10 +33,44 @@ fcdata <- fcdata |>
             Total_Minor_Injuries = sum(MinorInjuryCount, na.rm = TRUE))
 
 
-#time series plot 
+#time series plot ----
 ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
   geom_line() + 
   labs(title = "Yearly Aircraft Crash Fatalities",
        x = "Year", 
        y = "Total Fatalities") +
   theme_minimal()
+
+
+# Interactive plot with ploty----
+p <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
+  geom_line() +
+  labs(title = "Yearly Aircraft Crash Fatalities",
+       x = "Year", 
+       y = "Total Fatalities")
+
+ggplotly(p)
+
+
+# Advanced time series----
+# library(timetk)
+
+# Example: Time-series decomposition
+fcdata |>
+  tk_ts(start = c(Year[1]), end = c(Year[length(Year)]), frequency = 1) |>
+  decompose(type = "multiplicative") |>
+  autoplot()
+
+
+ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
+  geom_line() +
+  geom_point(data = HighestInjuryLevel, aes(x = Year, y = Total_Fatalities), color = "red") +
+  geom_text(data = HighestInjuryLevel, aes(x = Year, y = Total_Fatalities, label = Crash_Name), vjust = -1) +
+  labs(title = "Yearly Aircraft Crash Fatalities",
+       x = "Year", 
+       y = "Total Fatalities") +
+  theme_minimal()
+
+
+
+
