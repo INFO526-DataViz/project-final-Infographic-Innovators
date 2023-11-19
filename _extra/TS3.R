@@ -52,10 +52,27 @@ p <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
 ggplotly(p)
 
 
-# Advanced time series----
-# library(timetk)
+# Advanced time series---- I can't get it to work 
+library(timetk)
 
 # Example: Time-series decomposition
+
+fcdata <- fcdata |>
+  mutate(Year = year(EventDate))
+
+fcdata_ts <- fcdata |>
+  group_by(Year) |>
+  summarise(Total_Fatalities = sum(fatal_injury_count, na.rm = TRUE)) |>
+  tk_ts(start = min(fcdata$Year), end = max(fcdata$Year), frequency = 1)
+
+decomposed_data <- decompose(fcdata_ts, type = "multiplicative")
+autoplot(decomposed_data)
+
+
+
+
+
+
 fcdata |>
   tk_ts(start = c(Year[1]), end = c(Year[length(Year)]), frequency = 1) |>
   decompose(type = "multiplicative") |>
