@@ -21,7 +21,7 @@ pacman::p_load(tidyverse,
 # flight_crash_data_NTSB <- read_csv("data/flight_crash_data_NTSB.csv")
 # View(flight_crash_data_NTSB)
 fcdata <- read_csv("data/flight_crash_data_NTSB.csv")
-View(fcdata)
+glimpse(fcdata)
 
 
 # Aggregating data by year----
