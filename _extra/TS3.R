@@ -12,7 +12,8 @@ pacman::p_load(tidyverse,
                readr,
                lubridate, 
                plotly, 
-               timetk) 
+               timetk, 
+               gganimate) 
 
 
 
@@ -51,8 +52,35 @@ p <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
 
 ggplotly(p)
 
+# animates for 2 see 
 
-# Advanced time series---- I can't get it to work 
+p <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
+  geom_line() + 
+  labs(title = "Yearly Aircraft Crash Fatalities: {frame_time}",
+       x = "Year", 
+       y = "Total Fatalities") +
+  theme_minimal()
+
+# Animate the plot
+animated_plot <- p +
+  transition_time(Year) +
+  ease_aes('linear') +
+  shadow_mark()
+
+# To animate in steps of 2 years, we use 'transition_states' with 'transition_length' and 'state_length'
+animated_plot <- p + 
+  transition_states(Year, transition_length = 2, state_length = 1) +
+  ease_aes('linear') +
+  shadow_mark()
+
+# Save or render the animation
+anim_save("animated_yearly_fatalities.gif", animated_plot)
+
+
+
+
+
+# Advanced time series---- I can't get it to work with this random package I found 
 library(timetk)
 
 # Example: Time-series decomposition
