@@ -11,7 +11,8 @@ pacman::p_load(tidyverse,
                dplyr,
                readr,
                lubridate, 
-               plotly, 
+               plotly,
+               viridis,
                timetk, 
                gganimate) 
 
@@ -56,16 +57,34 @@ ggplotly(p)
 
 p <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
   geom_line() + 
+  geom_point() +
+  scale_color_viridis(discrete = TRUE) +
   labs(title = "Yearly Aircraft Crash Fatalities: {frame_time}",
        x = "Year", 
        y = "Total Fatalities") +
   theme_minimal()
 
+
+# Plot
+
+  ggplot( aes(x=year, y=n, group=name, color=name)) +
+  geom_line() +
+  geom_point() +
+  scale_color_viridis(discrete = TRUE) +
+  ggtitle("Popularity of American names in the previous 30 years") +
+  theme_ipsum() +
+  ylab("Number of babies born") +
+  transition_reveal(year)
+
+
+
 # Animate the plot
 animated_plot <- p +
-  transition_time(Year) +
+  transition_reveal(Year) +#revealing the year 
   ease_aes('linear') +
   shadow_mark()
+
+animated_plot
 
 # To animate in steps of 2 years, we use 'transition_states' with 'transition_length' and 'state_length'
 animated_plot <- p + 
@@ -75,6 +94,27 @@ animated_plot <- p +
 
 # Save or render the animation
 anim_save("animated_yearly_fatalities.gif", animated_plot)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
