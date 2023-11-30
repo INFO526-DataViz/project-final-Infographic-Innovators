@@ -31,7 +31,8 @@ pacman::p_load(tidyverse,
                ggpubr,
                maps,
                plotly,
-               gganimate)
+               gganimate,
+               fmsb)
 ```
 
 ```{r ggplot_setup, message=FALSE, include=FALSE}
@@ -98,16 +99,41 @@ flights_ntsb <- flights_ntsb |>
       grepl("Holding", probable_cause, ignore.case = TRUE) ~ "Holding",
     ),
     .after = probable_cause
+  ) |>
+  mutate(
+    event_year = year(event_date),
+    event_month = month(event_date)
   )
 ```
 
 ```{r timeseries_data, include=FALSE}
 flights_ntsb_timeseries <- flights_ntsb |>
-  mutate(event_year = year(event_date)) |>
   group_by(event_year) |>
   summarise(
     total_fatalities = sum(fatal_injury_count, na.rm = TRUE),
     total_serious_injuries = sum(serious_injury_count, na.rm = TRUE),
     total_minor_injuries = sum(minor_injury_count, na.rm = TRUE)
   )
+```
+
+```{r radarchart_data, include=FALSE}
+flights_ntsb_radar <- flights_ntsb |>
+  mutate(
+    weather_condition = case_when(
+      weather_condition == "IFR" ~ "IMC",
+      weather_condition == "VFR" ~ "VMC",
+      weather_condition == "Unknown" ~ "UNK",
+      is.na(weather_condition) ~ "UNK",
+      TRUE ~ weather_condition
+    )
+  ) |>
+  group_by(event_month, weather_condition) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  )
+```
+
+```{r radar_plot, include=FALSE}
+
 ```
