@@ -14,7 +14,7 @@ library(lubridate)
 # Load and prepare data
 flight_crash_data <- read_csv("data/flight_crash_data_NTSB.csv")
 flight_crash_data <- flight_crash_data |>
-  mutate(Year = year(Date),  # Extract year from the date
+  mutate(Year = year(EventDate),  # Extract year from the date
          Latitude = as.numeric(Latitude),  # Ensure Latitude is numeric
          Longitude = as.numeric(Longitude)) # Ensure Longitude is numeric
 
