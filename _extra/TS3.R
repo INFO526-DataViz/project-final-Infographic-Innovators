@@ -11,9 +11,12 @@ pacman::p_load(tidyverse,
                dplyr,
                readr,
                lubridate, 
-               plotly, 
+               plotly,
+               viridis,
                timetk, 
-               gganimate) 
+               gganimate,
+               DT, 
+               crosstalk) 
 
 
 
@@ -56,25 +59,70 @@ ggplotly(p)
 
 p <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
   geom_line() + 
-  labs(title = "Yearly Aircraft Crash Fatalities: {frame_time}",
+  geom_point() +
+  scale_color_viridis(discrete = TRUE) +
+  labs(title = "Yearly Aircraft Crash Fatalities: Total Fatalities",
        x = "Year", 
        y = "Total Fatalities") +
   theme_minimal()
 
-# Animate the plot
+
+
+
+
+
+
+
+# Animate the plot - This one is better 
 animated_plot <- p +
-  transition_time(Year) +
+  transition_reveal(Year) +#revealing the year 
   ease_aes('linear') +
   shadow_mark()
 
+animated_plot
+
 # To animate in steps of 2 years, we use 'transition_states' with 'transition_length' and 'state_length'
-animated_plot <- p + 
+animated_plot2 <- p + 
   transition_states(Year, transition_length = 2, state_length = 1) +
   ease_aes('linear') +
   shadow_mark()
 
+animated_plot2
+
 # Save or render the animation
 anim_save("animated_yearly_fatalities.gif", animated_plot)
+
+
+
+# https://deepshamenghani.quarto.pub/dmenghani/tidytuesday/plotly/
+
+
+state_data_imputed <-  fcdata |> 
+  filter(state == 'Washington') |>
+  arrange(subsector) |>
+  select(state_abbr, year, month, subsector, change_yoy) |>
+  mutate(change_yoy = as.numeric(change_yoy |> str_remove('S'))) |> 
+  group_by(subsector) |> 
+  fill(change_yoy, .direction = "up") |> #Replace missing data with next good value within the group
+  ungroup() %>% 
+  mutate(date = ifelse(month < 10, paste0(year,'-0',month, '-01'), paste0(year,'-',month, '-01'))) %>% # Create a readable date column
+  select(state_abbr, subsector, date, change_yoy)
+
+datatable(state_data_imputed)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
