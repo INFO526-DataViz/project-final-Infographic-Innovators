@@ -1,6 +1,7 @@
 library(fmsb)
 library(tidyverse)
 library(dplyr)
+library(janitor)
 
 flights_ntsb <- read_csv("data/flight_crash_data_NTSB.csv")
 
