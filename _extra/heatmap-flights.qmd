@@ -3,6 +3,7 @@ title: "heatmap-flights"
 author: "Eshaan Mathakari"
 editor: visual
 ---
+
 ```{r setup}
 pacman::p_load(ggplot2, 
                ggmap, 
@@ -17,7 +18,7 @@ pacman::p_load(ggplot2,
 
 ```{r data-wrangling}
 # Load and prepare data
-flight_crash_data <- read_csv("data/flight_crash_data_NTSB.csv")
+flight_crash_data <- read_csv("/Users/apple/Desktop/INFO-526/project-final-Infographic-Innovators/data/flight_crash_data_NTSB.csv")
 flight_crash_data <- flight_crash_data |>
   mutate(Year = year(EventDate),  # Extract year from the date
          Latitude = as.numeric(Latitude),  
@@ -28,11 +29,13 @@ flight_crash_data <- flight_crash_data %>%
   group_by(Year) %>%
   mutate(Year_Count = n()) %>%
   ungroup()
-flight_crash_data_2022 <- filter(flight_crash_data, Year == "2022" )
-breaks <- seq(min(flight_crash_data$Year_Count), max(flight_crash_data$Year_Count), length.out = 9)
 
-# Assign colors based on binning
-flight_crash_data$Color <- cut(flight_crash_data$Year_Count, breaks = breaks, labels = FALSE)
+# test year '2022' dataset
+flight_crash_data_2022 <- filter(flight_crash_data, Year == "2022" )
+flight_crash_data_2021 <- filter(flight_crash_data, Year == "2021" )
+flight_crash_data_2020 <- filter(flight_crash_data, Year == "2020" )
+flight_crash_data_2019 <- filter(flight_crash_data, Year == "2019" )
+flight_crash_data_2018 <- filter(flight_crash_data, Year == "2018" )
 
 ```
 
@@ -49,6 +52,20 @@ usa_plot <- ggplot() +
 print(usa_plot)
 ```
 
+
+```{r color}
+color_mapping <- c(
+  "1100 to 1450" = "#d73027",
+  "1451 to 1800" = "#f46d43",
+  "1801 to 2150" = "#fdae61",
+  "2151 to 2500" = "#fee08b",
+  "2501 to 2850" = "#d9ef8b",
+  "2851 to 3200" = "#a6d96a",
+  "3201 to 3550" = "#66bd63",
+  "> 3550" = "#1a9850"
+)
+```
+
 ```{r test-heatmap}
 merged_data <- left_join(usa_map, flight_crash_data_2022, by = c("long" = "Longitude", "lat" = "Latitude"))
 
@@ -62,4 +79,28 @@ usa_plot_2022 <- ggplot() +
 print(usa_plot)  
 ```
 
+```{r}
+year_count_flight <- cut(flight_crash_data$Year_Count, breaks = c(1100, 1450, 1800, 2150, 2500, 2850, 3200, 3550, Inf),
+                     labels = c("1100 to 1450", "1451 to 1800", "1801 to 2150", "2151 to 2500",
+                                "2501 to 2850", "2851 to 3200", "3201 to 3550", "> 3550"))
+
+
+ggplot(data = flight_crash_data_2022, aes(x = flight_crash_data_2022$Longitude, y = flight_crash_data_2022$Latitude, fill = Year_Count)) + 
+  geom_polygon(color = "black") + 
+  scale_fill_gradient(low = "#d73027", high = "#1a9850") +
+  theme_void() + 
+  ggtitle('U.S. Map') + 
+  coord_fixed(1.3)
+
+
+```
+
+```{r}
+ggplot(data=usa, aes(x=long, y=lat, group=group)) + 
+  geom_polygon(fill= color_mapping) + 
+  theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank()) + 
+  ggtitle('U.S. Map') + 
+  coord_fixed(1.3)
+```
 
