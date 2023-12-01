@@ -62,7 +62,7 @@ flights_ntsb_radar <- flights_ntsb |>
     total_crashes = n()
   )
 
-flights_ntsb_radar <- flights_ntsb_radar |>
+flights_ntsb_radar_fmsb <- flights_ntsb_radar |>
   pivot_wider(
     names_from = event_month,
     values_from = total_crashes
@@ -71,7 +71,7 @@ flights_ntsb_radar <- flights_ntsb_radar |>
   ) |>
   column_to_rownames("weather_condition")
 
-flights_ntsb_radar <- rbind(rep(10500, 12), rep(0, 12), flights_ntsb_radar)
+flights_ntsb_radar_fmsb <- rbind(rep(10500, 12), rep(0, 12), flights_ntsb_radar_fmsb)
 
 
 create_radarchart <- function(data,
@@ -105,13 +105,43 @@ create_radarchart <- function(data,
 op <- par(mar = c(1, 1, 1, 1), cex.lab = 5)
 # Create the radar charts
 create_radarchart(
-  data = flights_ntsb_radar, caxislabels = c(0, 2500, 5000, 7500, 10500),
+  data = flights_ntsb_radar_fmsb, caxislabels = c(0, 2500, 5000, 7500, 10500),
   color = c("#00AFBB", "#E7B800", "#FC4E07")
 )
 # Add an horizontal legend
 legend(
-  x=1.1, y=1.2, legend = rownames(flights_ntsb_radar[-c(1,2),]),
+  x=1.1, y=1.2, legend = rownames(flights_ntsb_radar_fmsb[-c(1,2),]),
   bty = "n", pch = 20 , col = c("#00AFBB", "#E7B800", "#FC4E07"),
   text.col = "black", cex = 1, pt.cex = 1.5
 )
 par(op)
+
+flights_ntsb_radar <- flights_ntsb_radar |>
+  mutate(
+    weather_condition = factor(weather_condition, levels = c("UNK", "IMC", "VMC"))
+  )
+
+
+radar_plot <- ggplot(flights_ntsb_radar, aes(x = event_month, y = total_crashes, 
+                                             group = weather_condition, color = weather_condition, fill = weather_condition)) +
+  geom_point() +
+  geom_area(alpha = 0.75, position = "identity") +
+  coord_polar() +
+  theme_minimal() +
+  labs(title = "Radial Bar Plot of Flight Phases and Crash Counts",
+       y = "Number of Crashes occuring")
+
+radar_plot
+
+
+ggplot(flights_ntsb_radar, aes(x = event_month, y = total_crashes, 
+                               group = weather_condition, color = weather_condition, fill = weather_condition)) +
+  geom_bar(stat = "identity", 
+           width = 1) +
+  scale_x_discrete(breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12),
+                   limits = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12),
+                   labels = c("Jan" , "Feb" , "Mar" , "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec")) +
+  coord_cartesian(expand = FALSE) +
+  coord_polar() +
+  theme(panel.border = element_blank(),
+        panel.grid.minor = element_blank())
