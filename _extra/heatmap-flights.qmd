@@ -13,12 +13,13 @@ pacman::p_load(ggplot2,
                lubridate, 
                maps,
                mapdata,
-               leaflet)
+               leaflet,
+               tidyverse)
 ```
 
 ```{r data-wrangling}
 # Load and prepare data
-flight_crash_data <- read_csv("/Users/apple/Desktop/INFO-526/project-final-Infographic-Innovators/data/flight_crash_data_NTSB.csv")
+flight_crash_data <- read.csv("/Users/apple/Desktop/INFO-526/project-final-Infographic-Innovators/data/flight_crash_data_NTSB.csv")
 flight_crash_data <- flight_crash_data |>
   mutate(Year = year(EventDate),  # Extract year from the date
          Latitude = as.numeric(Latitude),  
@@ -39,21 +40,11 @@ flight_crash_data_2018 <- filter(flight_crash_data, Year == "2018" )
 
 ```
 
-```{r basic-US map}
-usa_map <- map_data("usa")
-
-# Create a ggplot map
-usa_plot <- ggplot() +
-  geom_polygon(data = usa_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
-  theme_minimal() +
-  labs(title = "USA Map")
-
-# Print the map
-print(usa_plot)
-```
-
-
-```{r color}
+```{r}
+{r color}
+year_count_flight <- cut(flight_crash_data$Year_Count, breaks = c(1100, 1450, 1800, 2150, 2500, 2850, 3200, 3550, Inf),
+                     labels = c("1100 to 1450", "1451 to 1800", "1801 to 2150", "2151 to 2500",
+                                "2501 to 2850", "2851 to 3200", "3201 to 3550", "> 3550"))
 color_mapping <- c(
   "1100 to 1450" = "#d73027",
   "1451 to 1800" = "#f46d43",
@@ -64,6 +55,25 @@ color_mapping <- c(
   "3201 to 3550" = "#66bd63",
   "> 3550" = "#1a9850"
 )
+```
+
+```{r 2022}
+states <- map_data("state")
+countries <- map_data("county")
+arrests <- USArrests
+usa <-map_data("usa")
+world <-map_data("world")  
+world2<-map_data("world2")
+ 
+# Function to plot maps using in-built map data
+map <- function(x,y,dataset,fill_column){
+  p <- ggplot(data = dataset,
+              mapping = aes(x = x, y = y, group = group, fill = fill_column))
+  p + geom_polygon() + guides(fill = FALSE)
+}
+ 
+# plotting USA states 
+map(states$long,states$lat,states,states$region)
 ```
 
 ```{r test-heatmap}
@@ -80,18 +90,17 @@ print(usa_plot)
 ```
 
 ```{r}
-year_count_flight <- cut(flight_crash_data$Year_Count, breaks = c(1100, 1450, 1800, 2150, 2500, 2850, 3200, 3550, Inf),
-                     labels = c("1100 to 1450", "1451 to 1800", "1801 to 2150", "2151 to 2500",
-                                "2501 to 2850", "2851 to 3200", "3201 to 3550", "> 3550"))
-
-
-ggplot(data = flight_crash_data_2022, aes(x = flight_crash_data_2022$Longitude, y = flight_crash_data_2022$Latitude, fill = Year_Count)) + 
-  geom_polygon(color = "black") + 
-  scale_fill_gradient(low = "#d73027", high = "#1a9850") +
-  theme_void() + 
-  ggtitle('U.S. Map') + 
-  coord_fixed(1.3)
-
+# Loading map data
+states <- flight_crash_data_2022
+# Function to plot maps using in-built map data
+map <- function(x,y,dataset,fill_column){
+  p <- ggplot(data = dataset,
+              mapping = aes(x = x, y = y, fill = ))
+  p + geom_polygon() + guides(fill = FALSE)
+}
+ 
+# plotting USA states 
+map(states$Longitude,states$Latitude,states, states$Year_Count)
 
 ```
 
@@ -103,4 +112,3 @@ ggplot(data=usa, aes(x=long, y=lat, group=group)) +
   ggtitle('U.S. Map') + 
   coord_fixed(1.3)
 ```
-
