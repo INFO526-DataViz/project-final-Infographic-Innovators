@@ -17,7 +17,8 @@ pacman::p_load(tidyverse,
                gganimate,
                DT, 
                crosstalk, 
-               emojifont) 
+               emojifont, 
+               gifski) 
 
 
 
@@ -80,7 +81,7 @@ ggplotly(p)
 
 # Animated the plot - This one is better 
 animated_plot <- p +
-  geom_text(aes(label = ifelse(Year == frame_time, "✈️", "")), 
+  geom_text(aes(label = ifelse(Year == Year, "✈️", "")), 
             vjust = -0.5, 
             hjust = 0.5, 
             color = "blue",
@@ -101,6 +102,21 @@ animated_plot2
 
 # Save or render the animation
 anim_save("animated_yearly_fatalities.gif", animated_plot)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
