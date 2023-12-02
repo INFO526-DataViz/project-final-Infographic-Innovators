@@ -18,7 +18,8 @@ pacman::p_load(tidyverse,
                DT, 
                crosstalk, 
                emojifont, 
-               gifski) 
+               gifski, 
+               magick) 
 
 
 
@@ -102,6 +103,35 @@ animated_plot2
 
 # Save or render the animation
 anim_save("animated_yearly_fatalities.gif", animated_plot)
+
+
+
+# adjusted code I found
+# Filter data for the most recent year for each frame-https://stackoverflow.com/questions/58439944/how-to-use-your-own-image-for-geom-point-in-gganimate
+fcdata_emoji <- fcdata |>
+  group_by(Year) |>
+  filter(Year == max(Year)) |>
+  ungroup()
+
+# Use this filtered data for placing the emoji
+animated_plot <- p +
+  geom_text(data = fcdata_emoji, 
+            aes(label = "✈️"), 
+            vjust = -0.5, 
+            hjust = 0.5, 
+            color = "blue", 
+            size = 5) +
+  transition_reveal(Year) +
+  ease_aes('linear') +
+  shadow_mark()
+
+animate(animated_plot, 
+        nframes = 200, 
+        width = 800, 
+        height = 600, 
+        renderer = gifski_renderer())
+
+
 
 
 
