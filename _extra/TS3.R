@@ -16,7 +16,8 @@ pacman::p_load(tidyverse,
                timetk, 
                gganimate,
                DT, 
-               crosstalk) 
+               crosstalk, 
+               emojifont) 
 
 
 
@@ -49,6 +50,10 @@ ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
 # Interactive plot with ploty----
 p <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
   geom_line() +
+  geom_text(aes(label = "✈️"), 
+            vjust = -0.5, 
+            hjust = 0.5, 
+            size = 5)
   labs(title = "Yearly Aircraft Crash Fatalities",
        x = "Year", 
        y = "Total Fatalities")
@@ -57,14 +62,14 @@ ggplotly(p)
 
 # animates for 2 see 
 
-p <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
-  geom_line() + 
-  geom_point() +
-  scale_color_viridis(discrete = TRUE) +
-  labs(title = "Yearly Aircraft Crash Fatalities: Total Fatalities",
-       x = "Year", 
-       y = "Total Fatalities") +
-  theme_minimal()
+# p <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
+#   geom_line() + 
+#   geom_point() +
+#   scale_color_viridis(discrete = TRUE) +
+#   labs(title = "Yearly Aircraft Crash Fatalities: Total Fatalities",
+#        x = "Year", 
+#        y = "Total Fatalities") +
+#   theme_minimal()
 
 
 
@@ -73,8 +78,13 @@ p <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
 
 
 
-# Animate the plot - This one is better 
+# Animated the plot - This one is better 
 animated_plot <- p +
+  geom_text(aes(label = ifelse(Year == frame_time, "✈️", "")), 
+            vjust = -0.5, 
+            hjust = 0.5, 
+            color = "blue",
+            size = 5) +
   transition_reveal(Year) +#revealing the year 
   ease_aes('linear') +
   shadow_mark()
