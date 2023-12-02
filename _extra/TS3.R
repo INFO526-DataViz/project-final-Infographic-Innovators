@@ -41,7 +41,7 @@ fcdata <- fcdata |>
 
 
 #time series plot ----
-ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
+tp <-ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
   geom_line() + 
   labs(title = "Yearly Aircraft Crash Fatalities",
        x = "Year", 
@@ -81,10 +81,10 @@ ggplotly(p)
 
 
 # Animated the plot - This one is better 
-animated_plot <- p +
-  geom_text(aes(label = ifelse(Year == Year, "✈️", "")), 
-            vjust = -0.5, 
-            hjust = 0.5, 
+animated_plot <- tp +
+  geom_text(aes(label = ifelse(Year == Year, "✈️️", "")), 
+            vjust = -0.5,
+            hjust = 0.5,
             color = "blue",
             size = 5) +
   transition_reveal(Year) +#revealing the year 
@@ -92,44 +92,44 @@ animated_plot <- p +
   shadow_mark()
 
 animated_plot
-
+# anim_save("animated_yearly_fatalities12.gif", animated_plot)
 # To animate in steps of 2 years, we use 'transition_states' with 'transition_length' and 'state_length'
-animated_plot2 <- p + 
-  transition_states(Year, transition_length = 2, state_length = 1) +
-  ease_aes('linear') +
-  shadow_mark()
-
-animated_plot2
-
-# Save or render the animation
-anim_save("animated_yearly_fatalities.gif", animated_plot)
+# animated_plot2 <- p + 
+#   transition_states(Year, transition_length = 2, state_length = 1) +
+#   ease_aes('linear') +
+#   shadow_mark()
+# 
+# animated_plot2
+# 
+# # Save or render the animation
+# anim_save("animated_yearly_fatalities.gif", animated_plot)
 
 
 
 # adjusted code I found
 # Filter data for the most recent year for each frame-https://stackoverflow.com/questions/58439944/how-to-use-your-own-image-for-geom-point-in-gganimate
-fcdata_emoji <- fcdata |>
-  group_by(Year) |>
-  filter(Year == max(Year)) |>
-  ungroup()
-
-# Use this filtered data for placing the emoji
-animated_plot <- p +
-  geom_text(data = fcdata_emoji, 
-            aes(label = "✈️"), 
-            vjust = -0.5, 
-            hjust = 0.5, 
-            color = "blue", 
-            size = 5) +
-  transition_reveal(Year) +
-  ease_aes('linear') +
-  shadow_mark()
-
-animate(animated_plot, 
-        nframes = 200, 
-        width = 800, 
-        height = 600, 
-        renderer = gifski_renderer())
+# fcdata_emoji <- fcdata |>
+#   group_by(Year) |>
+#   filter(Year == max(Year)) |>
+#   ungroup()
+# 
+# # Use this filtered data for placing the emoji
+# animated_plot <- p +
+#   geom_text(data = fcdata_emoji, 
+#             aes(label = "✈️"), 
+#             vjust = -0.5, 
+#             hjust = 0.5, 
+#             color = "blue", 
+#             size = 5) +
+#   transition_reveal(Year) +
+#   ease_aes('linear') +
+#   shadow_mark()
+# 
+# animate(animated_plot, 
+#         nframes = 200, 
+#         width = 800, 
+#         height = 600, 
+#         renderer = gifski_renderer())
 
 
 
