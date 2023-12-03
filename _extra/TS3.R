@@ -19,7 +19,8 @@ pacman::p_load(tidyverse,
                crosstalk, 
                emojifont, 
                gifski, 
-               magick) 
+               magick,
+               ggimage) 
 
 
 
@@ -72,6 +73,37 @@ ggplotly(p)
 #        x = "Year", 
 #        y = "Total Fatalities") +
 #   theme_minimal()
+
+
+Image <- "images/airplane.png"  
+
+
+p <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
+  geom_line() +
+  geom_image(aes(image = Image), size = 0.05) +  # Adjust size as needed
+  labs(title = "Yearly Aircraft Crash Fatalities",
+       x = "Year", 
+       y = "Total Fatalities") +
+  theme_minimal()
+
+# If you are animating the plot
+animated_plot <- p +
+  transition_reveal(Year) +
+  ease_aes('linear') +
+  shadow_mark()
+
+animate(animated_plot, nframes = 200, width = 800, height = 600, renderer = gifski_renderer())
+
+
+
+
+
+
+
+
+
+
+
 
 
 
