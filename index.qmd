@@ -114,6 +114,7 @@ flights_ntsb <- flights_ntsb |>
 ```
 
 ```{r timeseries_data, include=FALSE}
+
 flights_ntsb_timeseries <- flights_ntsb |>
   group_by(event_year) |>
   summarise(
