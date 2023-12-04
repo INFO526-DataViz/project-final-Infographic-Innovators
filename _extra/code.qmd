@@ -35,7 +35,11 @@ pacman::p_load(tidyverse,
                MetBrewer,
                ggsci,
                sf,
-               fmsb)
+               fmsb,
+               maps,
+               rnaturalearth,
+               state,
+               ggspatial)
 ```
 
 ```{r ggplot_setup, message=FALSE, include=FALSE}
@@ -310,5 +314,35 @@ flights_ntsb_maps <- flights_ntsb |>
   subset(!is.na(longitude) & !is.na(latitude)
          & latitude < 75 & latitude > 10 & longitude < -60)
 
+flights_ntsb_maps <- flights_ntsb_maps |>
+  group_by(state, event_year) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  drop_na()
 
+unique_states <- unique(flights_ntsb_maps$state)
+
+all_years <- unique(flights_ntsb_maps$event_year)
+
+all_states_data <-
+  expand.grid(state = unique_states, event_year = all_years)
+
+flights_ntsb_maps_updated <-
+  left_join(all_states_data,
+            flights_ntsb_maps,
+            by = c("state", "event_year")) |>
+  mutate(
+    total_crashes = ifelse(is.na(total_crashes), 0, total_crashes),
+    total_injuries = ifelse(is.na(total_injuries), 0, total_injuries)
+  ) |>
+  filter(state %in% state.name)
+```
+
+```{r hex_bin_map_plot}
+# reference - https://r-graph-gallery.com/328-hexbin-map-of-the-usa.html
+# no need to use latitude and longitude from our data, use geojson_read as they suggested from 
+# I uploaded the data to data folder
+# data can be found here - https://team.carto.com/u/andrew/tables/andrew.us_states_hexgrid/public/map
 ```
