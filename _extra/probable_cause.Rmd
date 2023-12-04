@@ -1,0 +1,55 @@
+```{r}
+library(tidyverse,
+        ggplot)
+```
+
+
+
+```{r}
+
+df <- read.csv("new_flights_PC.csv")
+```
+
+```{r}
+table(df$HighestInjuryLevel)
+```
+
+```{r}
+ggplot(df, aes(y=factor(Probable_Cause, levels=c("pilot's failure",
+ 'Other',
+ 'loss of engine power',
+ 'physical damage',
+ 'impact with trees',
+ 'inadequate flight maintenance',
+ 'aerodynamic stall',
+ 'loss of plane control',
+ 'crosswinds',
+ 'in-flight fire',
+ 'out of fuel',
+ 'collision with birds',
+ 'in-flight collision',
+ 'loss of directional',
+ 'undetermined'))))+
+  geom_bar()+
+  theme_minimal()
+
+```
+
+```{r}
+# Assuming your dataset is named aircraft_crashes
+crash_summary <- df %>%
+  group_by(Probable_Cause, HighestInjuryLevel) %>%
+  summarise(count = n()) %>%
+  ungroup()
+crash_summary
+```
+```{r}
+ggplot(crash_summary, aes(y = Probable_Cause, x = count, fill = HighestInjuryLevel)) +
+  geom_bar(position = "stack", stat="identity") +
+  labs(title = "Probable Causes and Highest Injury Levels of Aircraft Incidents",
+       x = "Probable Cause",
+       y = "Count",
+       fill = "Highest Injury Level") +
+  theme_minimal() 
+```
+
