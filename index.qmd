@@ -121,6 +121,64 @@ flights_ntsb_timeseries <- flights_ntsb |>
     total_serious_injuries = sum(serious_injury_count, na.rm = TRUE),
     total_minor_injuries = sum(minor_injury_count, na.rm = TRUE)
   )
+
+
+fcdata <- read_csv("data/flight_crash_data_NTSB.csv")
+glimpse(fcdata)
+
+
+# Aggregating data by year----
+fcdata <- fcdata |>
+  mutate(Year = year(EventDate)) |>
+  group_by(Year) |>
+  summarise(Total_Fatalities = sum(FatalInjuryCount, na.rm = TRUE),
+            Total_Serious_Injuries = sum(SeriousInjuryCount, na.rm = TRUE),
+            Total_Minor_Injuries = sum(MinorInjuryCount, na.rm = TRUE))
+
+
+#time series plot ----
+tp <-ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
+  geom_line() + 
+  labs(title = "Yearly Aircraft Crash Fatalities",
+       x = "Year", 
+       y = "Total Fatalities") +
+  theme_minimal()
+
+
+# Interactive plot with ploty----
+p <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
+  geom_line() +
+  geom_text(aes(label = "✈️"), 
+            vjust = -0.5, 
+            hjust = 0.5, 
+            size = 5)
+  labs(title = "Yearly Aircraft Crash Fatalities",
+       x = "Year", 
+       y = "Total Fatalities")
+
+ggplotly(p)
+
+# Creating Animated Plot
+Image <- "images/airplane.png"  #Save Image
+
+
+p <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
+  geom_line() +
+  geom_image(aes(image = Image), size = 0.05) +  #
+  labs(title = "Yearly Aircraft Crash Fatalities",
+       x = "Year", 
+       y = "Total Fatalities") +
+  theme_minimal()
+
+# Animating the plot
+animated_plot <- p +
+  transition_reveal(Year) +
+  ease_aes('linear') +
+  shadow_mark()
+
+animate(animated_plot, nframes = 200, width = 800, height = 600, renderer = gifski_renderer())
+
+
 ```
 
 ```{r radarchart_data, include=FALSE}
