@@ -55,7 +55,7 @@ knitr::opts_chunk$set(
   fig.asp = 0.618,      # the golden ratio
   fig.retina = 1,       # dpi multiplier for displaying HTML output on retina
   fig.align = "center", # center align figures
-  dpi = 300,            # higher dpi, sharper image
+  dpi = 180,            # higher dpi, sharper image
   message = FALSE
 )
 ```
