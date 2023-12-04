@@ -5,15 +5,14 @@ editor: visual
 ---
 
 ```{r setup}
-install.packages("rgeos")
+#install.packages("rgeos")
 pacman::p_load(tidyverse,
                geojsonio,
                RColorBrewer,
                #rgdal,
                here,
                broom,
-               sf,
-               #rgeos)
+               sf)
 ```
 
 ```{r dataset}
@@ -97,12 +96,12 @@ view(hex_fortify)
 ```
 
 ```{r}
-mean(flights_ntsb$X2022) 
-range(flights_ntsb$X2022) 
+mean(flights_ntsb$`2022`) 
+range(flights_ntsb$`2022`) 
 
 #Create bins
 #These labels will appear on the legend
-flights_ntsb$X2022 <- cut( flights_ntsb$ , breaks=c(1000, 1500, 2000, 2500, 3000+), labels=c("1000-1500", "1500-2000", "2000-2500", "2500+"))
+flights_ntsb$`2022` <- cut( flights_ntsb$`2022` , breaks=c(1000, 1500, 2000, 2500, 3000), labels=c("1000-1500", "1500-2000", "2000-2500", "2500+"))
 
 #Select a color ramp 
 #Display all colorblind-friendly ColorBrewer palettes
@@ -115,11 +114,11 @@ my_palette <- brewer.pal(n=4, name="Greens")
 
 ```{r}
 ggplot() +
-  geom_polygon(data=hex_fortify, aes(fill= hex_fortify$fatal_injury_count, x=long, x=lat, group=group), size=0, alpha=0.9, color="#f7f7f7") +
-  geom_text(data=centers, aes(x=x, y=y, label=id), color="#252525", size=5) + #Add our labels
+  geom_polygon(data=hex_fortify, aes(fill= hex_fortify$fatal_injury_count, x=long, y=lat, group=group), size=0, alpha=0.9, color="#f7f7f7") +
+  #geom_text(data=centers, aes(x=x, y=y, label=id), color="#252525", size=5) + #Add our labels
   theme_void() +
   scale_fill_manual(
-    values=my_palette, 
+    values= "", 
     name="Map of Fatal Injuries in 2022", #Add legend title 
     guide= guide_legend( keyheight=unit(4, units="mm"), keywidth=unit(10, units="mm"), direction="horizontal", label.position="bottom", title.position="top", nrow=1)
   ) +

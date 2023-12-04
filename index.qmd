@@ -125,7 +125,6 @@ flights_ntsb_timeseries <- flights_ntsb |>
     total_serious_injuries = sum(serious_injury_count, na.rm = TRUE),
     total_minor_injuries = sum(minor_injury_count, na.rm = TRUE)
   )
-
 #time series plot ----
 tp <-ggplot(flights_ntsb_timeseries, aes(x = event_year, y = total_fatalities)) +
   geom_line() + 
