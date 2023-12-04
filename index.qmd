@@ -126,6 +126,13 @@ flights_ntsb_timeseries <- flights_ntsb |>
 fcdata <- read_csv("data/flight_crash_data_NTSB.csv")
 glimpse(fcdata)
 
+# Aggregating data by year----
+fcdata <- fcdata |>
+  mutate(Year = year(EventDate)) |>
+  group_by(Year) |>
+  summarise(Total_Fatalities = sum(FatalInjuryCount, na.rm = TRUE),
+            Total_Serious_Injuries = sum(SeriousInjuryCount, na.rm = TRUE),
+            Total_Minor_Injuries = sum(MinorInjuryCount, na.rm = TRUE))
 
 # Aggregating data by year----
 fcdata <- fcdata |>
