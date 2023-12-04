@@ -35,6 +35,8 @@ pacman::p_load(tidyverse,
                MetBrewer,
                ggsci,
                fmsb)
+
+pacman::p_load_gh("BlakeRMills/MoMAColors")
 ```
 
 ```{r ggplot_setup, message=FALSE, include=FALSE}
@@ -226,7 +228,7 @@ flights_radial_bar_crashes
 flights_radial_bar_injuries <-
   ggplot(flights_ntsb_radial,
          aes(x = fct_rev(flight_phase), y = total_injuries, 
-             fill = flight_phase)) +
+             fill = fct_rev(flight_phase))) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_text(hjust = 1.2, size = 4.5, 
             aes(y = 0, label = total_injuries)) +
@@ -244,7 +246,7 @@ flights_radial_bar_injuries <-
     limits = c(0, 13200)
   ) +
   scale_fill_manual(
-    values = met.brewer("Veronese")
+    values = moma.colors("VanGogh")
   ) +
   theme(
     legend.position = "bottom",
@@ -268,36 +270,11 @@ flights_radial_bar_injuries <-
     )
 
 flights_radial_bar_injuries
+
 # remaining - titles, some texts
 # interactive - plotly
 # animate - plotly by years or gganimate bar growth
 # sources:
 # gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
 # ploty - https://plotly.com/r/animations/
-```
-
-```{r}
-flights_ntsb_radial <- flights_ntsb |>
-  group_by(flight_phase) |>
-  summarise(
-    total_crashes = n(),
-    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
-  ) |>
-  drop_na() |>
-  arrange(desc(total_crashes))
-
-flights_ntsb_radial <- flights_ntsb_radial |>
-  slice(1:5) |>
-  bind_rows(
-    flights_ntsb_radial |>
-      slice(-(1:5)) |>
-      summarize(
-        flight_phase = "Other",
-        total_crashes = sum(total_crashes),
-        total_injuries = sum(total_injuries)
-      )
-  ) |>
-  mutate(flight_phase = fct_inorder(flight_phase))
-
-flights_ntsb_radial
 ```

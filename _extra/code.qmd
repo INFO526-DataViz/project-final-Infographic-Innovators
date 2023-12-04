@@ -1,26 +1,314 @@
+---
+title: "From Takeoff to Touchdown: Dissecting Data on Air Disasters"
+subtitle: "INFO 526 - Project Final"
+author: 
+  - name: "Infographic Innovators - Antonio, Bharath, Eshaan, Thanoosha"
+    affiliations:
+      - name: "School of Information, University of Arizona"
+description: "A shiny app integration with aircraft crash analysis"
+format:
+   html:
+    code-tools: true
+    code-overflow: wrap
+    embed-resources: true
+editor: visual
+execute:
+  warning: false
+  echo: false
+---
+
+```{r load_packages, message=FALSE, include=FALSE}
+# GETTING THE LIBRARIES
+if (!require(pacman))
+  install.packages(pacman)
 
 
-```{r}
-#| label: load-pkgs
-#| message: false
-
-suppressWarnings(library(tidyverse))
-library(knitr)
-library(lubridate)
-
+pacman::p_load(tidyverse,
+               dplyr,
+               janitor,
+               dlookr,
+               here,
+               ggpubr,
+               maps,
+               plotly,
+               gganimate,
+               MetBrewer,
+               ggsci,
+               sf,
+               fmsb)
 ```
 
+```{r ggplot_setup, message=FALSE, include=FALSE}
+# setting theme for ggplot2
+ggplot2::theme_set(ggplot2::theme_minimal(base_size = 14, base_family = "sans"))
 
-## Dataset Setup
-```{r}
+# setting width of code output
+options(width = 65)
 
-
+# setting figure parameters for knitr
+knitr::opts_chunk$set(
+  fig.width = 8,        # 8" width
+  fig.asp = 0.618,      # the golden ratio
+  fig.retina = 1,       # dpi multiplier for displaying HTML output on retina
+  fig.align = "center", # center align figures
+  dpi = 300,            # higher dpi, sharper image
+  message = FALSE
+)
 ```
 
+```{r load_dataset, include=FALSE}
+# Reading the data using read_csv
+flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
+```
 
+## Abstract
 
-## Plots
-```{r}
+```{r remove_columns, include=FALSE}
+# selecting columns which are required for our analysis
+flights_ntsb <- flights_ntsb |>
+  select(
+    EventType, EventDate,
+    City, State,
+    ReportType, HighestInjuryLevel,
+    FatalInjuryCount, SeriousInjuryCount,
+    MinorInjuryCount, ProbableCause,
+    Latitude, Longitude,
+    AirCraftCategory, NumberOfEngines, 
+    AirCraftDamage, WeatherCondition
+  ) |>
+  # cleaning column names using janitor package
+  clean_names()
+```
+
+```{r data_wrangle, include=FALSE}
+flights_ntsb <- flights_ntsb |>
+  mutate(event_time = format(event_date, "%H:%M"),
+         .after = event_date) |>
+  mutate(
+    event_date = as.Date(event_date),
+    flight_phase = case_when(
+      grepl("Landing", probable_cause, ignore.case = TRUE) ~ "Landing",
+      grepl("Stop", probable_cause, ignore.case = TRUE) ~ "Landing",
+      grepl("Approach", probable_cause, ignore.case = TRUE) ~ "Approach",
+      grepl("Takeoff", probable_cause, ignore.case = TRUE) ~ "Takeoff",
+      grepl("Take-off", probable_cause, ignore.case = TRUE) ~ "Takeoff",
+      grepl("Maneuvering", probable_cause, ignore.case = TRUE) ~ "Maneuvering",
+      grepl("Climb", probable_cause, ignore.case = TRUE) ~ "Climb",
+      grepl("Descent", probable_cause, ignore.case = TRUE) ~ "Descent",
+      grepl("Taxi", probable_cause, ignore.case = TRUE) ~ "Taxi",
+      grepl("Cruise", probable_cause, ignore.case = TRUE) ~ "Cruise",
+      grepl("Hover", probable_cause, ignore.case = TRUE) ~ "Hover",
+      grepl("Standing", probable_cause, ignore.case = TRUE) ~ "Standing",
+      grepl("Uncontrolled Descent", probable_cause, ignore.case = TRUE) ~ "Uncontrolled Descent",
+      grepl("Emergency", probable_cause, ignore.case = TRUE) ~ "Emergency",
+      grepl("Holding", probable_cause, ignore.case = TRUE) ~ "Holding",
+    ),
+    .after = probable_cause
+  ) |>
+  mutate(
+    event_year = year(event_date),
+    event_month = month(event_date)
+  )
+```
+
+```{r timeseries_data, include=FALSE}
+flights_ntsb_timeseries <- flights_ntsb |>
+  group_by(event_year) |>
+  summarise(
+    total_fatalities = sum(fatal_injury_count, na.rm = TRUE),
+    total_serious_injuries = sum(serious_injury_count, na.rm = TRUE),
+    total_minor_injuries = sum(minor_injury_count, na.rm = TRUE)
+  )
+```
+
+```{r radarchart_data, include=FALSE}
+flights_ntsb_radar <- flights_ntsb |>
+  mutate(
+    weather_condition = case_when(
+      weather_condition == "IFR" ~ "IMC",
+      weather_condition == "VFR" ~ "VMC",
+      weather_condition == "Unknown" ~ "UNK",
+      is.na(weather_condition) ~ "UNK",
+      TRUE ~ weather_condition
+    )
+  ) |>
+  group_by(event_month, weather_condition) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  )
+```
+
+```{r radial_plot}
+flights_ntsb_radial <- flights_ntsb |>
+  group_by(flight_phase) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  drop_na() |>
+  arrange(desc(total_crashes))
+
+flights_ntsb_radial <- flights_ntsb_radial |>
+  slice(1:5) |>
+  bind_rows(
+    flights_ntsb_radial |>
+      slice(-(1:5)) |>
+      summarize(
+        flight_phase = "Other",
+        total_crashes = sum(total_crashes),
+        total_injuries = sum(total_injuries)
+      )
+  ) |>
+  mutate(flight_phase = fct_inorder(flight_phase))
+
+flights_ntsb_radial
+```
+
+```{r radial_plot_crashes}
+#| code-fold: true
+#| code-summary: "Radial Bar Plot - Total Crashes"
+
+flights_radial_bar_crashes <-
+  ggplot(flights_ntsb_radial,
+         aes(x = fct_rev(flight_phase), y = total_crashes, 
+             fill = flight_phase)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_text(hjust = 1.2, size = 4.5, 
+            aes(y = 0, label = total_crashes)) +
+  coord_polar(theta = "y") +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "Phase of Flight",
+    title = "",
+    subtitle = "",
+    caption = ""
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 27000, by = 5000),
+    limits = c(0, 27000)
+  ) +
+  scale_fill_frontiers() +
+  theme(
+    legend.position = "bottom",
+    axis.text = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank()
+    ) +
+  guides(
+      fill = guide_legend(
+        nrow = 1,
+        direction = "horizontal",
+        title.position = "top",
+        title.hjust = 0.5,
+        label.position = "bottom",
+        label.hjust = 1,
+        label.vjust = 1,
+        label.theme = element_text(lineheight = 0.25, size = 14),
+        keywidth = 1.5,
+        keyheight = 0.5
+      )
+    )
+
+flights_radial_bar_crashes
+# remaining - titles, some texts
+# interactive - plotly
+# animate - plotly by years or gganimate bar growth
+# sources:
+# gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
+# ploty - https://plotly.com/r/animations/
+```
+
+```{r radial_plot_injuries}
+#| code-fold: true
+#| code-summary: "Radial Bar Plot - Total Injuries"
+
+flights_radial_bar_injuries <-
+  ggplot(flights_ntsb_radial,
+         aes(x = fct_rev(flight_phase), y = total_injuries, 
+             fill = flight_phase)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_text(hjust = 1.2, size = 4.5, 
+            aes(y = 0, label = total_injuries)) +
+  coord_polar(theta = "y") +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "Phase of Flight",
+    title = "",
+    subtitle = "",
+    caption = ""
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 13200, by = 2500),
+    limits = c(0, 13200)
+  ) +
+  scale_fill_manual(
+    values = met.brewer("Veronese")
+  ) +
+  theme(
+    legend.position = "bottom",
+    axis.text = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank()
+    ) +
+  guides(
+      fill = guide_legend(
+        nrow = 1,
+        direction = "horizontal",
+        title.position = "top",
+        title.hjust = 0.5,
+        label.position = "bottom",
+        label.hjust = 1,
+        label.vjust = 1,
+        label.theme = element_text(lineheight = 0.25, size = 14),
+        keywidth = 1.5,
+        keyheight = 0.5
+      )
+    )
+
+flights_radial_bar_injuries
+# remaining - titles, some texts
+# interactive - plotly
+# animate - plotly by years or gganimate bar growth
+# sources:
+# gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
+# ploty - https://plotly.com/r/animations/
+```
+
+```{r year_radial}
+top5_phases <- flights_ntsb |>
+  group_by(flight_phase) |>
+  summarize(total_crashes = n()) |>
+  arrange(desc(total_crashes)) |>
+  top_n(5, total_crashes)
+
+flights_ntsb_radial_year <- flights_ntsb |>
+  group_by(flight_phase, event_year) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  drop_na() |>
+  arrange(desc(total_crashes)) |>
+  mutate(flight_phase = fct_other(flight_phase, 
+                                  keep = pull(top5_phases, flight_phase))) |>
+  group_by(flight_phase, event_year) |>
+  summarize(total_crashes = sum(total_crashes),
+            total_injuries = sum(total_injuries))
+
+flights_ntsb_radial_decade <- flights_ntsb_radial_year |>
+  mutate(event_decade = 10 * (event_year %/% 10)) |>
+  group_by(flight_phase, event_decade) |>
+  summarize(total_crashes = sum(total_crashes),
+            total_injuries = sum(total_injuries))
+```
+
+```{r flight_maps}
+flights_ntsb_maps <- flights_ntsb |>
+  subset(!is.na(longitude) & !is.na(latitude)
+         & latitude < 75 & latitude > 10 & longitude < -60)
 
 
 ```
