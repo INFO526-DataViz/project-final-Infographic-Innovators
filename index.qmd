@@ -184,7 +184,62 @@ flights_ntsb_radar <- flights_ntsb |>
   summarise(
     total_crashes = n(),
     total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  arrange(event_month)
+```
+
+```{r radar_chart, include=FALSE}
+radar_trace_r1 <- flights_ntsb_radar |>
+  filter(weather_condition %in% c("IMC")) |>
+  pull(total_crashes)
+
+radar_trace_r1 <-
+  c(
+    radar_trace_r1,
+    flights_ntsb_radar |> 
+      filter(weather_condition == "IMC" & event_month == 1) |> 
+      pull(total_crashes)
   )
+
+radar_trace_r2 <- flights_ntsb_radar |>
+  filter(weather_condition %in% c("VMC")) |>
+  pull(total_crashes)
+
+radar_trace_r2 <-
+  c(
+    radar_trace_r2,
+    flights_ntsb_radar |> 
+      filter(weather_condition == "VMC" & event_month == 1) |> 
+      pull(total_crashes)
+  )
+
+radar_theta <- c("Jan" , "Feb" , "Mar" , "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec", "Jan")
+```
+
+```{r radar_chart_plotly}
+rader_chart <- plot_ly(type = 'scatterpolar',
+               fill = 'toself',
+               mode = 'lines+markers')
+
+rader_chart <- rader_chart |>
+  add_trace(
+    r = radar_trace_r2,
+    theta = radar_theta,
+    name = 'VMC'
+  )
+rader_chart <- rader_chart |>
+  add_trace(
+    r = radar_trace_r1,
+    theta = radar_theta,
+    name = 'IMC'
+  )
+rader_chart <- rader_chart |>
+  layout(polar = list(radialaxis = list(
+    visible = T,
+    range = c(0, 10500)
+  )))
+
+rader_chart
 ```
 
 ```{r radial_plot}
