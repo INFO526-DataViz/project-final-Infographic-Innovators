@@ -167,7 +167,7 @@ p <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
 ggplotly(p)
 
 # Creating Animated Plot
-Image <- "images/airplane.png"  #Save Image
+Image <- "images/airplane.png"  #Save Image instead of inserting emoji
 
 
 p <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
