@@ -23,13 +23,76 @@ pacman::p_load(tidyverse,
                ggimage) 
 
 
-
-
-
 # flight_crash_data_NTSB <- read_csv("data/flight_crash_data_NTSB.csv")
 # View(flight_crash_data_NTSB)
 fcdata <- read_csv("data/flight_crash_data_NTSB.csv")
 glimpse(fcdata)
+
+Image <- "images/airplane.png"  
+
+# Total fatality plot
+p_fatalities <- ggplot(fcdata, aes(x = Year, y = Total_Fatalities)) +
+  geom_line() +
+  geom_image(aes(image = Image), size = 0.05) +  # Adjust size as needed
+  labs(title = "Yearly Aircraft Crash Fatalities",
+       x = "Year", 
+       y = "Total Fatalities") +
+  theme_minimal()
+
+animated_fatalities <- p_fatalities +
+  transition_reveal(Year) +
+  ease_aes('linear') +
+  shadow_mark()
+
+animate(animated_fatalities, nframes = 200, width = 800, height = 600, renderer = gifski_renderer())
+
+#Total serious plot
+p_serious_injuries <- ggplot(fcdata, aes(x = Year, y = Total_Serious_Injuries)) +
+  geom_line() +
+  geom_image(aes(image = Image), size = 0.05) +  # Adjust size as needed
+  labs(title = "Yearly Aircraft Crash Serious Injuries",
+       x = "Year", 
+       y = "Total Serious Injuries") +
+  theme_minimal()
+
+animated_serious_injuries <- p_serious_injuries +
+  transition_reveal(Year) +
+  ease_aes('linear') +
+  shadow_mark()
+
+animate(animated_serious_injuries, nframes = 200, width = 800, height = 600, renderer = gifski_renderer())
+
+
+#total minor injuries 
+p_minor_injuries <- ggplot(fcdata, aes(x = Year, y = Total_Minor_Injuries)) +
+  geom_line() +
+  geom_image(aes(image = Image), size = 0.05) +  # Adjust size as needed
+  labs(title = "Yearly Aircraft Crash Minor Injuries",
+       x = "Year", 
+       y = "Total Minor Injuries") +
+  theme_minimal()
+
+animated_minor_injuries <- p_minor_injuries +
+  transition_reveal(Year) +
+  ease_aes('linear') +
+  shadow_mark()
+
+animate(animated_minor_injuries, nframes = 200, width = 800, height = 600, renderer = gifski_renderer())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Aggregating data by year----
@@ -92,7 +155,11 @@ animated_plot <- p +
   ease_aes('linear') +
   shadow_mark()
 
-animate(animated_plot, nframes = 200, width = 800, height = 600, renderer = gifski_renderer())
+animate(animated_plot, 
+        nframes = 200, 
+        width = 800, 
+        height = 600, 
+        renderer = gifski_renderer())
 
 
 
@@ -165,15 +232,15 @@ library(dplyr)
 library(tidyr)
 
 # Assuming 'fcdata' is your dataframe
-fcdata <- fcdata %>%
-  mutate(Year = year(EventDate)) %>%
-  group_by(Year) %>%
+fcdata <- fcdata |>
+  mutate(Year = year(EventDate)) |>
+  group_by(Year) |>
   summarise(Total_Fatalities = sum(FatalInjuryCount, na.rm = TRUE),
             Total_Serious_Injuries = sum(SeriousInjuryCount, na.rm = TRUE),
             Total_Minor_Injuries = sum(MinorInjuryCount, na.rm = TRUE))
 
 # Reshaping the data to a longer format
-long_fcdata <- fcdata %>%
+long_fcdata <- fcdata |>
   pivot_longer(cols = starts_with("Total_"), 
                names_to = "Category", 
                values_to = "Count")
@@ -187,7 +254,7 @@ p <- ggplot(long_fcdata, aes(x = Year,
                              color = Category, 
                              group = Category)) +
   geom_line() +
-  geom_image(aes(image = Image), size = 0.05) +  # Adjust size as needed
+  geom_image(aes(image = Image), size = 0.04) +  # Adjust size as needed
   labs(title = "Yearly Aircraft Crash Statistics",
        x = "Year", 
        y = "Count") +
@@ -200,6 +267,69 @@ animated_plot <- p +
   shadow_mark()
 
 animate(animated_plot, nframes = 200, width = 800, height = 600, renderer = gifski_renderer())
+
+#colors squares above 
+
+
+
+
+# Assuming 'fcdata' is your dataframe
+fcdata <- fcdata |>
+  mutate(Year = year(EventDate)) |>
+  group_by(Year) |>
+  summarise(Total_Fatalities = sum(FatalInjuryCount, na.rm = TRUE),
+            Total_Serious_Injuries = sum(SeriousInjuryCount, na.rm = TRUE),
+            Total_Minor_Injuries = sum(MinorInjuryCount, na.rm = TRUE))
+
+# Reshaping the data to a longer format
+long_fcdata <- fcdata |>
+  pivot_longer(cols = starts_with("Total_"), 
+               names_to = "Category", 
+               values_to = "Count")
+
+# Image for the plot
+Image <- "images/airplane.png"
+
+# Creating the animated plot
+p <- ggplot(long_fcdata, aes(x = Year, 
+                             y = Count, 
+                             color = Category, 
+                             group = Category)) +
+  geom_line() +
+  geom_point(aes(y = ifelse(Year == max(Year), 
+                            Count, NA)), 
+             size = 0) + # Invisible points
+  geom_image(aes(y = ifelse(Year == max(Year), 
+                            Count, NA), 
+                 image = Image), size = 0.05, na.rm = TRUE) +
+  labs(title = "Yearly Aircraft Crash Statistics",
+       x = "Year", 
+       y = "Count") +
+  theme_minimal()
+
+# Animating the plot
+animated_plot <- p +
+  transition_reveal(Year) +
+  ease_aes('linear') +
+  shadow_mark()
+
+animate(animated_plot, nframes = 200, 
+        width = 800, height = 600, renderer = gifski_renderer())
+
+
+#invis above 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
