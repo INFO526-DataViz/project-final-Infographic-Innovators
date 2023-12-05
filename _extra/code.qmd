@@ -43,7 +43,10 @@ pacman::p_load(tidyverse,
                geojsonio,
                RColorBrewer,
                sf,
-               broom)
+               sp,
+               tibble,
+               broom,
+               viridis)
 ```
 
 ```{r ggplot_setup, message=FALSE, include=FALSE}
@@ -347,90 +350,44 @@ flights_ntsb_maps_updated <-
   summarize(
     total_crashes = sum(total_crashes),
     total_injuries = sum(total_injuries)
-  ) |>
-  arrange(state) |>
-  mutate(state_id = as.character(row_number(state)))
+  )
 ```
 
-```{r geom_spatial}
-spdf <- geojson_read(here("data", "us_states_hexgrid.geojson"),  what = "sp")
-spdf@data = spdf@data |>
-  mutate(google_name = gsub(" \\(United States\\)", "", google_name)) |>
-  subset(google_name != "District of Columbia")
+```{r read_shp}
+options(scipen = 999)
+shp <- read_sf(here("data", "us_states_hexgrid.shp")) |>
+  mutate(google_nam = gsub(" \\(United States\\)", "", google_nam)) |>
+  subset(google_nam != "District of Columbia") |>
+  arrange(google_nam)
 
-#Fortify the data to create a data format output
-#This format is needed to plot the map using the ggplot2 package
-hex_fortify <- tidy(spdf, geometry = "google_name") 
-
-# assign ids to states
-# then join
-
-hex_fortify <- hex_fortify %>%
-       left_join(. , flights_ntsb_maps_updated, by=c("id"="state_id"))
+flights_ntsb_shp <- merge(shp,
+                         flights_ntsb_maps_updated,
+                         by.x = 'google_nam',
+                         by.y = 'state')
 ```
 
-```{r color_scale}
-#Explore descriptive statistics 
-mean(flights_ntsb_maps_updated$total_crashes)  #The sum of the values divided by the number of values
-range(flights_ntsb_maps_updated$total_crashes) #A measure of dispersion within the dataset
-
-#Create bins
-#These labels will appear on the legend
-hex_fortify$bin <- cut( hex_fortify$total_crashes, breaks = c(1000, 1500, 2000, 2500, 3000), labels = c("1000-1500", "1500-2000", "2000-2500", "2500+"))
-
-#Choose a sequential ramp for our map 
-#Where n = number of data classes 
-my_palette <- brewer.pal(n=4, name="Greens")
-```
-
-```{r state_codes}
-spdf_sf <- st_as_sf(spdf)
-centroids <- st_centroid(spdf_sf)
-abbreviations <- spdf@data$iso3166_2
-
-# Combine into a data frame
-centers <- cbind.data.frame(data.frame(centroids, id = abbreviations))
-```
-
-```{r hex_bin_map_plot}
-# reference - https://r-graph-gallery.com/328-hexbin-map-of-the-usa.html
-# no need to use latitude and longitude from our data, use geojson_read as they suggested from 
-# I uploaded the data to data folder
-# data can be found here - https://team.carto.com/u/andrew/tables/andrew.us_states_hexgrid/public/map
-
-ggplot() +
-  geom_polygon(
-    data = hex_fortify,
-    aes(
-      fill = total_crashes,
-      x = long,
-      y = lat,
-      group = group
-    ),
-    size = 0,
-    alpha = 0.9,
-    color = "#f7f7f7"
-  ) +
-  geom_text(data=centers, aes(x=x, y=y, label=id), color="#252525", size=5) + #Add our labels
+```{r hex_bin_map}
+ggplot(flights_ntsb_shp) +
+  geom_sf(aes(fill = total_crashes)) +
+  geom_sf_text(aes(geometry = geometry,
+                   label = iso3166_2)) +
   theme_void() +
-  ggtitle("Map of Fatal Injuries in the United States in 2022 ") + #Add map title
+  scale_fill_gradientn(
+    colors = met.brewer("Hokusai2"),
+    name = "Total Number of Crashes",
+    labels = scales::comma,
+    guide = guide_legend(
+      keyheight = unit(3, units = "mm"),
+      keywidth = unit(12, units = "mm"),
+      label.position = "bottom",
+      title.position = "top",
+      nrow = 1
+    )
+  ) +
   theme(
-    legend.position = c(0.5, 0.9),
-    #Choose legend positioning (horizontal, vertical)
-    text = element_text(color = "#f7f7f7", face = "bold"),
-    #This is where we customize the legend text
-    plot.background = element_rect(fill = "#252525", color = NA),
-    #Choose the colour of the background behind the title
-    panel.background = element_rect(fill = "#252525", color = NA),
-    #This is the main background
-    legend.background = element_rect(fill = "#252525", color = NA),
-    #This is the legend background
-    plot.title = element_text(
-      size = 18,
-      hjust = 0.5,
-      color = "#f7f7f7",
-      face = "bold"
-    ),
-    #This we where we customize the title
+    legend.position = 'top',
+    plot.background = element_rect(fill = "#f5f5f2", color = NA),
+    panel.background = element_rect(fill = "#f5f5f2", color = NA),
+    legend.background = element_rect(fill = "#f5f5f2", color = NA)
   )
 ```
