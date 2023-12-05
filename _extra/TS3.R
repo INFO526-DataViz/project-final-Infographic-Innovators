@@ -21,7 +21,8 @@ pacman::p_load(tidyverse,
                gifski, 
                magick,
                ggimage, 
-               patchwork) 
+               patchwork, 
+               animation) 
 
 
 # flight_crash_data_NTSB <- read_csv("data/flight_crash_data_NTSB.csv")
@@ -469,61 +470,50 @@ animate_category(minor_injuries_df, "Total_Minor_Injuries", "Total Minor Injurie
 
 
 
+
+
+
+
 # Patchwork is B----
 # Extract the latest point for each year and each category
-# Assuming long_fcdata is already created as per your previous code
 
-# Latest points for Total Fatalities
-latest_fatalities <- long_fcdata %>%
-  filter(Category == "Total_Fatalities") %>%
-  arrange(Year) %>%
+fcdata <- fcdata %>%
+  mutate(Year = year(EventDate)) %>%
   group_by(Year) %>%
-  summarize(Count = last(Count))
-
-# Latest points for Total Serious Injuries
-latest_serious_injuries <- long_fcdata %>%
-  filter(Category == "Total_Serious_Injuries") %>%
-  arrange(Year) %>%
-  group_by(Year) %>%
-  summarize(Count = last(Count))
-
-# Latest points for Total Minor Injuries
-latest_minor_injuries <- long_fcdata %>%
-  filter(Category == "Total_Minor_Injuries") %>%
-  arrange(Year) %>%
-  group_by(Year) %>%
-  summarize(Count = last(Count))
-
-# Function to create animated plot
-create_animated_plot <- function(data, latest_data, category_label, image_path) {
-  p <- ggplot(data, aes(x = Year, y = Count)) +
-    geom_line() +
-    geom_image(data = latest_data, aes(image = image_path, y = Count), size = 0.05) +
-    labs(title = paste("Yearly Aircraft Crash Statistics:", category_label),
-         x = "Year", y = "Count") +
-    theme_minimal()
-  
-  p + transition_reveal(Year) +
-    ease_aes('linear') +
-    shadow_mark()
-}
-
-# Create animated plots
-animated_plot_fatalities <- create_animated_plot(fcdata %>% filter(Category == "Total_Fatalities"),
-                                                 latest_fatalities, "Total Fatalities", Image)
-animated_plot_serious_injuries <- create_animated_plot(fcdata %>% filter(Category == "Total_Serious_Injuries"),
-                                                       latest_serious_injuries, "Total Serious Injuries", Image)
-animated_plot_minor_injuries <- create_animated_plot(fcdata %>% filter(Category == "Total_Minor_Injuries"),
-                                                     latest_minor_injuries, "Total Minor Injuries", Image)
-# Combine using patchwork
-combined_animated_plot <- (animated_plot_fatalities / animated_plot_serious_injuries / animated_plot_minor_injuries) +
-  plot_layout(nrow = 3)
-
-# Animate the combined plot
-animate(combined_animated_plot, nframes = 200, width = 800, height = 1800, renderer = gifski_renderer())
+  summarise(Total_Fatalities = sum(FatalInjuryCount, na.rm = TRUE),
+            Total_Serious_Injuries = sum(SeriousInjuryCount, na.rm = TRUE),
+            Total_Minor_Injuries = sum(MinorInjuryCount, na.rm = TRUE)) %>%
+  ungroup() %>%
+  pivot_longer(cols = starts_with("Total_"), names_to = "Category", values_to = "Count") %>%
+  mutate(Category = case_when(Category == "Total_Fatalities" ~ "Fatalities",
+                              Category == "Total_Serious_Injuries" ~ "Serious Injuries",
+                              Category == "Total_Minor_Injuries" ~ "Minor Injuries"))
 
 
 
+# Creating the animated plot
+animation_fcdata <- ggplot(fcdata, aes(Year, Count, group = Category, color = Category)) +
+  geom_line(show.legend = FALSE) +
+  geom_segment(aes(xend = max(Year) + 0.1, yend = Count), linetype = 2, colour = 'grey', show.legend = FALSE) +
+  geom_point(size = 2, show.legend = FALSE) +
+  geom_text(aes(x = max(Year) + 0.1, label = Category, color = "#000000"), hjust = 0, show.legend = FALSE) +
+  transition_reveal(Year) +
+  coord_cartesian(clip = 'off') +
+  theme(plot.title = element_text(size = 20)) +
+  labs(title = 'Aircraft Crash Statistics Over Time',
+       y = 'Count',
+       x = element_blank()) +
+  theme(plot.margin = margin(5.5, 40, 5.5, 5.5))
+
+# Animating the plot
+animated_fcdata <- animate(animation_fcdata,
+                           fps = 10,
+                           duration = 25,
+                           width = 800, height = 200,
+                           renderer = gifski_renderer("images/animated_fcdata.gif"))
+
+# Display or save the animated plot
+animated_fcdata
 
 
 
