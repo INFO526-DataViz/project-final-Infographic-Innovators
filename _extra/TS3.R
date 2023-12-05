@@ -20,7 +20,8 @@ pacman::p_load(tidyverse,
                emojifont, 
                gifski, 
                magick,
-               ggimage) 
+               ggimage, 
+               patchwork) 
 
 
 # flight_crash_data_NTSB <- read_csv("data/flight_crash_data_NTSB.csv")
@@ -159,7 +160,7 @@ ggplotly(p)
 #        y = "Total Fatalities") +
 #   theme_minimal()
 
-#Total transition with plane 
+#Total transition with plane ----
 Image <- "images/airplane.png"  
 
 
@@ -219,8 +220,7 @@ long_fcdata <- fcdata |>
                names_to = "Category", 
                values_to = "Count")
 
-# Image for the plot
-Image <- "images/airplane.png"
+
 
 # Time series plot with all categories
 tp <- ggplot(long_fcdata, 
@@ -249,7 +249,7 @@ p <- ggplot(long_fcdata, aes(x = Year,
 ggplotly(p)
 
 
-# layers in gif 
+# layers in gif? didn't really work for me 
 
 
 # trying for animated version of 3 categories 
@@ -272,10 +272,10 @@ Image <- "images/airplane.png"
 # Creating the animated plot
 p <- ggplot(long_fcdata, aes(x = Year, 
                              y = Count, 
-                             color = Category, 
+                             color = Category,
                              group = Category)) +
   geom_line() +
-  geom_image(aes(image = Image), size = 0.04) +  # Adjust size as needed
+  geom_image(aes(image = Image), size = 0.04) +  
   labs(title = "Yearly Aircraft Crash Statistics",
        x = "Year", 
        y = "Count") +
@@ -297,7 +297,92 @@ animate(animated_plot,
 
 
 
-#Below is now squares 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# trying for animated version of 3 categories 
+fcdata <- fcdata |>
+  mutate(Year = year(EventDate)) |>
+  group_by(Year) |>
+  summarise(Total_Fatalities = sum(FatalInjuryCount, na.rm = TRUE),
+            Total_Serious_Injuries = sum(SeriousInjuryCount, na.rm = TRUE),
+            Total_Minor_Injuries = sum(MinorInjuryCount, na.rm = TRUE))
+
+# Reshaping the data to a longer format
+long_fcdata <- fcdata |>
+  pivot_longer(cols = starts_with("Total_"), 
+               names_to = "Category", 
+               values_to = "Count")
+
+# Image for the plot
+Image <- "images/airplane.png"
+
+# Creating the animated plot
+p <- ggplot(long_fcdata, aes(x = Year, 
+                             y = Count, 
+                             color = Category,
+                             group = Category)) +
+  geom_line() +
+  geom_image(data = long_fcdata |>#each it's own layer?
+               filter(Category == "Total_Fatalities"), aes(image = Image), size = 0.04) +
+  geom_image(data = long_fcdata |>
+               filter(Category == "Total_Serious_Injuries"), aes(image = Image), size = 0.04) +
+  geom_image(data = long_fcdata |>
+               filter(Category == "Total_Minor_Injuries"), aes(image = Image), size = 0.04) +  
+  labs(title = "Yearly Aircraft Crash Statistics",
+       x = "Year", 
+       y = "Count") +
+  theme_minimal()
+
+# Animating the plot
+animated_plot <- p +
+  transition_reveal(Year) +
+  ease_aes('linear') +
+  shadow_mark()
+
+animate(animated_plot, 
+        nframes = 200, 
+        width = 800, 
+        height = 600, 
+        renderer = gifski_renderer())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Below is invis squares 
 fcdata <- fcdata |>
   mutate(Year = year(EventDate)) |>
   group_by(Year) |>
@@ -340,13 +425,102 @@ animated_plot <- p +
 animate(animated_plot, nframes = 200, 
         width = 800, height = 600, renderer = gifski_renderer())
 
+#invis above 
 
 
 
 
 
 
+# Creating separate data frames for each category----
+fatalities_df <- fcdata %>%
+  select(Year, Total_Fatalities)
 
+serious_injuries_df <- fcdata %>%
+  select(Year, Total_Serious_Injuries)
+
+minor_injuries_df <- fcdata %>%
+  select(Year, Total_Minor_Injuries)
+# Function to create and animate a plot for a given data frame and y-value
+animate_category <- function(data, y_value, y_label) {
+  p <- ggplot(data, aes(x = Year, y = !!sym(y_value))) +
+    geom_line() +
+    geom_image(aes(image = Image), size = 0.05) +
+    labs(title = paste("Yearly Aircraft Crash Statistics:", y_label),
+         x = "Year", 
+         y = y_label) +
+    theme_minimal()
+  
+  animated_plot <- p +
+    transition_reveal(Year) +
+    ease_aes('linear') +
+    shadow_mark()
+  
+  animate(animated_plot, nframes = 200, width = 800, height = 600, renderer = gifski_renderer())
+}
+
+# Animate each category
+animate_category(fatalities_df, "Total_Fatalities", "Total Fatalities")
+animate_category(serious_injuries_df, "Total_Serious_Injuries", "Total Serious Injuries")
+animate_category(minor_injuries_df, "Total_Minor_Injuries", "Total Minor Injuries")
+
+
+
+
+
+
+# Patchwork is B----
+# Extract the latest point for each year and each category
+# Assuming long_fcdata is already created as per your previous code
+
+# Latest points for Total Fatalities
+latest_fatalities <- long_fcdata %>%
+  filter(Category == "Total_Fatalities") %>%
+  arrange(Year) %>%
+  group_by(Year) %>%
+  summarize(Count = last(Count))
+
+# Latest points for Total Serious Injuries
+latest_serious_injuries <- long_fcdata %>%
+  filter(Category == "Total_Serious_Injuries") %>%
+  arrange(Year) %>%
+  group_by(Year) %>%
+  summarize(Count = last(Count))
+
+# Latest points for Total Minor Injuries
+latest_minor_injuries <- long_fcdata %>%
+  filter(Category == "Total_Minor_Injuries") %>%
+  arrange(Year) %>%
+  group_by(Year) %>%
+  summarize(Count = last(Count))
+
+# Function to create animated plot
+create_animated_plot <- function(data, latest_data, category_label, image_path) {
+  p <- ggplot(data, aes(x = Year, y = Count)) +
+    geom_line() +
+    geom_image(data = latest_data, aes(image = image_path, y = Count), size = 0.05) +
+    labs(title = paste("Yearly Aircraft Crash Statistics:", category_label),
+         x = "Year", y = "Count") +
+    theme_minimal()
+  
+  p + transition_reveal(Year) +
+    ease_aes('linear') +
+    shadow_mark()
+}
+
+# Create animated plots
+animated_plot_fatalities <- create_animated_plot(fcdata %>% filter(Category == "Total_Fatalities"),
+                                                 latest_fatalities, "Total Fatalities", Image)
+animated_plot_serious_injuries <- create_animated_plot(fcdata %>% filter(Category == "Total_Serious_Injuries"),
+                                                       latest_serious_injuries, "Total Serious Injuries", Image)
+animated_plot_minor_injuries <- create_animated_plot(fcdata %>% filter(Category == "Total_Minor_Injuries"),
+                                                     latest_minor_injuries, "Total Minor Injuries", Image)
+# Combine using patchwork
+combined_animated_plot <- (animated_plot_fatalities / animated_plot_serious_injuries / animated_plot_minor_injuries) +
+  plot_layout(nrow = 3)
+
+# Animate the combined plot
+animate(combined_animated_plot, nframes = 200, width = 800, height = 1800, renderer = gifski_renderer())
 
 
 
