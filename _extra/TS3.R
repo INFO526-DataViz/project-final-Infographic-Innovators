@@ -115,7 +115,7 @@ animate(animated_plot, nframes = 200, width = 800, height = 600, renderer = gifs
 
 
 
-
+# 3 animations
 # Assuming 'fcdata' is your dataframe
 fcdata <- fcdata |>
   mutate(Year = year(EventDate)) |>
@@ -129,6 +129,9 @@ long_fcdata <- fcdata |>
   pivot_longer(cols = starts_with("Total_"), 
                names_to = "Category", 
                values_to = "Count")
+
+# Image for the plot
+Image <- "images/airplane.png"
 
 # Time series plot with all categories
 tp <- ggplot(long_fcdata, aes(x = Year, y = Count, color = Category)) +
@@ -156,15 +159,14 @@ ggplotly(p)
 
 
 library(ggplot2)
-library(plotly)
-library(dplyr)
-library(tidyr)
 library(gganimate)
 library(ggimage) # For geom_image
+library(dplyr)
+library(tidyr)
 
 # Assuming 'fcdata' is your dataframe
-fcdata <- fcdata |>
-  mutate(Year = year(EventDate)) |>
+fcdata <- fcdata %>%
+  mutate(Year = year(EventDate)) %>%
   group_by(Year) %>%
   summarise(Total_Fatalities = sum(FatalInjuryCount, na.rm = TRUE),
             Total_Serious_Injuries = sum(SeriousInjuryCount, na.rm = TRUE),
@@ -180,7 +182,10 @@ long_fcdata <- fcdata %>%
 Image <- "images/airplane.png"
 
 # Creating the animated plot
-p <- ggplot(long_fcdata, aes(x = Year, y = Count, color = Category)) +
+p <- ggplot(long_fcdata, aes(x = Year, 
+                             y = Count, 
+                             color = Category, 
+                             group = Category)) +
   geom_line() +
   geom_image(aes(image = Image), size = 0.05) +  # Adjust size as needed
   labs(title = "Yearly Aircraft Crash Statistics",
@@ -190,11 +195,17 @@ p <- ggplot(long_fcdata, aes(x = Year, y = Count, color = Category)) +
 
 # Animating the plot
 animated_plot <- p +
-  transition_reveal(Year, along = Category) +
+  transition_reveal(Year) +
   ease_aes('linear') +
   shadow_mark()
 
 animate(animated_plot, nframes = 200, width = 800, height = 600, renderer = gifski_renderer())
+
+
+
+
+
+
 
 
 
