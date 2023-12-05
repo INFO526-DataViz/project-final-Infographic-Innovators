@@ -219,8 +219,7 @@ long_fcdata <- fcdata |>
                names_to = "Category", 
                values_to = "Count")
 
-# Image for the plot
-Image <- "images/airplane.png"
+
 
 # Time series plot with all categories
 tp <- ggplot(long_fcdata, 
@@ -249,7 +248,7 @@ p <- ggplot(long_fcdata, aes(x = Year,
 ggplotly(p)
 
 
-# layers in gif 
+# layers in gif? didn't really work for me 
 
 
 # trying for animated version of 3 categories 
@@ -272,10 +271,10 @@ Image <- "images/airplane.png"
 # Creating the animated plot
 p <- ggplot(long_fcdata, aes(x = Year, 
                              y = Count, 
-                             color = Category, 
+                             color = Category,
                              group = Category)) +
   geom_line() +
-  geom_image(aes(image = Image), size = 0.04) +  # Adjust size as needed
+  geom_image(aes(image = Image), size = 0.04) +  
   labs(title = "Yearly Aircraft Crash Statistics",
        x = "Year", 
        y = "Count") +
@@ -297,7 +296,123 @@ animate(animated_plot,
 
 
 
-#Below is now squares 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# trying for animated version of 3 categories 
+fcdata <- fcdata |>
+  mutate(Year = year(EventDate)) |>
+  group_by(Year) |>
+  summarise(Total_Fatalities = sum(FatalInjuryCount, na.rm = TRUE),
+            Total_Serious_Injuries = sum(SeriousInjuryCount, na.rm = TRUE),
+            Total_Minor_Injuries = sum(MinorInjuryCount, na.rm = TRUE))
+
+# Reshaping the data to a longer format
+long_fcdata <- fcdata |>
+  pivot_longer(cols = starts_with("Total_"), 
+               names_to = "Category", 
+               values_to = "Count")
+
+# Image for the plot
+Image <- "images/airplane.png"
+
+# Creating the animated plot
+p <- ggplot(long_fcdata, aes(x = Year, 
+                             y = Count, 
+                             color = Category,
+                             group = Category)) +
+  geom_line() +
+  geom_image(data = long_fcdata |>#each it's own layer?
+               filter(Category == "Total_Fatalities"), aes(image = Image), size = 0.04) +
+  geom_image(data = long_fcdata |>
+               filter(Category == "Total_Serious_Injuries"), aes(image = Image), size = 0.04) +
+  geom_image(data = long_fcdata |>
+               filter(Category == "Total_Minor_Injuries"), aes(image = Image), size = 0.04) +  
+  labs(title = "Yearly Aircraft Crash Statistics",
+       x = "Year", 
+       y = "Count") +
+  theme_minimal()
+
+# Animating the plot
+animated_plot <- p +
+  transition_reveal(Year) +
+  ease_aes('linear') +
+  shadow_mark()
+
+animate(animated_plot, 
+        nframes = 200, 
+        width = 800, 
+        height = 600, 
+        renderer = gifski_renderer())
+
+
+
+
+
+# Creating the animated plot with explicit grouping
+q <- ggplot(long_fcdata, aes(x = Year, y = Count, color = Category, group = interaction(Year, Category))) +
+  geom_line() +
+  geom_image(aes(image = Image), size = 0.04) +  # Adjust size as needed
+  labs(title = "Yearly Aircraft Crash Statistics",
+       x = "Year", 
+       y = "Count") +
+  theme_minimal()
+
+
+
+animate(animated_plot_simplified, nframes = 200, width = 800, height = 600, renderer = gifski_renderer())
+
+
+# Creating the animated plot with separate geom_image for each category
+q <- ggplot(long_fcdata, 
+            aes(x = Year, y = Count, 
+                color = Category,
+                group = interaction(Year, Category))) +
+  geom_line() +
+  geom_image(data = long_fcdata %>% filter(Category == "Total_Fatalities"), aes(image = Image), size = 0.04) +
+  geom_image(data = long_fcdata %>% filter(Category == "Total_Serious_Injuries"), aes(image = Image), size = 0.04) +
+  geom_image(data = long_fcdata %>% filter(Category == "Total_Minor_Injuries"), aes(image = Image), size = 0.04) +
+  labs(title = "Yearly Aircraft Crash Statistics",
+       x = "Year", 
+       y = "Count") +
+  theme_minimal()
+
+# Simplified animated plot
+animated_plot_simplified <- q +
+  transition_reveal(Year, category = Category) +
+  ease_aes('linear') +
+  shadow_mark()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Below is invis squares 
 fcdata <- fcdata |>
   mutate(Year = year(EventDate)) |>
   group_by(Year) |>
