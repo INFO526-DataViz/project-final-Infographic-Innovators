@@ -313,7 +313,6 @@ flights_radial_bar_crashes <-
         keyheight = 0.5
       )
     )
-
 flights_radial_bar_crashes
 # remaining - titles, some texts
 # interactive - plotly
@@ -370,10 +369,11 @@ flights_radial_bar_injuries <-
         keywidth = 1.5,
         keyheight = 0.5
       )
-    )
+    ) 
 
-flights_radial_bar_injuries
-
+#flights_radial_bar_injuries
+flights_radial_bar_injuries_plotly <- ggplotly(flights_radial_bar_injuries)
+flights_radial_bar_injuries_plotly
 # remaining - titles, some texts
 # interactive - plotly
 # animate - plotly by years or gganimate bar growth
