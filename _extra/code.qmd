@@ -39,7 +39,11 @@ pacman::p_load(tidyverse,
                maps,
                rnaturalearth,
                state,
-               ggspatial)
+               ggspatial,
+               geojsonio,
+               RColorBrewer,
+               sf,
+               broom)
 ```
 
 ```{r ggplot_setup, message=FALSE, include=FALSE}
@@ -337,7 +341,55 @@ flights_ntsb_maps_updated <-
     total_crashes = ifelse(is.na(total_crashes), 0, total_crashes),
     total_injuries = ifelse(is.na(total_injuries), 0, total_injuries)
   ) |>
-  filter(state %in% state.name)
+  filter(state %in% state.name) |>
+  # need to remove the below block as it is just a test
+  group_by(state) |>
+  summarize(
+    total_crashes = sum(total_crashes),
+    total_injuries = sum(total_injuries)
+  ) |>
+  arrange(state) |>
+  mutate(state_id = as.character(row_number(state)))
+```
+
+```{r geom_spatial}
+spdf <- geojson_read(here("data", "us_states_hexgrid.geojson"),  what = "sp")
+spdf@data = spdf@data |>
+  mutate(google_name = gsub(" \\(United States\\)", "", google_name)) |>
+  subset(google_name != "District of Columbia")
+
+#Fortify the data to create a data format output
+#This format is needed to plot the map using the ggplot2 package
+hex_fortify <- tidy(spdf, geometry = "google_name") 
+
+# assign ids to states
+# then join
+
+hex_fortify <- hex_fortify %>%
+       left_join(. , flights_ntsb_maps_updated, by=c("id"="state_id"))
+```
+
+```{r color_scale}
+#Explore descriptive statistics 
+mean(flights_ntsb_maps_updated$total_crashes)  #The sum of the values divided by the number of values
+range(flights_ntsb_maps_updated$total_crashes) #A measure of dispersion within the dataset
+
+#Create bins
+#These labels will appear on the legend
+hex_fortify$bin <- cut( hex_fortify$total_crashes, breaks = c(1000, 1500, 2000, 2500, 3000), labels = c("1000-1500", "1500-2000", "2000-2500", "2500+"))
+
+#Choose a sequential ramp for our map 
+#Where n = number of data classes 
+my_palette <- brewer.pal(n=4, name="Greens")
+```
+
+```{r state_codes}
+spdf_sf <- st_as_sf(spdf)
+centroids <- st_centroid(spdf_sf)
+abbreviations <- spdf@data$iso3166_2
+
+# Combine into a data frame
+centers <- cbind.data.frame(data.frame(centroids, id = abbreviations))
 ```
 
 ```{r hex_bin_map_plot}
@@ -345,4 +397,40 @@ flights_ntsb_maps_updated <-
 # no need to use latitude and longitude from our data, use geojson_read as they suggested from 
 # I uploaded the data to data folder
 # data can be found here - https://team.carto.com/u/andrew/tables/andrew.us_states_hexgrid/public/map
+
+ggplot() +
+  geom_polygon(
+    data = hex_fortify,
+    aes(
+      fill = total_crashes,
+      x = long,
+      y = lat,
+      group = group
+    ),
+    size = 0,
+    alpha = 0.9,
+    color = "#f7f7f7"
+  ) +
+  geom_text(data=centers, aes(x=x, y=y, label=id), color="#252525", size=5) + #Add our labels
+  theme_void() +
+  ggtitle("Map of Fatal Injuries in the United States in 2022 ") + #Add map title
+  theme(
+    legend.position = c(0.5, 0.9),
+    #Choose legend positioning (horizontal, vertical)
+    text = element_text(color = "#f7f7f7", face = "bold"),
+    #This is where we customize the legend text
+    plot.background = element_rect(fill = "#252525", color = NA),
+    #Choose the colour of the background behind the title
+    panel.background = element_rect(fill = "#252525", color = NA),
+    #This is the main background
+    legend.background = element_rect(fill = "#252525", color = NA),
+    #This is the legend background
+    plot.title = element_text(
+      size = 18,
+      hjust = 0.5,
+      color = "#f7f7f7",
+      face = "bold"
+    ),
+    #This we where we customize the title
+  )
 ```
