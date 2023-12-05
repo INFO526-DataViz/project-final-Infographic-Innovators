@@ -316,7 +316,7 @@ animated_fcdata <- animate(animation_fcdata,
 animated_fcdata
 ```
 
-\
+![](images/animated_fcdata.gif)\
 
 \
 
