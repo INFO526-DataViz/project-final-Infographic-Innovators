@@ -661,8 +661,21 @@ getHexBinMap <- function(input_year) {
         nrow = 1
       )
     ) +
-    labs(title = input_year) +
-    theme(legend.position = 'top')
+    labs(title = sprintf("Flight crashes in US states during %d", input_year)) +
+    theme(
+      legend.position = 'top',
+      plot.title = element_text(
+        size = 22,
+        hjust = 0.5,
+        margin = margin(
+          b = -0.1,
+          t = 0.4,
+          l = 2,
+          unit = "cm"
+        )
+      ),
+      
+    )
 }
 ```
 
