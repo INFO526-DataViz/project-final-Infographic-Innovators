@@ -12,12 +12,40 @@ library(shinythemes)
 library(tidyverse)
 
 # Load data
-trend_data <- read_csv("data/trend_data.csv")
-trend_description <- read_csv("data/trend_description.csv")
+# GETTING THE LIBRARIES
+if (!require(pacman))
+  install.packages(pacman)
+
+
+pacman::p_load(tidyverse,
+               dplyr,
+               janitor,
+               dlookr,
+               here,
+               ggpubr,
+               maps,
+               plotly,
+               gganimate,
+               MetBrewer,
+               ggsci,
+               scales,
+               fmsb,
+               gifski,
+               ggimage,
+               emojifont,
+               magick,
+               lubridate,
+               patchwork,
+               viridis,
+               sf,
+               sp,
+               animation)
+
+pacman::p_load_gh("BlakeRMills/MoMAColors")
 
 # Define UI
 ui <- fluidPage(theme = shinytheme("lumen"),
-                titlePanel("Google Trend Index"),
+                titlePanel("From Takeoff to Touchdown: Dissecting Data on Air Disasters"),
                 sidebarLayout(
                   sidebarPanel(
                     
