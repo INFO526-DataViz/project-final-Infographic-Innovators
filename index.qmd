@@ -93,6 +93,7 @@ flights_ntsb <- flights_ntsb |>
 ```
 
 ```{r data_wrangle, include=FALSE}
+# Combining data from duplicated/multiple entries 
 flights_ntsb <- flights_ntsb |>
   mutate(event_time = format(event_date, "%H:%M"),
          .after = event_date) |>
@@ -124,6 +125,7 @@ flights_ntsb <- flights_ntsb |>
 ```
 
 ```{r timeseries_data, include=FALSE}
+# Creating a dataset for the timeSeries plot
 flights_ntsb_timeseries <- flights_ntsb |>
   group_by(event_year) |>
   summarise(
@@ -153,10 +155,10 @@ p <- ggplot(flights_ntsb_timeseries, aes(x = event_year, y = total_fatalities)) 
 
 ggplotly(p)
 
-# Creating Animated Plot for Total Faltalities########
+# Creating Animated Plot for Total Faltalities
 Image <- "images/airplane.png"  #Save Image instead of inserting emoji
 
-
+# Labelling the axes and adding title to the plot for Fatalities
 p <- ggplot(flights_ntsb_timeseries, 
             aes(x = event_year, 
                 y = total_fatalities)) +
@@ -174,13 +176,14 @@ animated_plot <- p +
   ease_aes('linear') +
   shadow_mark()
 
+# Animating the plot
 animate(animated_plot, 
         nframes = 200, 
         width = 800, 
         height = 600, 
         renderer = gifski_renderer())
 
-
+# Labelling the axes and adding title to the plot for Serious Injuries
 p_serious_injuries <- ggplot(flights_ntsb_timeseries, aes(x = event_year, 
                                          y = total_serious_injuries)) +
   geom_line() +
@@ -191,6 +194,7 @@ p_serious_injuries <- ggplot(flights_ntsb_timeseries, aes(x = event_year,
        y = "Total Serious Injuries") +
   theme_minimal()
 
+# Animating the Aircraft serious injuries plot
 animated_serious_injuries <- p_serious_injuries +
   transition_reveal(event_year) +
   ease_aes('linear') +
@@ -203,7 +207,7 @@ animate(animated_serious_injuries,
         renderer = gifski_renderer())
 
 
-#total minor injuries - animated########
+# Plotting a timeseries graph for total minor injuries
 p_minor_injuries <- ggplot(flights_ntsb_timeseries, 
                            aes(x = event_year, 
                                        
@@ -215,6 +219,7 @@ p_minor_injuries <- ggplot(flights_ntsb_timeseries,
        y = "Total Minor Injuries") +
   theme_minimal()
 
+# Animating the timeseries plot for total minor injuries
 animated_minor_injuries <- p_minor_injuries +
   transition_reveal(event_year) +
   ease_aes('linear') +
@@ -233,7 +238,7 @@ long_fcdata <- flights_ntsb_timeseries |>
                values_to = "Count")
 
 
-# Static plot for  3 animations- interactive ##########
+# Static plot for  3 animations- interactive
 # Time series plot with all categories
 tp <- ggplot(long_fcdata, 
              aes(x = event_year, 
@@ -262,7 +267,7 @@ ggplotly(p)
 ```
 
 ```{r animated_labels}
-##### all 3 with label - animated 
+# all 3 plots with label - animated 
 
 fcdata <- flights_ntsb_timeseries |>
   ungroup() |>
