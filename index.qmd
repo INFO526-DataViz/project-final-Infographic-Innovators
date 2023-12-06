@@ -583,7 +583,7 @@ flights_radial_bar_injuries
 # ploty - https://plotly.com/r/animations/
 ```
 
-```{r hex_bin_data}
+```{r hex_bin_data, include=FALSE}
 
 # Filtering out NA and invalid Latitude and Longitude values
 flights_ntsb_maps <- flights_ntsb |>
@@ -624,7 +624,7 @@ flights_ntsb_maps_updated <-
   filter(state %in% state.name)
 ```
 
-```{r hex_bin_geometry}
+```{r hex_bin_geometry, include=FALSE}
 # Adding a shapefile dataset for plotting Crashes on the US map
 shp <- read_sf(here("data", "us_states_hexgrid.shp")) |>
   mutate(google_nam = gsub(" \\(United States\\)", "", google_nam)) |>
@@ -638,7 +638,7 @@ flights_ntsb_shp <- merge(shp,
                          by.y = 'state')
 ```
 
-```{r function_hexbin}
+```{r function_hexbin, include=FALSE}
 # Creating a function to plot a Hex-Bin map
 getHexBinMap <- function(input_year) {
   flights_ntsb_shp |>
@@ -666,7 +666,7 @@ getHexBinMap <- function(input_year) {
 }
 ```
 
-```{r images_yearwise}
+```{r images_yearwise, include=FALSE}
 # Creating a list of Years from dataset
 years_list <- flights_ntsb_shp |>
   arrange(event_year) |>
@@ -700,4 +700,6 @@ hex_bin_maps_animation <- image_animate(image_scale(joined_plots, "2000x1000"), 
 # Saving gif to the repository
 image_write(image = hex_bin_maps_animation,
             path = "images/flight_crash_us_states.gif")
+
+hex_bin_maps_animation
 ```
