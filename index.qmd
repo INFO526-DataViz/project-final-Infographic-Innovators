@@ -41,7 +41,10 @@ pacman::p_load(tidyverse,
                emojifont,
                magick,
                lubridate,
-               patchwork, 
+               patchwork,
+               viridis,
+               sf,
+               sp,
                animation)
 
 pacman::p_load_gh("BlakeRMills/MoMAColors")
@@ -178,17 +181,8 @@ animate(animated_plot,
         renderer = gifski_renderer())
 
 
-####my read-in code
-fcdata <- read_csv("data/flight_crash_data_NTSB.csv")
-fcdata <- fcdata |>
-  mutate(Year = year(EventDate)) |>
-  group_by(Year) |>
-  summarise(Total_Fatalities = sum(FatalInjuryCount, na.rm = TRUE),
-            Total_Serious_Injuries = sum(SeriousInjuryCount, na.rm = TRUE),
-            Total_Minor_Injuries = sum(MinorInjuryCount, na.rm = TRUE))
-#Total serious plot - animated#######
-p_serious_injuries <- ggplot(fcdata, aes(x = Year, 
-                                         y = Total_Serious_Injuries)) +
+p_serious_injuries <- ggplot(flights_ntsb_timeseries, aes(x = event_year, 
+                                         y = total_serious_injuries)) +
   geom_line() +
   geom_image(aes(image = Image), 
              size = 0.05) +  
@@ -198,7 +192,7 @@ p_serious_injuries <- ggplot(fcdata, aes(x = Year,
   theme_minimal()
 
 animated_serious_injuries <- p_serious_injuries +
-  transition_reveal(Year) +
+  transition_reveal(event_year) +
   ease_aes('linear') +
   shadow_mark()
 
@@ -210,10 +204,10 @@ animate(animated_serious_injuries,
 
 
 #total minor injuries - animated########
-p_minor_injuries <- ggplot(fcdata, 
-                           aes(x = Year, 
+p_minor_injuries <- ggplot(flights_ntsb_timeseries, 
+                           aes(x = event_year, 
                                        
-                               y = Total_Minor_Injuries)) +
+                               y = total_minor_injuries)) +
   geom_line() +
   geom_image(aes(image = Image), size = 0.05) +  
   labs(title = "Yearly Aircraft Crash Minor Injuries",
@@ -222,7 +216,7 @@ p_minor_injuries <- ggplot(fcdata,
   theme_minimal()
 
 animated_minor_injuries <- p_minor_injuries +
-  transition_reveal(Year) +
+  transition_reveal(event_year) +
   ease_aes('linear') +
   shadow_mark()
 
@@ -232,12 +226,17 @@ animate(animated_minor_injuries,
         height = 600, 
         renderer = gifski_renderer())
 
+# Reshaping the data to a longer format
+long_fcdata <- flights_ntsb_timeseries |>
+  pivot_longer(cols = starts_with("total_"), 
+               names_to = "Category", 
+               values_to = "Count")
 
 
 # Static plot for  3 animations- interactive ##########
 # Time series plot with all categories
 tp <- ggplot(long_fcdata, 
-             aes(x = Year, 
+             aes(x = event_year, 
                  y = Count, 
                  color = Category)) +
   geom_line() +
@@ -247,7 +246,7 @@ tp <- ggplot(long_fcdata,
   theme_minimal()
 
 # Interactive plot with plotly
-p <- ggplot(long_fcdata, aes(x = Year, 
+p <- ggplot(long_fcdata, aes(x = event_year, 
                              y = Count, 
                              color = Category)) +
   geom_line() +
@@ -260,31 +259,28 @@ p <- ggplot(long_fcdata, aes(x = Year,
        y = "Count")
 
 ggplotly(p)
+```
 
+```{r animated_labels}
 ##### all 3 with label - animated 
 
-fcdata <- fcdata |>
-  mutate(Year = year(EventDate)) |>
-  group_by(Year) |>
-  summarise(Total_Fatalities = sum(FatalInjuryCount, na.rm = TRUE),
-            Total_Serious_Injuries = sum(SeriousInjuryCount, na.rm = TRUE),
-            Total_Minor_Injuries = sum(MinorInjuryCount, na.rm = TRUE)) |>
+fcdata <- flights_ntsb_timeseries |>
   ungroup() |>
-  pivot_longer(cols = starts_with("Total_"), names_to = "Category", values_to = "Count") |>
-  mutate(Category = case_when(Category == "Total_Fatalities" ~ "Fatalities",
-                              Category == "Total_Serious_Injuries" ~ "Serious Injuries",
-                              Category == "Total_Minor_Injuries" ~ "Minor Injuries"))
+  pivot_longer(cols = starts_with("total_"), names_to = "Category", values_to = "Count") |>
+  mutate(Category = case_when(Category == "total_fatalities" ~ "Fatalities",
+                              Category == "total_serious_injuries" ~ "Serious Injuries",
+                              Category == "total_minor_injuries" ~ "Minor Injuries"))
 
 
 
 # Creating the animated plot
 animation_fcdata <- ggplot(fcdata, 
-                           aes(Year, 
+                           aes(event_year, 
                                Count, 
                                group = Category, 
                                color = Category)) +
   geom_line(show.legend = FALSE) +
-  geom_segment(aes(xend = max(Year) + 
+  geom_segment(aes(xend = max(event_year) + 
                      0.1, 
                    yend = Count), 
                linetype = 2, 
@@ -292,12 +288,12 @@ animation_fcdata <- ggplot(fcdata,
                show.legend = FALSE) +
   geom_point(size = 2, 
              show.legend = FALSE) +
-  geom_text(aes(x = max(Year) + 0.1, 
+  geom_text(aes(x = max(event_year) + 0.1, 
                 label = Category, 
                 color = "#000000"), 
             hjust = 0, 
             show.legend = FALSE) +
-  transition_reveal(Year) +
+  transition_reveal(event_year) +
   coord_cartesian(clip = 'off') +
   theme(plot.title = element_text(size = 20)) +
   labs(title = 'Aircraft Crash Statistics Over Time',
@@ -316,9 +312,7 @@ animated_fcdata <- animate(animation_fcdata,
 animated_fcdata
 ```
 
-![](images/animated_fcdata.gif)\
-
-\
+![](images/animated_fcdata.gif)
 
 ```{r radarchart_data, include=FALSE}
 flights_ntsb_radar <- flights_ntsb |>
@@ -523,13 +517,115 @@ flights_radial_bar_injuries <-
       )
     ) 
 
-#flights_radial_bar_injuries
-flights_radial_bar_injuries_plotly <- ggplotly(flights_radial_bar_injuries)
-flights_radial_bar_injuries_plotly
+flights_radial_bar_injuries
 # remaining - titles, some texts
 # interactive - plotly
 # animate - plotly by years or gganimate bar growth
 # sources:
 # gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
 # ploty - https://plotly.com/r/animations/
+```
+
+```{r hex_bin_data}
+flights_ntsb_maps <- flights_ntsb |>
+  subset(!is.na(longitude) & !is.na(latitude)
+         & latitude < 75 & latitude > 10 & longitude < -60)
+
+flights_ntsb_maps <- flights_ntsb_maps |>
+  group_by(state, event_year) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  drop_na()
+
+unique_states <- unique(flights_ntsb_maps$state)
+
+all_years <- unique(flights_ntsb_maps$event_year)
+
+all_states_data <-
+  expand.grid(state = unique_states, event_year = all_years)
+
+flights_ntsb_maps_updated <-
+  left_join(all_states_data,
+            flights_ntsb_maps,
+            by = c("state", "event_year")) |>
+  mutate(
+    total_crashes = ifelse(is.na(total_crashes), 0, total_crashes),
+    total_injuries = ifelse(is.na(total_injuries), 0, total_injuries)
+  ) |>
+  filter(state %in% state.name)
+```
+
+```{r hex_bin_geometry}
+shp <- read_sf(here("data", "us_states_hexgrid.shp")) |>
+  mutate(google_nam = gsub(" \\(United States\\)", "", google_nam)) |>
+  subset(google_nam != "District of Columbia") |>
+  arrange(google_nam)
+
+flights_ntsb_shp <- merge(shp,
+                         flights_ntsb_maps_updated,
+                         by.x = 'google_nam',
+                         by.y = 'state')
+```
+
+```{r function_hexbin}
+getHexBinMap <- function(input_year) {
+  flights_ntsb_shp |>
+    filter(event_year == input_year) |>
+    ggplot() +
+    geom_sf(aes(fill = total_crashes)) +
+    geom_sf_text(aes(geometry = geometry,
+                     label = iso3166_2)) +
+    theme_void() +
+    scale_fill_viridis_c(
+      option = "plasma",
+      direction = -1,
+      name = "Total Number of Crashes",
+      labels = scales::comma,
+      guide = guide_legend(
+        keyheight = unit(3, units = "mm"),
+        keywidth = unit(12, units = "mm"),
+        label.position = "bottom",
+        title.position = "top",
+        nrow = 1
+      )
+    ) +
+    labs(title = input_year) +
+    theme(legend.position = 'top')
+}
+```
+
+```{r images_yearwise}
+years_list <- flights_ntsb_shp |>
+  arrange(event_year) |>
+  distinct(event_year) |>
+  pull()
+
+my_maps <- paste0("images/hexbin_map/hex_bin_map", seq_along(years_list), ".jpg")
+for (i in seq_along(years_list)){
+    getHexBinMap(input_year = years_list[i])
+    ggsave(my_maps[i],
+           height = 8, 
+           width  = 15, 
+           unit   = "in", 
+           dpi    = 200)
+}
+```
+
+```{r animation_hexbin}
+# making gif using gganimate package
+hex_bin_maps <- list.files(path = "images/hexbin_map/", full.names = TRUE)
+hex_bin_maps_list <- lapply(hex_bin_maps, image_read)
+
+# joining all the saved images
+joined_plots <- image_join(hex_bin_maps_list)
+
+# animating the images using image_animate() and restting the resolution
+# setting fps = 1
+hex_bin_maps_animation <- image_animate(image_scale(joined_plots, "2000x1000"), fps = 1)
+
+# saving image to git
+image_write(image = hex_bin_maps_animation,
+            path = "images/flight_crash_us_states.gif")
 ```

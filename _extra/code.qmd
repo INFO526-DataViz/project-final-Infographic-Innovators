@@ -45,8 +45,11 @@ pacman::p_load(tidyverse,
                sf,
                sp,
                tibble,
+               magick,
                broom,
                viridis)
+
+pacman::p_load_gh("BlakeRMills/MoMAColors")
 ```
 
 ```{r ggplot_setup, message=FALSE, include=FALSE}
@@ -344,13 +347,7 @@ flights_ntsb_maps_updated <-
     total_crashes = ifelse(is.na(total_crashes), 0, total_crashes),
     total_injuries = ifelse(is.na(total_injuries), 0, total_injuries)
   ) |>
-  filter(state %in% state.name) |>
-  # need to remove the below block as it is just a test
-  group_by(state) |>
-  summarize(
-    total_crashes = sum(total_crashes),
-    total_injuries = sum(total_injuries)
-  )
+  filter(state %in% state.name)
 ```
 
 ```{r read_shp}
@@ -367,27 +364,58 @@ flights_ntsb_shp <- merge(shp,
 ```
 
 ```{r hex_bin_map}
-ggplot(flights_ntsb_shp) +
-  geom_sf(aes(fill = total_crashes)) +
-  geom_sf_text(aes(geometry = geometry,
-                   label = iso3166_2)) +
-  theme_void() +
-  scale_fill_gradientn(
-    colors = met.brewer("Hokusai2"),
-    name = "Total Number of Crashes",
-    labels = scales::comma,
-    guide = guide_legend(
-      keyheight = unit(3, units = "mm"),
-      keywidth = unit(12, units = "mm"),
-      label.position = "bottom",
-      title.position = "top",
-      nrow = 1
-    )
-  ) +
-  theme(
-    legend.position = 'top',
-    plot.background = element_rect(fill = "#f5f5f2", color = NA),
-    panel.background = element_rect(fill = "#f5f5f2", color = NA),
-    legend.background = element_rect(fill = "#f5f5f2", color = NA)
-  )
+getHexBinMap <- function(input_year) {
+  flights_ntsb_shp |>
+    filter(event_year == input_year) |>
+    ggplot() +
+    geom_sf(aes(fill = total_crashes)) +
+    geom_sf_text(aes(geometry = geometry,
+                     label = iso3166_2)) +
+    theme_void() +
+    scale_fill_viridis_c(
+      option = "plasma",
+      direction = -1,
+      name = "Total Number of Crashes",
+      labels = scales::comma,
+      guide = guide_legend(
+        keyheight = unit(3, units = "mm"),
+        keywidth = unit(12, units = "mm"),
+        label.position = "bottom",
+        title.position = "top",
+        nrow = 1
+      )
+    ) +
+    labs(title = input_year) +
+    theme(legend.position = 'top')
+}
+```
+
+```{r save_images}
+years_list <- flights_ntsb_shp |>
+  arrange(event_year) |>
+  distinct(event_year) |>
+  pull()
+
+my_maps <- paste0("images/q1/hex_bin_map", seq_along(years_list), ".jpg")
+for (i in seq_along(years_list)){
+    getHexBinMap(input_year = years_list[i])
+    ggsave(my_maps[i], width = 4, height = 4)
+}
+```
+
+```{r animation}
+# making gif using gganimate package
+hex_bin_maps <- list.files(path = "images/q1/", full.names = TRUE)
+hex_bin_maps_list <- lapply(hex_bin_maps, image_read)
+
+# joining all the saved images
+joined_plots <- image_join(hex_bin_maps_list)
+
+# animating the images using image_animate() and restting the resolution
+# setting fps = 1
+hex_bin_maps_animation <- image_animate(image_scale(joined_plots, "2000x1000"), fps = 1)
+
+# saving image to git
+image_write(image = hex_bin_maps_animation, path = "images/world_forestaion.gif")
+hex_bin_maps_animation
 ```
