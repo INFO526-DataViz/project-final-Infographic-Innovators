@@ -18,10 +18,9 @@ execute:
 ---
 
 ```{r load_packages, message=FALSE, include=FALSE}
-# GETTING THE LIBRARIES
+# Installing libraries using the pacman package
 if (!require(pacman))
   install.packages(pacman)
-
 
 pacman::p_load(tidyverse,
                dplyr,
@@ -95,6 +94,7 @@ flights_ntsb <- flights_ntsb |>
 ```
 
 ```{r data_wrangle, include=FALSE}
+# Combining data from duplicated/multiple entries 
 flights_ntsb <- flights_ntsb |>
   mutate(event_time = format(event_date, "%H:%M"),
          .after = event_date) |>
@@ -126,6 +126,7 @@ flights_ntsb <- flights_ntsb |>
 ```
 
 ```{r timeseries_data, include=FALSE}
+# Creating a dataset for the timeSeries plot
 flights_ntsb_timeseries <- flights_ntsb |>
   group_by(event_year) |>
   summarise(
@@ -136,6 +137,7 @@ flights_ntsb_timeseries <- flights_ntsb |>
 ```
 
 ```{r radarchart_data, include=FALSE}
+# Creating a dataset for radarplot
 flights_ntsb_radar <- flights_ntsb |>
   mutate(
     weather_condition = case_when(
