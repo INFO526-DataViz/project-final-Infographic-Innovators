@@ -320,6 +320,7 @@ animated_fcdata
 ![](images/animated_fcdata.gif)
 
 ```{r radarchart_data, include=FALSE}
+# Assigning different weather conditions to variables
 flights_ntsb_radar <- flights_ntsb |>
   mutate(
     weather_condition = case_when(
@@ -339,6 +340,7 @@ flights_ntsb_radar <- flights_ntsb |>
 ```
 
 ```{r radar_chart, include=FALSE}
+# Filtering out weather condition 'IMC'
 radar_trace_r1 <- flights_ntsb_radar |>
   filter(weather_condition %in% c("IMC")) |>
   pull(total_crashes)
@@ -351,6 +353,7 @@ radar_trace_r1 <-
       pull(total_crashes)
   )
 
+# Filtering out weather condition 'VMC'
 radar_trace_r2 <- flights_ntsb_radar |>
   filter(weather_condition %in% c("VMC")) |>
   pull(total_crashes)
@@ -367,29 +370,30 @@ radar_theta <- c("Jan" , "Feb" , "Mar" , "Apr", "May", "Jun", "Jul", "Aug", "Sep
 ```
 
 ```{r radar_chart_plotly}
-rader_chart <- plot_ly(type = 'scatterpolar',
+# Plotting an Interactive Radar Plot using Plotly
+radar_chart <- plot_ly(type = 'scatterpolar',
                fill = 'toself',
                mode = 'lines+markers')
 
-rader_chart <- rader_chart |>
+radar_chart <- radar_chart |>
   add_trace(
     r = radar_trace_r2,
     theta = radar_theta,
     name = 'VMC'
   )
-rader_chart <- rader_chart |>
+radar_chart <- radar_chart |>
   add_trace(
     r = radar_trace_r1,
     theta = radar_theta,
     name = 'IMC'
   )
-rader_chart <- rader_chart |>
+radar_chart <- radar_chart |>
   layout(polar = list(radialaxis = list(
     visible = T,
     range = c(0, 10500)
   )))
 
-rader_chart
+radar_chart
 ```
 
 ```{r radial_plot}
