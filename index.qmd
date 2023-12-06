@@ -397,6 +397,7 @@ radar_chart
 ```
 
 ```{r radial_plot}
+# Creating a filtered dataset for Radial Plot
 flights_ntsb_radial <- flights_ntsb |>
   group_by(flight_phase) |>
   summarise(
@@ -426,6 +427,7 @@ flights_ntsb_radial
 #| code-fold: true
 #| code-summary: "Radial Bar Plot - Total Crashes"
 
+# Plotting a Radial Barplot to show the Total Count of Crashes and phase of flight 
 flights_radial_bar_crashes <-
   ggplot(flights_ntsb_radial,
          aes(x = fct_rev(flight_phase), y = total_crashes, 
@@ -438,8 +440,8 @@ flights_radial_bar_crashes <-
     x = NULL,
     y = NULL,
     fill = "Phase of Flight",
-    title = "",
-    subtitle = "",
+    title = "A Radial View of Total Crashes",
+    subtitle = "as per the phase of flight",
     caption = ""
   ) +
   scale_y_continuous(
@@ -481,6 +483,7 @@ flights_radial_bar_crashes
 #| code-fold: true
 #| code-summary: "Radial Bar Plot - Total Injuries"
 
+# Plotting a Radial Barplot to show the Total Count of Injuries and phase of flight 
 flights_radial_bar_injuries <-
   ggplot(flights_ntsb_radial,
          aes(x = fct_rev(flight_phase), y = total_injuries, 
@@ -493,8 +496,8 @@ flights_radial_bar_injuries <-
     x = NULL,
     y = NULL,
     fill = "Phase of Flight",
-    title = "",
-    subtitle = "",
+    title = "A Radial View of Total Injuries",
+    subtitle = "as per the phase of flight",
     caption = ""
   ) +
   scale_y_continuous(
@@ -536,10 +539,13 @@ flights_radial_bar_injuries
 ```
 
 ```{r hex_bin_data}
+
+# Filtering out NA and invalid Latitude and Longitude values
 flights_ntsb_maps <- flights_ntsb |>
   subset(!is.na(longitude) & !is.na(latitude)
          & latitude < 75 & latitude > 10 & longitude < -60)
 
+# Creating a dataset for the map plot and picking the columns that we need
 flights_ntsb_maps <- flights_ntsb_maps |>
   group_by(state, event_year) |>
   summarise(
@@ -567,6 +573,7 @@ flights_ntsb_maps_updated <-
 ```
 
 ```{r hex_bin_geometry}
+# Adding a shapefile dataset for plotting Crashes on the US map
 shp <- read_sf(here("data", "us_states_hexgrid.shp")) |>
   mutate(google_nam = gsub(" \\(United States\\)", "", google_nam)) |>
   subset(google_nam != "District of Columbia") |>
@@ -579,6 +586,7 @@ flights_ntsb_shp <- merge(shp,
 ```
 
 ```{r function_hexbin}
+# Creating a function to plot a Hex-Bin map
 getHexBinMap <- function(input_year) {
   flights_ntsb_shp |>
     filter(event_year == input_year) |>
@@ -606,11 +614,13 @@ getHexBinMap <- function(input_year) {
 ```
 
 ```{r images_yearwise}
+# Creating a list of Years from dataset
 years_list <- flights_ntsb_shp |>
   arrange(event_year) |>
   distinct(event_year) |>
   pull()
 
+# For saving the plotted Hex-Bin map in jpg format
 my_maps <- paste0("images/hexbin_map/hex_bin_map", seq_along(years_list), ".jpg")
 for (i in seq_along(years_list)){
     getHexBinMap(input_year = years_list[i])
@@ -627,14 +637,14 @@ for (i in seq_along(years_list)){
 hex_bin_maps <- list.files(path = "images/hexbin_map/", full.names = TRUE)
 hex_bin_maps_list <- lapply(hex_bin_maps, image_read)
 
-# joining all the saved images
+# Joining all the saved images
 joined_plots <- image_join(hex_bin_maps_list)
 
-# animating the images using image_animate() and restting the resolution
-# setting fps = 1
+# Animating the images using image_animate() and restting the resolution
+# Setting fps = 1
 hex_bin_maps_animation <- image_animate(image_scale(joined_plots, "2000x1000"), fps = 1)
 
-# saving image to git
+# Saving gif to the repository
 image_write(image = hex_bin_maps_animation,
             path = "images/flight_crash_us_states.gif")
 ```
