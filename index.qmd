@@ -43,6 +43,7 @@ pacman::p_load(tidyverse,
                lubridate,
                patchwork,
                viridis,
+               usmap,
                sf,
                sp,
                animation)
@@ -583,8 +584,7 @@ flights_radial_bar_injuries
 # ploty - https://plotly.com/r/animations/
 ```
 
-```{r hex_bin_data, include=FALSE}
-
+```{r mapl_plot_data, include=FALSE}
 # Filtering out NA and invalid Latitude and Longitude values
 flights_ntsb_maps <- flights_ntsb |>
   subset(!is.na(longitude) & !is.na(latitude)
@@ -611,7 +611,7 @@ all_years <- unique(flights_ntsb_maps$event_year)
 all_states_data <-
   expand.grid(state = unique_states, event_year = all_years)
 
-flights_ntsb_maps_updated <-
+flights_ntsb_maps <-
   # using left_join() to combine the data based on state and event_year
   left_join(all_states_data,
             flights_ntsb_maps,
@@ -619,62 +619,30 @@ flights_ntsb_maps_updated <-
   mutate(
     total_crashes = ifelse(is.na(total_crashes), 0, total_crashes),
     total_injuries = ifelse(is.na(total_injuries), 0, total_injuries)
-  ) |>
-  # filtering states which are officially recognized(ex: removing district of columbia)
-  filter(state %in% state.name)
-```
-
-```{r hex_bin_geometry, include=FALSE}
-# Adding a shapefile dataset for plotting Crashes on the US map
-shp <- read_sf(here("data", "us_states_hexgrid.shp")) |>
-  mutate(google_nam = gsub(" \\(United States\\)", "", google_nam)) |>
-  subset(google_nam != "District of Columbia") |>
-  arrange(google_nam)
-
-# merging data based on state names
-flights_ntsb_shp <- merge(shp,
-                         flights_ntsb_maps_updated,
-                         by.x = 'google_nam',
-                         by.y = 'state')
+  )
 ```
 
 ```{r function_hexbin, include=FALSE}
 # Creating a function to plot a Hex-Bin map
 getHexBinMap <- function(input_year) {
-  flights_ntsb_shp |>
-    filter(event_year == input_year) |>
-    ggplot() +
-    geom_sf(aes(fill = total_crashes)) +
-    geom_sf_text(aes(geometry = geometry,
-                     label = iso3166_2)) +
+  plot_data <- flights_ntsb_maps |>
+    filter(event_year == input_year)
+  
+  plot_usmap(data = plot_data,
+             values = "total_crashes", 
+             color = "black") +
     theme_void() +
-    scale_fill_viridis_c(
-      option = "plasma",
-      direction = -1,
-      name = "Total Number of Crashes",
-      labels = scales::comma,
-      guide = guide_legend(
-        keyheight = unit(3, units = "mm"),
-        keywidth = unit(12, units = "mm"),
-        label.position = "bottom",
-        title.position = "top",
-        nrow = 1
-      )
+    scale_fill_gradientn(
+      colors = met.brewer("Hokusai2"),
+      name = "Number of Crashes",
+      limits = c(0, 400)
     ) +
     labs(title = sprintf("Flight crashes in US states during %d", input_year)) +
     theme(
-      legend.position = 'top',
-      plot.title = element_text(
-        size = 22,
-        hjust = 0.5,
-        margin = margin(
-          b = -0.1,
-          t = 0.4,
-          l = 2,
-          unit = "cm"
-        )
-      ),
-      
+      legend.position = 'right',
+      plot.title = element_text(size = 40, hjust = 0.5, face = "bold", vjust = -1),
+      legend.text = element_text(size = 18),
+      legend.title = element_text(size = 20, face = "bold")
     )
 }
 ```
@@ -686,21 +654,25 @@ years_list <- flights_ntsb_shp |>
   distinct(event_year) |>
   pull()
 
-# For saving the plotted Hex-Bin map in jpg format
-my_maps <- paste0("images/hexbin_map/hex_bin_map", seq_along(years_list), ".jpg")
-for (i in seq_along(years_list)){
-    getHexBinMap(input_year = years_list[i])
-    ggsave(my_maps[i],
-           height = 8, 
-           width  = 15, 
-           unit   = "in", 
-           dpi    = 200)
+for (i in seq_along(years_list)) {
+  my_maps <-
+    paste0("images/map_plot/flight_crash_us_states",
+           years_list[i],
+           ".jpg")
+  getHexBinMap(input_year = years_list[i])
+  ggsave(
+    my_maps,
+    height = 9,
+    width  = 15,
+    unit   = "in",
+    dpi    = 200
+  )
 }
 ```
 
 ```{r animation_hexbin}
 # making gif using gganimate package
-hex_bin_maps <- list.files(path = "images/hexbin_map/", full.names = TRUE)
+hex_bin_maps <- list.files(path = "images/map_plot/", full.names = TRUE)
 hex_bin_maps_list <- lapply(hex_bin_maps, image_read)
 
 # Joining all the saved images
@@ -708,7 +680,7 @@ joined_plots <- image_join(hex_bin_maps_list)
 
 # Animating the images using image_animate() and restting the resolution
 # Setting fps = 1
-hex_bin_maps_animation <- image_animate(image_scale(joined_plots, "2000x1000"), fps = 1)
+hex_bin_maps_animation <- image_animate(image_scale(joined_plots, "2000x1000"), fps = 2)
 
 # Saving gif to the repository
 image_write(image = hex_bin_maps_animation,
