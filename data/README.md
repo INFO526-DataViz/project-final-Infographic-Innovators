@@ -11,7 +11,7 @@ The dataset central to our investigation was procured through a request to the N
 The dataset is structured as a tibble with 89,134 rows and 38 columns, out of which a few unnecessary columns has been removed for our purpose which resulted in a tibble with 89,134 rows and 20 columns.
 
 | Variable Name        | Description                                                                                 |
-|------------------|------------------------------------------------------|
+|-------------------|-----------------------------------------------------|
 | event_type           | Type of event - accident, incident or occurrence.                                           |
 | event_date           | Date time of when the event has occurred.                                                   |
 | city                 | The city or place location closest to the site of the event.                                |
@@ -57,3 +57,25 @@ The dataset is structured as a tibble with 89,134 rows and 38 columns, out of wh
 | number_of_engines    | Numeric   |
 | air_craft_damage     | Character |
 | weather_condition    | Character |
+
+# Codebook for US states HEX Grid data
+
+We have used an existing dataset to plot the HEX Grid for the US states which was sourced from - [Source](https://team.carto.com/u/andrew/tables/andrew.us_states_hexgrid/public/map).
+
+## Variable Names, Descriptions and Data types:
+
+After reading the shape files we get the columns such as:
+
+| Variable Name | Description                            | Data Type |
+|---------------|----------------------------------------|-----------|
+| cartodb_id    | Unique Id of the data                  | Integer   |
+| created_at    | Data creation time stamp               | Date      |
+| updated_at    | Time stamp of the updated data         | Date      |
+| label         | Label of the States                    | Character |
+| bees          | Not Given and not used                 | Double    |
+| iso3166_2     | Short form of the state names          | Character |
+| google_nam    | Full name of the states                | Character |
+| geometry      | Geometry of the hex bins of each state | Polygon   |
+
+\
+\
