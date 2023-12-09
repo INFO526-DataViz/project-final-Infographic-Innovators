@@ -36,13 +36,12 @@ ui <- fluidPage(theme = shinytheme("lumen"),
                       sidebarPanel(
                         selectInput("plotType", 
                                     "Choose a Plot:", 
-                                    choices = c("Time series Interactive", 
-                                                "Time series Animated", 
+                                    choices = c("Time Series - Interactive - Total Fatalies", 
+                                                "Time Series - Animated", 
                                                 "Radar Chart",
-                                                "Radial Plot", 
-                                                "Radial Plot Interactive",
-                                                "Map plot",
-                                                "Hex map Plot"))
+                                                "Radial Plot Total Crashes", 
+                                                "Radial Plot Injuries",
+                                                "US Map"))
                       ),
                       
                       # Main panel for displaying outputs
