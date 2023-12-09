@@ -191,6 +191,64 @@ flights_ntsb_radial
 
 
 
+# Filtering out NA and invalid Latitude and Longitude values
+flights_ntsb_maps <- flights_ntsb |>
+  subset(!is.na(longitude) & !is.na(latitude)
+         & latitude < 75 & latitude > 10 & longitude < -60)
+
+# Creating a dataset for the map plot and picking the columns that we need
+flights_ntsb_maps <- flights_ntsb_maps |>
+  # getting total crashes and total injuries
+  group_by(state, event_year) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  drop_na()
+
+# getting unique states in the data
+unique_states <- unique(flights_ntsb_maps$state)
+
+# getting all years involved in the data
+all_years <- unique(flights_ntsb_maps$event_year)
+
+# combining above data so that we will be generating data of the states 
+# which are missing in the original data
+all_states_data <-
+  expand.grid(state = unique_states, event_year = all_years)
+
+flights_ntsb_maps <-
+  # using left_join() to combine the data based on state and event_year
+  left_join(all_states_data,
+            flights_ntsb_maps,
+            by = c("state", "event_year")) |>
+  mutate(
+    total_crashes = ifelse(is.na(total_crashes), 0, total_crashes),
+    total_injuries = ifelse(is.na(total_injuries), 0, total_injuries)
+  )
+
+
+# Creating a list of Years from dataset
+years_list <- flights_ntsb_shp |>
+  arrange(event_year) |>
+  distinct(event_year) |>
+  pull()
+
+for (i in seq_along(years_list)) {
+  my_maps <-
+    paste0("images/map_plot/flight_crash_us_states",
+           years_list[i],
+           ".jpg")
+  getHexBinMap(input_year = years_list[i])
+  ggsave(
+    my_maps,
+    height = 9,
+    width  = 15,
+    unit   = "in",
+    dpi    = 200
+  )
+}
+
 
 
 
