@@ -16,7 +16,8 @@ server <- function(input, output) {
   output$plot <- renderPlot({
     # Switch case to handle different plots
     switch(input$plotType,
-           "Time Series - Interactive - Total Fatalies" = { 
+          
+            "Time Series - Interactive - Total Fatalies" = { 
              # Creating a dataset for the timeSeries plot
              flights_ntsb_timeseries <- flights_ntsb |>
                group_by(event_year) |>
@@ -52,7 +53,8 @@ server <- function(input, output) {
              ggplotly(p)
              
            },
-           "Time Series - Animated" = { # all 3 plots with label - animated 
+         
+             "Time Series - Animated" = { # all 3 plots with label - animated 
              
              
              fcdata <- flights_ntsb_timeseries |>
@@ -114,8 +116,36 @@ server <- function(input, output) {
                renderer = gifski_renderer("images/animated_fcdata.gif")
              )
            },
-           "Plot 3" = { # Replace with your actual plot code or object
-             # Example: boxplot(rnorm(100))
+          
+            "Radar Chart" = { 
+             # Plotting an Interactive Radar Plot using Plotly
+             radar_chart <- plot_ly(type = 'scatterpolar',
+                                    fill = 'toself',
+                                    mode = 'lines+markers')
+             
+             # first plot tracing of VMC data
+             radar_chart <- radar_chart |>
+               add_trace(
+                 r = radar_trace_r2,
+                 theta = radar_theta,
+                 name = 'VMC'
+               )
+             # second plot tracing of IMC data
+             radar_chart <- radar_chart |>
+               add_trace(
+                 r = radar_trace_r1,
+                 theta = radar_theta,
+                 name = 'IMC'
+               )
+             # plot layout configuration
+             radar_chart <- radar_chart |>
+               layout(polar = list(radialaxis = list(
+                 visible = T,
+                 range = c(0, 10500)
+               )))
+             
+             radar_chart
+             
            },
            "Plot 2" = { # Replace with your actual plot code or object
              # Example: hist(rnorm(100))
