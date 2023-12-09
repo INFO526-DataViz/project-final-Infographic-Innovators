@@ -45,7 +45,7 @@ ggplot2::theme_set(ggplot2::theme_minimal(base_size = 14, base_family = "sans"))
 # setting width of code output
 options(width = 65)
 
-# setting figure parameters for knitr
+# setting figure parameters for knitr----
 knitr::opts_chunk$set(
   fig.width = 8,        # 8" width
   fig.asp = 0.618,      # the golden ratio
@@ -72,7 +72,7 @@ flights_ntsb <- flights_ntsb |>
   # cleaning column names using janitor package
   clean_names()
 
-# Modifying the data using mutate()
+# Modifying the data using mutate()----
 flights_ntsb <- flights_ntsb |>
   # getting event time from the date time column
   mutate(event_time = format(event_date, "%H:%M"),
@@ -107,6 +107,101 @@ flights_ntsb <- flights_ntsb |>
     event_year = year(event_date),
     event_month = month(event_date)
   )
+
+
+
+# Assigning different weather conditions to variables----
+# IFR and IMC are same conditions so we are combining them
+# VFR and VMC are same conditions so we are combining them
+flights_ntsb_radar <- flights_ntsb |>
+  mutate(
+    weather_condition = case_when(
+      weather_condition == "IFR" ~ "IMC",
+      weather_condition == "VFR" ~ "VMC",
+      weather_condition == "Unknown" ~ "UNK",
+      is.na(weather_condition) ~ "UNK",
+      TRUE ~ weather_condition
+    )
+  ) |>
+  # getting total crashes and total injuries
+  group_by(event_month, weather_condition) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  arrange(event_month)
+# Filtering out weather condition 'IMC'
+radar_trace_r1 <- flights_ntsb_radar |>
+  filter(weather_condition %in% c("IMC")) |>
+  pull(total_crashes)
+
+radar_trace_r1 <-
+  c(
+    radar_trace_r1,
+    flights_ntsb_radar |> 
+      filter(weather_condition == "IMC" & event_month == 1) |> 
+      pull(total_crashes)
+  )
+
+# Filtering out weather condition 'VMC'
+radar_trace_r2 <- flights_ntsb_radar |>
+  filter(weather_condition %in% c("VMC")) |>
+  pull(total_crashes)
+
+radar_trace_r2 <-
+  c(
+    radar_trace_r2,
+    flights_ntsb_radar |> 
+      filter(weather_condition == "VMC" & event_month == 1) |> 
+      pull(total_crashes)
+  )
+
+radar_theta <- c("Jan" , "Feb" , "Mar" , "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec", "Jan")
+
+
+
+
+
+# Creating a filtered dataset for Radial Plot----
+flights_ntsb_radial <- flights_ntsb |>
+  # getting total crashes and total injuries
+  group_by(flight_phase) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  drop_na() |>
+  arrange(desc(total_crashes))
+
+# getting top 5 flight phases where flight crashes occured
+flights_ntsb_radial <- flights_ntsb_radial |>
+  slice(1:5) |>
+  bind_rows(
+    flights_ntsb_radial |>
+      slice(-(1:5)) |>
+      summarize(
+        flight_phase = "Other",
+        total_crashes = sum(total_crashes),
+        total_injuries = sum(total_injuries)
+      )
+  ) |>
+  mutate(flight_phase = fct_inorder(flight_phase))
+
+flights_ntsb_radial
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

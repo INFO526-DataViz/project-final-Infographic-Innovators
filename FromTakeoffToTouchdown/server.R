@@ -262,12 +262,6 @@ server <- function(input, output) {
              hex_bin_maps_animation
              
            },
-           "Plot 2" = { # Replace with your actual plot code or object
-             # Example: hist(rnorm(100))
-           },
-           "Plot 2" = { # Replace with your actual plot code or object
-             # Example: hist(rnorm(100))
-           },
            )
   })
 }
