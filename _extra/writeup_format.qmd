@@ -1,0 +1,76 @@
+---
+title: "From Mild to Wild"
+subtitle: "INFO 526 - Project 1"
+author: "ScatterPlot-Sorcerers"
+format: html
+editor: visual
+---
+
+## Abstract
+
+INtro to project
+
+1. Question 1
+Objective:
+Methodology: 
+Findings:
+
+2. Question 2
+Objective:
+Methodology: 
+Findings:
+
+
+
+### Question 1:
+
+#### **Introduction:**
+
+
+
+#### **Approach**
+
+**Histogram:**
+
+Purpose: Visualizing the distribution and trend followed by the number of contestants that failed to try all the sauces over the seasons.
+
+**Geom_smooth:**
+
+Purpose: 
+#### **Analysis**
+
+
+
+#### **Analysis**
+
+#### **Code**
+
+#### **Discussion**
+(story)
+### Question 2:
+
+#### **Introduction:**
+
+
+#### **Approach:**
+
+
+**Line graph:**
+
+Purpose:
+
+
+**Color Gradient Scale:**
+
+Purpose: 
+**Text Annotation:**
+
+Purpose: 
+#### **Analysis:**
+
+#### **Code**
+
+
+#### **Discussions:**
+
+(story)
