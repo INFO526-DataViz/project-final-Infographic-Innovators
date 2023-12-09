@@ -347,7 +347,7 @@ animated_fcdata <- animate(
   fps = 10,
   duration = 25,
   width = 800,
-  height = 200,
+  height = 350,
   renderer = gifski_renderer("images/animated_fcdata.gif")
 )
 
