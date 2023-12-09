@@ -242,8 +242,25 @@ server <- function(input, output) {
            flights_radial_bar_injuries
            
            },
-           "Plot 2" = { # Replace with your actual plot code or object
-             # Example: hist(rnorm(100))
+           "US Map" = { 
+             
+             # making gif using gganimate package
+             hex_bin_maps <- list.files(path = "images/map_plot/", full.names = TRUE)
+             hex_bin_maps_list <- lapply(hex_bin_maps, image_read)
+             
+             # Joining all the saved images
+             joined_plots <- image_join(hex_bin_maps_list)
+             
+             # Animating the images using image_animate() and restting the resolution
+             # Setting fps = 1
+             hex_bin_maps_animation <- image_animate(image_scale(joined_plots, "2000x1000"), fps = 2)
+             
+             # Saving gif to the repository
+             image_write(image = hex_bin_maps_animation,
+                         path = "images/flight_crash_us_states.gif")
+             
+             hex_bin_maps_animation
+             
            },
            "Plot 2" = { # Replace with your actual plot code or object
              # Example: hist(rnorm(100))
