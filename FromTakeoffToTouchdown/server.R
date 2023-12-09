@@ -147,8 +147,51 @@ server <- function(input, output) {
              radar_chart
              
            },
-           "Plot 2" = { # Replace with your actual plot code or object
-             # Example: hist(rnorm(100))
+           "Radial Plot" = { # Plotting a Radial Barplot to show the Total Count of Crashes and phase of flight 
+             flights_radial_bar_crashes <-
+               ggplot(flights_ntsb_radial,
+                      aes(x = fct_rev(flight_phase), y = total_crashes, 
+                          fill = flight_phase)) +
+               geom_bar(stat = "identity", width = 0.8) +
+               geom_text(hjust = 1.2, size = 4.2, 
+                         aes(y = 0, label = comma(total_crashes))) +
+               coord_polar(theta = "y") +
+               labs(
+                 x = NULL,
+                 y = NULL,
+                 fill = "Phase of Flight",
+                 title = "A Radial View of Total Crashes",
+                 subtitle = "as per the phase of flight",
+                 caption = ""
+               ) +
+               scale_y_continuous(
+                 breaks = seq(0, 27000, by = 5000),
+                 limits = c(0, 27000)
+               ) +
+               scale_x_discrete(expand = c(0.35, 0)) + 
+               scale_fill_frontiers() +
+               theme(
+                 legend.position = "bottom",
+                 axis.text = element_blank(),
+                 panel.grid.minor = element_blank(),
+                 panel.grid.major = element_blank()
+               ) +
+               guides(
+                 fill = guide_legend(
+                   nrow = 1,
+                   direction = "horizontal",
+                   title.position = "top",
+                   title.hjust = 0.5,
+                   label.position = "bottom",
+                   label.hjust = 1,
+                   label.vjust = 1,
+                   label.theme = element_text(lineheight = 0.25, size = 14),
+                   keywidth = 1.5,
+                   keyheight = 0.5
+                 )
+               )
+             flights_radial_bar_crashes
+             
            },
            "Plot 2" = { # Replace with your actual plot code or object
              # Example: hist(rnorm(100))
