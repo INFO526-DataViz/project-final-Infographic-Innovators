@@ -9,20 +9,21 @@
 
 library(shiny)
 
-# Define server logic required to draw a histogram
-function(input, output, session) {
-
-    output$distPlot <- renderPlot({
-
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
-
-    })
-
+# Define server logic
+server <- function(input, output) {
+  
+  # Function to render plot based on input
+  output$plot <- renderPlot({
+    # Switch case to handle different plots
+    switch(input$plotType,
+           "Plot 1" = { # Replace with your actual plot code or object
+             # Example: plot(x = rnorm(100), y = rnorm(100))
+           },
+           "Plot 2" = { # Replace with your actual plot code or object
+             # Example: hist(rnorm(100))
+           },
+           "Plot 3" = { # Replace with your actual plot code or object
+             # Example: boxplot(rnorm(100))
+           })
+  })
 }
