@@ -156,10 +156,145 @@ server <- function(input, output) {
           renderer = gifski_renderer("images/animated_fcdata.gif")
         )
       } else if (input$plotType == "Radar Chart") {
-        # Code to generate this plot
+        # Plotting an Interactive Radar Plot using Plotly
+        radar_chart <- plot_ly(type = 'scatterpolar',
+                               fill = 'toself',
+                               mode = 'lines+markers')
+        
+        # first plot tracing of VMC data
+        radar_chart <- radar_chart |>
+          add_trace(
+            r = radar_trace_r2,
+            theta = radar_theta,
+            name = 'VMC'
+          )
+        # second plot tracing of IMC data
+        radar_chart <- radar_chart |>
+          add_trace(
+            r = radar_trace_r1,
+            theta = radar_theta,
+            name = 'IMC'
+          )
+        # plot layout configuration
+        radar_chart <- radar_chart |>
+          layout(polar = list(radialaxis = list(
+            visible = T,
+            range = c(0, 10500)
+          )))
+        
+        radar_chart
       }
-      # ... (other plot options)
-    })
+    }  else if (input$plotType == "Radial Plot Total Crashes") {
+      # Plotting a Radial Barplot to show the Total Count of Crashes and phase of flight 
+      flights_radial_bar_crashes <-
+        ggplot(flights_ntsb_radial,
+               aes(x = fct_rev(flight_phase), y = total_crashes, 
+                   fill = flight_phase)) +
+        geom_bar(stat = "identity", width = 0.8) +
+        geom_text(hjust = 1.2, size = 4.2, 
+                  aes(y = 0, label = comma(total_crashes))) +
+        coord_polar(theta = "y") +
+        labs(
+          x = NULL,
+          y = NULL,
+          fill = "Phase of Flight",
+          title = "A Radial View of Total Crashes",
+          subtitle = "as per the phase of flight",
+          caption = ""
+        ) +
+        scale_y_continuous(
+          breaks = seq(0, 27000, by = 5000),
+          limits = c(0, 27000)
+        ) +
+        scale_x_discrete(expand = c(0.35, 0)) + 
+        scale_fill_frontiers() +
+        theme(
+          legend.position = "bottom",
+          axis.text = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.grid.major = element_blank()
+        ) +
+        guides(
+          fill = guide_legend(
+            nrow = 1,
+            direction = "horizontal",
+            title.position = "top",
+            title.hjust = 0.5,
+            label.position = "bottom",
+            label.hjust = 1,
+            label.vjust = 1,
+            label.theme = element_text(lineheight = 0.25, size = 14),
+            keywidth = 1.5,
+            keyheight = 0.5
+          )
+        )
+      flights_radial_bar_crashes
+    }  else if (input$plotType == "Radial Plot Injuries") {
+      flights_radial_bar_injuries <-
+        ggplot(flights_ntsb_radial,
+               aes(x = fct_rev(flight_phase), y = total_injuries, 
+                   fill = flight_phase)) +
+        geom_bar(stat = "identity", width = 0.8) +
+        geom_text(hjust = 1.2, size = 4.2, 
+                  aes(y = 0, label = comma(total_injuries))) +
+        coord_polar(theta = "y") +
+        labs(
+          x = NULL,
+          y = NULL,
+          fill = "Phase of Flight",
+          title = "A Radial View of Total Injuries",
+          subtitle = "as per the phase of flight",
+          caption = ""
+        ) +
+        scale_y_continuous(
+          breaks = seq(0, 13200, by = 1000),
+          limits = c(0, 13200)
+        ) +
+        scale_x_discrete(expand = c(0.35, 0)) + 
+        scale_fill_manual(
+          values = moma.colors("VanGogh")
+        ) +
+        theme(
+          legend.position = "bottom",
+          axis.text = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.grid.major = element_blank()
+        ) +
+        guides(
+          fill = guide_legend(
+            nrow = 1,
+            direction = "horizontal",
+            title.position = "top",
+            title.hjust = 0.5,
+            label.position = "bottom",
+            label.hjust = 1,
+            label.vjust = 1,
+            label.theme = element_text(lineheight = 0.25, size = 14),
+            keywidth = 1.5,
+            keyheight = 0.5
+          )
+        ) 
+      
+      flights_radial_bar_injuries
+    }  else if (input$plotType == "US Map") {
+      # making gif using gganimate package
+      hex_bin_maps <- list.files(path = "images/map_plot/", full.names = TRUE)
+      hex_bin_maps_list <- lapply(hex_bin_maps, image_read)
+      
+      # Joining all the saved images
+      joined_plots <- image_join(hex_bin_maps_list)
+      
+      # Animating the images using image_animate() and restting the resolution
+      # Setting fps = 1
+      hex_bin_maps_animation <- image_animate(image_scale(joined_plots, "2000x1000"), fps = 2)
+      
+      # Saving gif to the repository
+      image_write(image = hex_bin_maps_animation,
+                  path = "images/flight_crash_us_states.gif")
+      
+      hex_bin_maps_animation
+    }
+    )
     
   }  
   
