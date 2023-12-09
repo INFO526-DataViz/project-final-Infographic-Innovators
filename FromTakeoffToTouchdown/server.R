@@ -16,8 +16,41 @@ server <- function(input, output) {
   output$plot <- renderPlot({
     # Switch case to handle different plots
     switch(input$plotType,
-           "Plot 1" = { # Replace with your actual plot code or object
-             # Example: plot(x = rnorm(100), y = rnorm(100))
+           "Time Series - Interactive" = { 
+             # Creating a dataset for the timeSeries plot
+             flights_ntsb_timeseries <- flights_ntsb |>
+               group_by(event_year) |>
+               summarise(
+                 total_fatalities = sum(fatal_injury_count, na.rm = TRUE),
+                 total_serious_injuries = sum(serious_injury_count, na.rm = TRUE),
+                 total_minor_injuries = sum(minor_injury_count, na.rm = TRUE)
+               )
+             
+             #time series plot ----
+             tp <-
+               ggplot(flights_ntsb_timeseries,
+                      aes(x = event_year, y = total_fatalities)) +
+               geom_line() +
+               labs(title = "Yearly Aircraft Crash Fatalities",
+                    x = "Year",
+                    y = "Total Fatalities") +
+               theme_minimal()
+             
+             # Interactive plot with ploty---- total fatalities
+             p <-
+               ggplot(flights_ntsb_timeseries,
+                      aes(x = event_year, y = total_fatalities)) +
+               geom_line() +
+               geom_text(aes(label = "✈️"),
+                         vjust = -0.5,
+                         hjust = 0.5,
+                         size = 5) +
+               labs(title = "Yearly Aircraft Crash Fatalities",
+                    x = "Year",
+                    y = "Total Fatalities")
+             
+             ggplotly(p)
+             
            },
            "Plot 2" = { # Replace with your actual plot code or object
              # Example: hist(rnorm(100))
