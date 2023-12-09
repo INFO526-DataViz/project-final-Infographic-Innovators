@@ -20,27 +20,39 @@ library(tidyverse)
 
 
 # Load data
-trend_data <- read_csv("data/trend_data.csv")
-trend_description <- read_csv("data/trend_description.csv")
+flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
 
 # Define UI
 ui <- fluidPage(theme = shinytheme("lumen"),
-                titlePanel("Google Trend Index"),
+                titlePanel("Takeoff to Touchsown"),
                 sidebarLayout(
                   sidebarPanel(
                     
                     # Select variable type of trend to plot
                    
+                    # Sidebar layout with input and output elements
+                    sidebarLayout(
+                      # Sidebar panel for inputs
+                      sidebarPanel(
+                        selectInput("plotType", 
+                                    "Choose a Plot:", 
+                                    choices = c("Time series Interactive", 
+                                                "Time series Animated", 
+                                                "Radar Chart",
+                                                "Radar Chart Interactive",
+                                                "Radial Plot", 
+                                                "Radial Plot Interactive",
+                                                "Map plot",
+                                                "Hex map Plot"))
+                      ),
+                      
+                      # Main panel for displaying outputs
+                      mainPanel(
+                        plotOutput("plot")
+                      )
+                    )
+                  )
                     
-                    
-                     selectInput(inputId = "type",
-                                label = strong("Trend index"),
-                                choices = c("Advertising & marketing" = "advert",
-                                            "Education" = "educat",
-                                            "Small business" = "smallbiz",
-                                            "Travel" = "travel",
-                                            "Unemployment" = "unempl"),
-                                selected = "travel"),
                     
                     # Descriptor text
                     HTML("The index is set to 1.0 on January 1, 2004 and is
