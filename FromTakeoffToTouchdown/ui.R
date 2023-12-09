@@ -24,7 +24,7 @@ flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
 
 # Define UI
 ui <- fluidPage(theme = shinytheme("lumen"),
-                titlePanel("Takeoff to Touchsown"),
+                titlePanel("Flight Data Visualization"),
                 sidebarLayout(
                   sidebarPanel(
                     
@@ -39,7 +39,6 @@ ui <- fluidPage(theme = shinytheme("lumen"),
                                     choices = c("Time series Interactive", 
                                                 "Time series Animated", 
                                                 "Radar Chart",
-                                                "Radar Chart Interactive",
                                                 "Radial Plot", 
                                                 "Radial Plot Interactive",
                                                 "Map plot",
