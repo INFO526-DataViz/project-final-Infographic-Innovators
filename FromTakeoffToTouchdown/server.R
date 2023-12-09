@@ -24,6 +24,22 @@ server <- function(input, output) {
            },
            "Plot 3" = { # Replace with your actual plot code or object
              # Example: boxplot(rnorm(100))
-           })
+           },
+           "Plot 2" = { # Replace with your actual plot code or object
+             # Example: hist(rnorm(100))
+           },
+           "Plot 2" = { # Replace with your actual plot code or object
+             # Example: hist(rnorm(100))
+           },
+           "Plot 2" = { # Replace with your actual plot code or object
+             # Example: hist(rnorm(100))
+           },
+           "Plot 2" = { # Replace with your actual plot code or object
+             # Example: hist(rnorm(100))
+           },
+           "Plot 2" = { # Replace with your actual plot code or object
+             # Example: hist(rnorm(100))
+           },
+           )
   })
 }
