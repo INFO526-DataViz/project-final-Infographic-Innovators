@@ -357,6 +357,82 @@ animated_fcdata
 
 ![](images/animated_fcdata.gif)
 
+```{r loading probablcause data, include=FALSE}
+probable_cause_data <- read_csv(here("data", "new_flights_PC.csv"))
+probable_cause_data <- subset(probable_cause_data, probable_cause_data$HighestInjuryLevel!="")
+```
+
+```{r datawragling,include=FALSE}
+count <- probable_cause_data |>
+  group_by(Probable_Cause)|>
+  summarize(perc=n())|>
+  mutate(
+    perc= (perc/sum(perc))
+  )
+count_waffle <- count |>
+  mutate(
+    remainder = perc * 100 - floor(perc * 100),
+    floored = floor(perc * 100)
+  ) |>
+  arrange(desc(remainder)) |>
+  mutate(number = ifelse(100 - sum(floored) >= row_number(), floored + 1, floored)) |>
+  arrange(perc)
+```
+```{r function-waffle}
+waffle_plot <- function(number, colour, colour_palette, symbol, symbol_size=8) {
+  p <- expand.grid(x = 0:9,
+                   y = 0:9) %>%
+    rowwise() |>
+    mutate(index = 1+sum(x * 10 + y >= cumsum(number)),
+           col = colour[[index]]) |>
+    ggplot(aes(x, y, color = forcats::fct_inorder(col))) +
+    geom_text(label = symbol,
+              size = symbol_size) +
+    scale_color_manual(values = colour_palette) +
+    coord_equal() +
+    theme_void() +
+    labs(color = '') +
+    theme(
+      legend.position = 'top',
+      legend.margin = margin(1, 3, 1, 1, unit = 'mm'),
+      plot.margin = margin(3,3,3,3,unit = 'mm'),
+      legend.background = element_rect(fill = 'grey100', color = 'grey')
+    )
+  return(p)
+}
+```
+
+```{r wafflechart}
+#font_add(family = "FontAwesome")
+cols1=c("pilot's failure"="blue",
+ 'Other'="yellow",
+ 'loss of engine power'="green",
+ 'physical damage'="maroon",
+ 'impact with trees'="pink",
+ 'inadequate flight maintenance'="darkgreen",
+ 'aerodynamic stall'="lightblue",
+ 'loss of plane control'="darkgrey",
+ 'crosswinds'="red",
+ 'in-flight fire'="darkred",
+ 'out of fuel'="lightgreen",
+ 'collision with birds'="lightpink",
+ 'in-flight collision'="black",
+ 'loss of directional'="orange",
+ 'undetermined'="gold")
+
+airplane_emoji <- "\U2708"
+waffle_plot(number = count_waffle$number,
+            colour = count_waffle$Probable_Cause,
+            colour_palette = cols1,
+            symbol="✈️",symbol_size=6)
+```
+
+```{r distribution}
+ggplot(subset(probable_cause_data, probable_cause_data$Probable_Cause=="pilot's failure")) +
+  geom_density(aes(x=year(EventDate), fill=HighestInjuryLevel), alpha=0.8)
+  
+```
+
 ```{r radarchart_data, include=FALSE}
 # Assigning different weather conditions to variables
 # IFR and IMC are same conditions so we are combining them
@@ -649,7 +725,7 @@ getHexBinMap <- function(input_year) {
 
 ```{r images_yearwise, include=FALSE}
 # Creating a list of Years from dataset
-years_list <- flights_ntsb_maps |>
+years_list <- flights_ntsb_shp |>
   arrange(event_year) |>
   distinct(event_year) |>
   pull()
