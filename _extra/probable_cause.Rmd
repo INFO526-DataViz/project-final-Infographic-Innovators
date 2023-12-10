@@ -106,8 +106,6 @@ cols1=c("pilot's failure"="blue",
  'in-flight collision'="black",
  'loss of directional'="orange",
  'undetermined'="white")
-)
-
 
 
 waffle_plot(number = count_waffle$number,

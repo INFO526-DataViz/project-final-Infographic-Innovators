@@ -16,10 +16,14 @@ website:
         href: presentation.qmd
       - text: About
         href: about.qmd
+    logo: images\flight_logo.png
+  favicon:  images\flight_logo.png
 
 format:
   html:
-    theme: default
+    theme:
+      dark: darkly
+      light: flatly
     toc: true
 
 execute:

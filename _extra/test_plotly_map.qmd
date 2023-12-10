@@ -46,6 +46,7 @@ pacman::p_load(tidyverse,
                usmap,
                sf,
                sp,
+               datasets,
                animation)
 
 pacman::p_load_gh("BlakeRMills/MoMAColors")
@@ -703,6 +704,14 @@ flights_ntsb_maps$hover <-
     )
   )
 
+# Create a tibble with state names and abbreviations
+state_data <- tibble(
+  state_name = state.name,
+  state_abb = state.abb
+)
+
+flights_ntsb_maps <- flights_ntsb_maps |>
+  left_join(state_data, by = c("state" = "state_name"))
 
 # specify some map projection/options
 g <- list(
@@ -716,7 +725,7 @@ fig <- plot_geo(flights_ntsb_maps, locationmode = 'USA-states')
 fig <- fig %>% add_trace(
   z = ~ total_crashes,
   text = ~ hover,
-  locations = ~ state,
+  locations = ~ state_abb,
   frame = ~ event_year,
   color = ~ total_crashes,
   colors = 'Purples'
