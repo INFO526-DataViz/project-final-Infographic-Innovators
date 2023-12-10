@@ -1,0 +1,730 @@
+---
+title: "From Takeoff to Touchdown: Dissecting Data on Air Disasters"
+subtitle: "INFO 526 - Project Final"
+author: 
+  - name: "Infographic Innovators - Antonio, Bharath, Eshaan, Thanoosha"
+    affiliations:
+      - name: "School of Information, University of Arizona"
+description: "A shiny app integration with aircraft crash analysis"
+format:
+   html:
+    code-tools: true
+    code-overflow: wrap
+    embed-resources: true
+editor: visual
+execute:
+  warning: false
+  echo: false
+---
+
+```{r load_packages, message=FALSE, include=FALSE}
+# GETTING THE LIBRARIES
+if (!require(pacman))
+  install.packages(pacman)
+
+
+pacman::p_load(tidyverse,
+               dplyr,
+               janitor,
+               dlookr,
+               here,
+               ggpubr,
+               maps,
+               plotly,
+               gganimate,
+               MetBrewer,
+               ggsci,
+               scales,
+               fmsb,
+               gifski,
+               ggimage,
+               emojifont,
+               magick,
+               lubridate,
+               patchwork,
+               viridis,
+               usmap,
+               sf,
+               sp,
+               animation)
+
+pacman::p_load_gh("BlakeRMills/MoMAColors")
+```
+
+```{r ggplot_setup, message=FALSE, include=FALSE}
+# setting theme for ggplot2
+ggplot2::theme_set(ggplot2::theme_minimal(base_size = 14, base_family = "sans"))
+
+# setting width of code output
+options(width = 65)
+
+# setting figure parameters for knitr
+knitr::opts_chunk$set(
+  fig.width = 8,        # 8" width
+  fig.asp = 0.618,      # the golden ratio
+  fig.retina = 1,       # dpi multiplier for displaying HTML output on retina
+  fig.align = "center", # center align figures
+  dpi = 200,            # higher dpi, sharper image
+  message = FALSE
+)
+```
+
+```{r load_dataset, include=FALSE}
+# Reading the data using read_csv
+flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
+```
+
+## Abstract
+
+```{r remove_columns, include=FALSE}
+# selecting columns which are required for our analysis
+flights_ntsb <- flights_ntsb |>
+  select(
+    EventType, EventDate,
+    City, State,
+    ReportType, HighestInjuryLevel,
+    FatalInjuryCount, SeriousInjuryCount,
+    MinorInjuryCount, ProbableCause,
+    Latitude, Longitude,
+    AirCraftCategory, NumberOfEngines, 
+    AirCraftDamage, WeatherCondition
+  ) |>
+  # cleaning column names using janitor package
+  clean_names()
+```
+
+```{r data_wrangle, include=FALSE}
+# Modifying the data using mutate()
+flights_ntsb <- flights_ntsb |>
+  # getting event time from the date time column
+  mutate(event_time = format(event_date, "%H:%M"),
+         # places the column after event_date
+         .after = event_date) |>
+  mutate(
+    # getting event date from the date time column
+    event_date = as.Date(event_date),
+    # extracting flight phase based on NTSB's designated terminology
+    flight_phase = case_when(
+      grepl("Landing", probable_cause, ignore.case = TRUE) ~ "Landing",
+      grepl("Stop", probable_cause, ignore.case = TRUE) ~ "Landing",
+      grepl("Approach", probable_cause, ignore.case = TRUE) ~ "Approach",
+      grepl("Takeoff", probable_cause, ignore.case = TRUE) ~ "Takeoff",
+      grepl("Take-off", probable_cause, ignore.case = TRUE) ~ "Takeoff",
+      grepl("Maneuvering", probable_cause, ignore.case = TRUE) ~ "Maneuvering",
+      grepl("Climb", probable_cause, ignore.case = TRUE) ~ "Climb",
+      grepl("Descent", probable_cause, ignore.case = TRUE) ~ "Descent",
+      grepl("Taxi", probable_cause, ignore.case = TRUE) ~ "Taxi",
+      grepl("Cruise", probable_cause, ignore.case = TRUE) ~ "Cruise",
+      grepl("Hover", probable_cause, ignore.case = TRUE) ~ "Hover",
+      grepl("Standing", probable_cause, ignore.case = TRUE) ~ "Standing",
+      grepl("Uncontrolled Descent", probable_cause, ignore.case = TRUE) ~ "Uncontrolled Descent",
+      grepl("Emergency", probable_cause, ignore.case = TRUE) ~ "Emergency",
+      grepl("Holding", probable_cause, ignore.case = TRUE) ~ "Holding",
+    ),
+    # places the flight phase column after probable cause
+    .after = probable_cause 
+  ) |>
+  # getting year and month of the events
+  mutate(
+    event_year = year(event_date),
+    event_month = month(event_date)
+  )
+```
+
+```{r timeseries_data}
+# Creating a dataset for the timeSeries plot
+flights_ntsb_timeseries <- flights_ntsb |>
+  group_by(event_year) |>
+  summarise(
+    total_fatalities = sum(fatal_injury_count, na.rm = TRUE),
+    total_serious_injuries = sum(serious_injury_count, na.rm = TRUE),
+    total_minor_injuries = sum(minor_injury_count, na.rm = TRUE)
+  )
+
+#time series plot ----
+tp <-
+  ggplot(flights_ntsb_timeseries,
+         aes(x = event_year, y = total_fatalities)) +
+  geom_line() +
+  labs(title = "Yearly Aircraft Crash Fatalities",
+       x = "Year",
+       y = "Total Fatalities") +
+  theme_minimal()
+
+# Interactive plot with ploty---- total fatalities
+p <-
+  ggplot(flights_ntsb_timeseries,
+         aes(x = event_year, y = total_fatalities)) +
+  geom_line() +
+  geom_text(aes(label = "✈️"),
+            vjust = -0.5,
+            hjust = 0.5,
+            size = 5) +
+  labs(title = "Yearly Aircraft Crash Fatalities",
+       x = "Year",
+       y = "Total Fatalities")
+
+ggplotly(p)
+```
+
+```{r timeseries_animated, include=FALSE}
+# Creating Animated Plot for Total Faltalities
+Image <-
+  "images/airplane.png"  #Save Image instead of inserting emoji
+
+# Labelling the axes and adding title to the plot for Fatalities
+p <- ggplot(flights_ntsb_timeseries,
+            aes(x = event_year,
+                y = total_fatalities)) +
+  geom_line() +
+  geom_image(aes(image = Image),
+             size = 0.05) +
+  labs(title = "Yearly Aircraft Crash Fatalities",
+       x = "Year",
+       y = "Total Fatalities") +
+  theme_minimal()
+
+# Animating the plot
+animated_plot <- p +
+  transition_reveal(event_year) +
+  ease_aes('linear') +
+  shadow_mark()
+
+# Animating the plot
+animate(
+  animated_plot,
+  nframes = 200,
+  width = 800,
+  height = 600,
+  renderer = gifski_renderer()
+)
+
+# Labelling the axes and adding title to the plot for Serious Injuries
+p_serious_injuries <-
+  ggplot(flights_ntsb_timeseries,
+         aes(x = event_year,
+             y = total_serious_injuries)) +
+  geom_line() +
+  geom_image(aes(image = Image),
+             size = 0.05) +
+  labs(title = "Yearly Aircraft Crash Serious Injuries",
+       x = "Year",
+       y = "Total Serious Injuries") +
+  theme_minimal()
+
+# Animating the Aircraft serious injuries plot
+animated_serious_injuries <- p_serious_injuries +
+  transition_reveal(event_year) +
+  ease_aes('linear') +
+  shadow_mark()
+
+animate(
+  animated_serious_injuries,
+  nframes = 200,
+  width = 800,
+  height = 600,
+  renderer = gifski_renderer()
+)
+
+
+# Plotting a timeseries graph for total minor injuries
+p_minor_injuries <- ggplot(flights_ntsb_timeseries,
+                           aes(x = event_year,
+                               
+                               y = total_minor_injuries)) +
+  geom_line() +
+  geom_image(aes(image = Image), size = 0.05) +
+  labs(title = "Yearly Aircraft Crash Minor Injuries",
+       x = "Year",
+       y = "Total Minor Injuries") +
+  theme_minimal()
+
+# Animating the timeseries plot for total minor injuries
+animated_minor_injuries <- p_minor_injuries +
+  transition_reveal(event_year) +
+  ease_aes('linear') +
+  shadow_mark()
+
+animate(
+  animated_minor_injuries,
+  nframes = 200,
+  width = 800,
+  height = 600,
+  renderer = gifski_renderer()
+)
+
+# Reshaping the data to a longer format
+long_fcdata <- flights_ntsb_timeseries |>
+  pivot_longer(cols = starts_with("total_"),
+               names_to = "Category",
+               values_to = "Count")
+
+
+# Static plot for  3 animations- interactive
+# Time series plot with all categories
+tp <- ggplot(long_fcdata,
+             aes(x = event_year,
+                 y = Count,
+                 color = Category)) +
+  geom_line() +
+  labs(title = "Yearly Aircraft Crash Statistics",
+       x = "Year",
+       y = "Count") +
+  theme_minimal()
+
+# Interactive plot with plotly
+p <- ggplot(long_fcdata, aes(x = event_year,
+                             y = Count,
+                             color = Category)) +
+  geom_line() +
+  geom_text(aes(label = "✈️"),
+            vjust = -0.5,
+            hjust = 0.5,
+            size = 5) +
+  labs(title = "Yearly Aircraft Crash Statistics",
+       x = "Year",
+       y = "Count")
+
+ggplotly(p)
+```
+
+```{r animated_labels}
+# all 3 plots with label - animated 
+
+
+fcdata <- flights_ntsb_timeseries |>
+  ungroup() |>
+  pivot_longer(cols = starts_with("total_"),
+               names_to = "Category",
+               values_to = "Count") |>
+  mutate(
+    Category = case_when(
+      Category == "total_fatalities" ~ "Fatalities",
+      Category == "total_serious_injuries" ~ "Serious Injuries",
+      Category == "total_minor_injuries" ~ "Minor Injuries"
+    )
+  )
+
+
+
+# Creating the animated plot
+animation_fcdata <- ggplot(fcdata,
+                           aes(event_year,
+                               Count,
+                               group = Category,
+                               color = Category)) +
+  geom_line(show.legend = FALSE) +
+  geom_segment(
+    aes(xend = max(event_year) +
+          0.1,
+        yend = Count),
+    linetype = 2,
+    colour = 'grey',
+    show.legend = FALSE
+  ) +
+  geom_point(size = 2,
+             show.legend = FALSE) +
+  geom_text(
+    aes(
+      x = max(event_year) + 0.1,
+      label = Category,
+      color = "#000000"
+    ),
+    hjust = 0,
+    show.legend = FALSE
+  ) +
+  transition_reveal(event_year) +
+  coord_cartesian(clip = 'off') +
+  theme(plot.title = element_text(size = 20)) +
+  labs(title = 'Aircraft Crash Statistics Over Time',
+       y = 'Count',
+       x = element_blank()) +
+  theme(plot.margin = margin(5.5, 40, 5.5, 5.5))
+
+# Animating the plot
+animated_fcdata <- animate(
+  animation_fcdata,
+  fps = 10,
+  duration = 25,
+  width = 800,
+  height = 350,
+  renderer = gifski_renderer("images/animated_fcdata.gif")
+)
+
+# Display or save the animated plot
+animated_fcdata
+```
+
+![](images/animated_fcdata.gif)
+
+```{r radarchart_data, include=FALSE}
+# Assigning different weather conditions to variables
+# IFR and IMC are same conditions so we are combining them
+# VFR and VMC are same conditions so we are combining them
+flights_ntsb_radar <- flights_ntsb |>
+  mutate(
+    weather_condition = case_when(
+      weather_condition == "IFR" ~ "IMC",
+      weather_condition == "VFR" ~ "VMC",
+      weather_condition == "Unknown" ~ "UNK",
+      is.na(weather_condition) ~ "UNK",
+      TRUE ~ weather_condition
+    )
+  ) |>
+  # getting total crashes and total injuries
+  group_by(event_month, weather_condition) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  arrange(event_month)
+```
+
+```{r radar_chart, include=FALSE}
+# Filtering out weather condition 'IMC'
+radar_trace_r1 <- flights_ntsb_radar |>
+  filter(weather_condition %in% c("IMC")) |>
+  pull(total_crashes)
+
+radar_trace_r1 <-
+  c(
+    radar_trace_r1,
+    flights_ntsb_radar |> 
+      filter(weather_condition == "IMC" & event_month == 1) |> 
+      pull(total_crashes)
+  )
+
+# Filtering out weather condition 'VMC'
+radar_trace_r2 <- flights_ntsb_radar |>
+  filter(weather_condition %in% c("VMC")) |>
+  pull(total_crashes)
+
+radar_trace_r2 <-
+  c(
+    radar_trace_r2,
+    flights_ntsb_radar |> 
+      filter(weather_condition == "VMC" & event_month == 1) |> 
+      pull(total_crashes)
+  )
+
+radar_theta <- c("Jan" , "Feb" , "Mar" , "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec", "Jan")
+```
+
+```{r radar_chart_plotly}
+# Plotting an Interactive Radar Plot using Plotly
+radar_chart <- plot_ly(type = 'scatterpolar',
+               fill = 'toself',
+               mode = 'lines+markers')
+
+# first plot tracing of VMC data
+radar_chart <- radar_chart |>
+  add_trace(
+    r = radar_trace_r2,
+    theta = radar_theta,
+    name = 'VMC'
+  )
+# second plot tracing of IMC data
+radar_chart <- radar_chart |>
+  add_trace(
+    r = radar_trace_r1,
+    theta = radar_theta,
+    name = 'IMC'
+  )
+# plot layout configuration
+radar_chart <- radar_chart |>
+  layout(polar = list(radialaxis = list(
+    visible = T,
+    range = c(0, 10500)
+  )))
+
+radar_chart
+```
+
+```{r radial_plot, include=FALSE}
+# Creating a filtered dataset for Radial Plot
+flights_ntsb_radial <- flights_ntsb |>
+  # getting total crashes and total injuries
+  group_by(flight_phase) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  drop_na() |>
+  arrange(desc(total_crashes))
+
+# getting top 5 flight phases where flight crashes occured
+flights_ntsb_radial <- flights_ntsb_radial |>
+  slice(1:5) |>
+  bind_rows(
+    flights_ntsb_radial |>
+      slice(-(1:5)) |>
+      summarize(
+        flight_phase = "Other",
+        total_crashes = sum(total_crashes),
+        total_injuries = sum(total_injuries)
+      )
+  ) |>
+  mutate(flight_phase = fct_inorder(flight_phase))
+
+flights_ntsb_radial
+```
+
+```{r radial_plot_crashes}
+#| code-fold: true
+#| code-summary: "Radial Bar Plot - Total Crashes"
+
+# Plotting a Radial Barplot to show the Total Count of Crashes and phase of flight 
+flights_radial_bar_crashes <-
+  ggplot(flights_ntsb_radial,
+         aes(x = fct_rev(flight_phase), y = total_crashes, 
+             fill = flight_phase)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_text(hjust = 1.2, size = 4.2, 
+            aes(y = 0, label = comma(total_crashes))) +
+  coord_polar(theta = "y") +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "Phase of Flight",
+    title = "A Radial View of Total Crashes",
+    subtitle = "as per the phase of flight",
+    caption = ""
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 27000, by = 5000),
+    limits = c(0, 27000)
+  ) +
+  scale_x_discrete(expand = c(0.35, 0)) + 
+  scale_fill_frontiers() +
+  theme(
+    legend.position = "bottom",
+    axis.text = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank()
+    ) +
+  guides(
+      fill = guide_legend(
+        nrow = 1,
+        direction = "horizontal",
+        title.position = "top",
+        title.hjust = 0.5,
+        label.position = "bottom",
+        label.hjust = 1,
+        label.vjust = 1,
+        label.theme = element_text(lineheight = 0.25, size = 14),
+        keywidth = 1.5,
+        keyheight = 0.5
+      )
+    )
+flights_radial_bar_crashes
+# remaining - titles, some texts
+# interactive - plotly
+# animate - plotly by years or gganimate bar growth
+# sources:
+# gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
+# ploty - https://plotly.com/r/animations/
+```
+
+```{r radial_plot_injuries}
+#| code-fold: true
+#| code-summary: "Radial Bar Plot - Total Injuries"
+
+# Plotting a Radial Barplot to show the Total Count of Injuries and phase of flight 
+flights_radial_bar_injuries <-
+  ggplot(flights_ntsb_radial,
+         aes(x = fct_rev(flight_phase), y = total_injuries, 
+             fill = flight_phase)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_text(hjust = 1.2, size = 4.2, 
+            aes(y = 0, label = comma(total_injuries))) +
+  coord_polar(theta = "y") +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "Phase of Flight",
+    title = "A Radial View of Total Injuries",
+    subtitle = "as per the phase of flight",
+    caption = ""
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 13200, by = 1000),
+    limits = c(0, 13200)
+  ) +
+  scale_x_discrete(expand = c(0.35, 0)) + 
+  scale_fill_manual(
+    values = moma.colors("VanGogh")
+  ) +
+  theme(
+    legend.position = "bottom",
+    axis.text = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank()
+    ) +
+  guides(
+      fill = guide_legend(
+        nrow = 1,
+        direction = "horizontal",
+        title.position = "top",
+        title.hjust = 0.5,
+        label.position = "bottom",
+        label.hjust = 1,
+        label.vjust = 1,
+        label.theme = element_text(lineheight = 0.25, size = 14),
+        keywidth = 1.5,
+        keyheight = 0.5
+      )
+    ) 
+
+flights_radial_bar_injuries
+# remaining - titles, some texts
+# interactive - plotly
+# animate - plotly by years or gganimate bar growth
+# sources:
+# gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
+# ploty - https://plotly.com/r/animations/
+```
+
+```{r mapl_plot_data, include=FALSE}
+# Filtering out NA and invalid Latitude and Longitude values
+flights_ntsb_maps <- flights_ntsb |>
+  subset(!is.na(longitude) & !is.na(latitude)
+         & latitude < 75 & latitude > 10 & longitude < -60)
+
+# Creating a dataset for the map plot and picking the columns that we need
+flights_ntsb_maps <- flights_ntsb_maps |>
+  # getting total crashes and total injuries
+  group_by(state, event_year) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  drop_na()
+
+# getting unique states in the data
+unique_states <- unique(flights_ntsb_maps$state)
+
+# getting all years involved in the data
+all_years <- unique(flights_ntsb_maps$event_year)
+
+# combining above data so that we will be generating data of the states 
+# which are missing in the original data
+all_states_data <-
+  expand.grid(state = unique_states, event_year = all_years)
+
+flights_ntsb_maps <-
+  # using left_join() to combine the data based on state and event_year
+  left_join(all_states_data,
+            flights_ntsb_maps,
+            by = c("state", "event_year")) |>
+  mutate(
+    total_crashes = ifelse(is.na(total_crashes), 0, total_crashes),
+    total_injuries = ifelse(is.na(total_injuries), 0, total_injuries)
+  )
+```
+
+```{r function_hexbin, include=FALSE}
+# Creating a function to plot a Hex-Bin map
+getHexBinMap <- function(input_year) {
+  plot_data <- flights_ntsb_maps |>
+    filter(event_year == input_year)
+  
+  plot_usmap(data = plot_data,
+             values = "total_crashes", 
+             color = "black") +
+    theme_void() +
+    scale_fill_gradientn(
+      colors = met.brewer("Hokusai2"),
+      name = "Number of Crashes",
+      limits = c(0, 400)
+    ) +
+    labs(title = sprintf("Flight crashes in US states during %d", input_year)) +
+    theme(
+      legend.position = 'right',
+      plot.title = element_text(size = 40, hjust = 0.5, face = "bold", vjust = -1),
+      legend.text = element_text(size = 18),
+      legend.title = element_text(size = 20, face = "bold")
+    )
+}
+```
+
+```{r images_yearwise, include=FALSE}
+# Creating a list of Years from dataset
+years_list <- flights_ntsb_maps |>
+  arrange(event_year) |>
+  distinct(event_year) |>
+  pull()
+
+for (i in seq_along(years_list)) {
+  my_maps <-
+    paste0("images/map_plot/flight_crash_us_states",
+           years_list[i],
+           ".jpg")
+  getHexBinMap(input_year = years_list[i])
+  ggsave(
+    my_maps,
+    height = 9,
+    width  = 15,
+    unit   = "in",
+    dpi    = 200
+  )
+}
+```
+
+```{r animation_hexbin}
+# making gif using gganimate package
+hex_bin_maps <- list.files(path = "images/map_plot/", full.names = TRUE)
+hex_bin_maps_list <- lapply(hex_bin_maps, image_read)
+
+# Joining all the saved images
+joined_plots <- image_join(hex_bin_maps_list)
+
+# Animating the images using image_animate() and restting the resolution
+# Setting fps = 1
+hex_bin_maps_animation <- image_animate(image_scale(joined_plots, "2000x1000"), fps = 2)
+
+# Saving gif to the repository
+image_write(image = hex_bin_maps_animation,
+            path = "images/flight_crash_us_states.gif")
+
+hex_bin_maps_animation
+```
+
+```{r map_plotly}
+flights_ntsb_maps$hover <-
+  with(
+    flights_ntsb_maps,
+    paste(
+      state,
+      '<br>',
+      "Total Crashes",
+      total_crashes,
+      "Total Injuries",
+      total_injuries
+    )
+  )
+
+
+# specify some map projection/options
+g <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white')
+)
+
+fig <- plot_geo(flights_ntsb_maps, locationmode = 'USA-states')
+fig <- fig %>% add_trace(
+  z = ~ total_crashes,
+  text = ~ hover,
+  locations = ~ state,
+  frame = ~ event_year,
+  color = ~ total_crashes,
+  colors = 'Purples'
+)
+
+fig <- fig %>% colorbar(title = "Number of Crashes")
+fig <- fig %>% layout(title = 'Flight crashes in US states',
+                      geo = g)
+
+fig
+```

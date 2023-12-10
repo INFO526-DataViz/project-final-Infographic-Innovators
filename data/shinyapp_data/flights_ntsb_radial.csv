@@ -1,0 +1,7 @@
+flight_phase,total_crashes,total_injuries
+Landing,20188,9898
+Takeoff,5181,4690
+Approach,1955,3223
+Maneuvering,1521,2380
+Climb,1042,1381
+Other,2824,2911

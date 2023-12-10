@@ -649,7 +649,7 @@ getHexBinMap <- function(input_year) {
 
 ```{r images_yearwise, include=FALSE}
 # Creating a list of Years from dataset
-years_list <- flights_ntsb_shp |>
+years_list <- flights_ntsb_maps |>
   arrange(event_year) |>
   distinct(event_year) |>
   pull()

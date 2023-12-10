@@ -1,73 +1,64 @@
-# global.R----
-library(shiny)
-
 # ... (other libraries)
-
-# Load data----
-flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
-# ... (other data preparation steps)
 # GETTING THE LIBRARIES----
 if (!require(pacman))
   install.packages(pacman)
 
 
-pacman::p_load(tidyverse,
-               dplyr,
-               janitor,
-               dlookr,
-               here,
-               ggpubr,
-               maps,
-               plotly,
-               gganimate,
-               MetBrewer,
-               ggsci,
-               scales,
-               fmsb,
-               gifski,
-               ggimage,
-               emojifont,
-               magick,
-               lubridate,
-               patchwork,
-               viridis,
-               usmap,
-               sf,
-               sp,
-               animation)
+pacman::p_load(
+  tidyverse,
+  dplyr,
+  janitor,
+  dlookr,
+  here,
+  ggpubr,
+  maps,
+  plotly,
+  gganimate,
+  MetBrewer,
+  ggsci,
+  scales,
+  fmsb,
+  gifski,
+  ggimage,
+  emojifont,
+  magick,
+  lubridate,
+  patchwork,
+  viridis,
+  usmap,
+  readr,
+  sf,
+  sp,
+  animation,
+  shiny
+)
 
 pacman::p_load_gh("BlakeRMills/MoMAColors")
 
-#global settings ----
-#### setting theme for ggplot2
-ggplot2::theme_set(ggplot2::theme_minimal(base_size = 14, base_family = "sans"))
-
-# setting width of code output
-options(width = 65)
-
-# setting figure parameters for knitr----
-knitr::opts_chunk$set(
-  fig.width = 8,        # 8" width
-  fig.asp = 0.618,      # the golden ratio
-  fig.retina = 1,       # dpi multiplier for displaying HTML output on retina
-  fig.align = "center", # center align figures
-  dpi = 200,            # higher dpi, sharper image
-  message = FALSE
-)
-
+# Load data----
+flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
+# ... (other data preparation steps)
 
 #Data wrangling ----
 # selecting columns which are required for our analysis
 flights_ntsb <- flights_ntsb |>
   select(
-    EventType, EventDate,
-    City, State,
-    ReportType, HighestInjuryLevel,
-    FatalInjuryCount, SeriousInjuryCount,
-    MinorInjuryCount, ProbableCause,
-    Latitude, Longitude,
-    AirCraftCategory, NumberOfEngines, 
-    AirCraftDamage, WeatherCondition
+    EventType,
+    EventDate,
+    City,
+    State,
+    ReportType,
+    HighestInjuryLevel,
+    FatalInjuryCount,
+    SeriousInjuryCount,
+    MinorInjuryCount,
+    ProbableCause,
+    Latitude,
+    Longitude,
+    AirCraftCategory,
+    NumberOfEngines,
+    AirCraftDamage,
+    WeatherCondition
   ) |>
   # cleaning column names using janitor package
   clean_names()
@@ -100,16 +91,28 @@ flights_ntsb <- flights_ntsb |>
       grepl("Holding", probable_cause, ignore.case = TRUE) ~ "Holding",
     ),
     # places the flight phase column after probable cause
-    .after = probable_cause 
+    .after = probable_cause
   ) |>
   # getting year and month of the events
-  mutate(
-    event_year = year(event_date),
-    event_month = month(event_date)
+  mutate(event_year = year(event_date),
+         event_month = month(event_date))
+
+#### TIME SERIES PLOT
+flights_ntsb_timeseries <- flights_ntsb |>
+  group_by(event_year) |>
+  summarise(
+    total_fatalities = sum(fatal_injury_count, na.rm = TRUE),
+    total_serious_injuries = sum(serious_injury_count, na.rm = TRUE),
+    total_minor_injuries = sum(minor_injury_count, na.rm = TRUE)
   )
+### Write this to a file in data folder
+write_csv(flights_ntsb_timeseries, 
+          path = 'data/shinyapp_data/flights_ntsb_timeseries.csv')
 
 
+### how to add TIME SERIES PLOT in shiny app
 
+#### RADAR PLOT
 # Assigning different weather conditions to variables----
 # IFR and IMC are same conditions so we are combining them
 # VFR and VMC are same conditions so we are combining them
@@ -130,7 +133,12 @@ flights_ntsb_radar <- flights_ntsb |>
     total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
   ) |>
   arrange(event_month)
-# Filtering out weather condition 'IMC'
+
+### Write this to a file in data folder
+write_csv(flights_ntsb_radar, 
+          path = 'data/shinyapp_data/flights_ntsb_radar.csv')
+
+# Tricky to add in the shiny app
 radar_trace_r1 <- flights_ntsb_radar |>
   filter(weather_condition %in% c("IMC")) |>
   pull(total_crashes)
@@ -138,8 +146,8 @@ radar_trace_r1 <- flights_ntsb_radar |>
 radar_trace_r1 <-
   c(
     radar_trace_r1,
-    flights_ntsb_radar |> 
-      filter(weather_condition == "IMC" & event_month == 1) |> 
+    flights_ntsb_radar |>
+      filter(weather_condition == "IMC" & event_month == 1) |>
       pull(total_crashes)
   )
 
@@ -151,17 +159,30 @@ radar_trace_r2 <- flights_ntsb_radar |>
 radar_trace_r2 <-
   c(
     radar_trace_r2,
-    flights_ntsb_radar |> 
-      filter(weather_condition == "VMC" & event_month == 1) |> 
+    flights_ntsb_radar |>
+      filter(weather_condition == "VMC" & event_month == 1) |>
       pull(total_crashes)
   )
 
-radar_theta <- c("Jan" , "Feb" , "Mar" , "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec", "Jan")
+radar_theta <-
+  c("Jan" ,
+    "Feb" ,
+    "Mar" ,
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sept",
+    "Oct",
+    "Nov",
+    "Dec",
+    "Jan")
 
 
 
 
-
+### RADIAL BAR PLOT
 # Creating a filtered dataset for Radial Plot----
 flights_ntsb_radial <- flights_ntsb |>
   # getting total crashes and total injuries
@@ -186,11 +207,12 @@ flights_ntsb_radial <- flights_ntsb_radial |>
       )
   ) |>
   mutate(flight_phase = fct_inorder(flight_phase))
+### Write this to a file in data folder
+write_csv(flights_ntsb_radial, 
+          path = 'data/shinyapp_data/flights_ntsb_radial.csv')
 
-flights_ntsb_radial
 
-
-
+### MAPS PLOT
 # Filtering out NA and invalid Latitude and Longitude values
 flights_ntsb_maps <- flights_ntsb |>
   subset(!is.na(longitude) & !is.na(latitude)
@@ -212,7 +234,7 @@ unique_states <- unique(flights_ntsb_maps$state)
 # getting all years involved in the data
 all_years <- unique(flights_ntsb_maps$event_year)
 
-# combining above data so that we will be generating data of the states 
+# combining above data so that we will be generating data of the states
 # which are missing in the original data
 all_states_data <-
   expand.grid(state = unique_states, event_year = all_years)
@@ -227,40 +249,6 @@ flights_ntsb_maps <-
     total_injuries = ifelse(is.na(total_injuries), 0, total_injuries)
   )
 
-
-# Creating a list of Years from dataset
-years_list <- flights_ntsb_shp |>
-  arrange(event_year) |>
-  distinct(event_year) |>
-  pull()
-
-for (i in seq_along(years_list)) {
-  my_maps <-
-    paste0("images/map_plot/flight_crash_us_states",
-           years_list[i],
-           ".jpg")
-  getHexBinMap(input_year = years_list[i])
-  ggsave(
-    my_maps,
-    height = 9,
-    width  = 15,
-    unit   = "in",
-    dpi    = 200
-  )
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### Write this to a file in data folder
+write_csv(flights_ntsb_maps, 
+          path = 'data/shinyapp_data/flights_ntsb_maps.csv')
