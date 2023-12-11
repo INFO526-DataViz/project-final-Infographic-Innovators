@@ -8,69 +8,36 @@ editor: visual
 
 ## Abstract
 
-INtro to project
+Intro to project
 
-1. Question 1
-Objective:
-Methodology: 
-Findings:
+1.  Question 1 Objective: Methodology: Findings:
 
-2. Question 2
-Objective:
-Methodology: 
-Findings:
+2.  Question 2 Objective: Methodology: Findings:
 
+### Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
 
-
-### Question 1:
-
-#### **Introduction:**
-
-
-
-#### **Approach**
-
-**Histogram:**
-
-Purpose: Visualizing the distribution and trend followed by the number of contestants that failed to try all the sauces over the seasons.
-
-**Geom_smooth:**
+#### Timeseries on number of crashes
 
 Purpose: 
-#### **Analysis**
 
-
-
-#### **Analysis**
-
-#### **Code**
-
-#### **Discussion**
-(story)
-### Question 2:
-
-#### **Introduction:**
-
-
-#### **Approach:**
-
-
-**Line graph:**
-
-Purpose:
-
-
-**Color Gradient Scale:**
-
+####Heatmap-- on number of crashes in different regions(US map)
 Purpose: 
-**Text Annotation:**
 
+Discussion:
+
+### Analysis of Causes of Crashes
+
+#### Waffle chart
 Purpose: 
-#### **Analysis:**
 
-#### **Code**
+#### density plot
+Purpose: 
 
+Discussion:
 
-#### **Discussions:**
+### Assessing the Influence of Weather Conditions on Crashes
 
-(story)
+#### radar plot
+Purpose: 
+
+Discussion:
