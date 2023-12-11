@@ -378,6 +378,7 @@ count_waffle <- count |>
   mutate(number = ifelse(100 - sum(floored) >= row_number(), floored + 1, floored)) |>
   arrange(perc)
 ```
+
 ```{r function-waffle}
 waffle_plot <- function(number, colour, colour_palette, symbol, symbol_size=8) {
   p <- expand.grid(x = 0:9,
@@ -725,7 +726,7 @@ getHexBinMap <- function(input_year) {
 
 ```{r images_yearwise, include=FALSE}
 # Creating a list of Years from dataset
-years_list <- flights_ntsb_shp |>
+years_list <- flights_ntsb_maps |>
   arrange(event_year) |>
   distinct(event_year) |>
   pull()
