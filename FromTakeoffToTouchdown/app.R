@@ -38,6 +38,10 @@ flights_ntsb_radial <-
   read_csv(here("data/shinyapp_data", "flights_ntsb_radial.csv"))
 flights_ntsb_timeseries <-
   read_csv(here("data/shinyapp_data", "flights_ntsb_timeseries.csv"))
+flights_ntsb_waffle <-
+  read_csv(here("data/shinyapp_data", "flights_ntsb_waffle.csv"))
+flights_ntsb_density <-
+  read_csv(here("data/shinyapp_data", "flights_ntsb_density.csv"))
 
 # Function to generate plots
 generate_plots <- function(plot_type) {
@@ -190,6 +194,46 @@ generate_plots <- function(plot_type) {
                              geo = g)
     
     flight_plot
+  }else if (plot_type == "Flight Crashes vs Causes") {
+    waffle_data <- flights_ntsb_waffle %>%
+      slice(rep(1:n(), times = number)) %>%
+      mutate(fill_value = ifelse(row_number() <= sum(floored), floored, floored + 1))
+    
+    plot_data <- expand.grid(x = 0:9,y = 0:9) %>%
+      rowwise() |>
+      mutate(index = 1+sum(x * 10 + y >= cumsum(flights_ntsb_waffle$number)),
+             cause = flights_ntsb_waffle$cause_summary[[index]])
+    
+    # Create a waffle plot
+    p<-ggplot(plot_data, aes(x, y, color = cause), show.legend=F) +
+      geom_text(label = "✈",
+                family = 'sans',
+                size = 8) +
+      scale_color_manual(
+        values = moma.colors("Warhol")) +
+      coord_equal() +
+      theme_void()+
+      theme(
+        legend.position = 'top',
+        legend.margin = margin(1, 3, 1, 1, unit = 'mm'),
+        plot.margin = margin(3,3,3,3,unit = 'mm'),
+        legend.background = element_rect(fill = 'grey100', color = 'grey')
+      )+
+      labs(title="Waffle chart showing different causes of crashes",
+           colour = 'Cause')
+    flight_plot <- ggplotly(p,
+                            tooltip = c("color"))|>
+      layout(showlegend = FALSE)
+    
+  } else if (plot_type == "Distribution of cause - Pilot's failure"){
+    p <-ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pilot's failure")) +
+      geom_density(aes(x=year(event_date), fill=highest_injury_level), alpha=0.8)+
+      scale_fill_manual(values = c("#bcd67c","#82dfe2","#d398ff"))+
+      labs(title="Distribution of crashes caused by pilot's negligence over time",
+           x="Year",
+           y="Density")+
+      theme_minimal()
+    flight_plot <- ggplotly(p)
   }
   
   return(flight_plot)
@@ -219,7 +263,9 @@ ui <- navbarPage(
                    "Time Series Analysis",
                    "Flight Crashes vs Flight Phases",
                    "Flight Crashes vs Weather Conditions",
-                   "Flight Crashes vs US states"
+                   "Flight Crashes vs US states",
+                   "Flight Crashes vs Causes",
+                   "Distribution of cause - Pilot's failure"
                  ),
                  selected = "Flight Crashes vs US states"
                ),

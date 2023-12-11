@@ -37,6 +37,8 @@ pacman::p_load_gh("BlakeRMills/MoMAColors")
 
 # Load data----
 flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
+probable_cause_flights <-
+  read_csv(here("data", "new_flights_PC.csv"))
 # ... (other data preparation steps)
 
 #Data wrangling ----
@@ -59,6 +61,35 @@ flights_ntsb <- flights_ntsb |>
     NumberOfEngines,
     AirCraftDamage,
     WeatherCondition
+  ) |>
+  # cleaning column names using janitor package
+  clean_names()
+
+probable_cause_flights["CauseSummary"] <-
+  probable_cause_flights["Probable_Cause"]
+#removing null values
+probable_cause_flights <-
+  subset(probable_cause_flights,
+         probable_cause_flights$HighestInjuryLevel != "")
+probable_cause_flights <- probable_cause_flights |>
+  select(
+    EventType,
+    EventDate,
+    City,
+    State,
+    ReportType,
+    HighestInjuryLevel,
+    FatalInjuryCount,
+    SeriousInjuryCount,
+    MinorInjuryCount,
+    ProbableCause,
+    Latitude,
+    Longitude,
+    AirCraftCategory,
+    NumberOfEngines,
+    AirCraftDamage,
+    WeatherCondition,
+    CauseSummary
   ) |>
   # cleaning column names using janitor package
   clean_names()
@@ -106,7 +137,7 @@ flights_ntsb_timeseries <- flights_ntsb |>
     total_minor_injuries = sum(minor_injury_count, na.rm = TRUE)
   )
 ### Write this to a file in data folder
-write_csv(flights_ntsb_timeseries, 
+write_csv(flights_ntsb_timeseries,
           path = 'data/shinyapp_data/flights_ntsb_timeseries.csv')
 
 
@@ -135,7 +166,7 @@ flights_ntsb_radar <- flights_ntsb |>
   arrange(event_month)
 
 ### Write this to a file in data folder
-write_csv(flights_ntsb_radar, 
+write_csv(flights_ntsb_radar,
           path = 'data/shinyapp_data/flights_ntsb_radar.csv')
 
 # Tricky to add in the shiny app
@@ -208,7 +239,7 @@ flights_ntsb_radial <- flights_ntsb_radial |>
   ) |>
   mutate(flight_phase = fct_inorder(flight_phase))
 ### Write this to a file in data folder
-write_csv(flights_ntsb_radial, 
+write_csv(flights_ntsb_radial,
           path = 'data/shinyapp_data/flights_ntsb_radial.csv')
 
 
@@ -250,5 +281,24 @@ flights_ntsb_maps <-
   )
 
 ### Write this to a file in data folder
-write_csv(flights_ntsb_maps, 
+write_csv(flights_ntsb_maps,
           path = 'data/shinyapp_data/flights_ntsb_maps.csv')
+
+### Waffle chart and density plots
+
+#data wrangling for waffle chart
+count <- probable_cause_flights |>
+  group_by(cause_summary) |>
+  summarize(perc = n()) |>
+  mutate(perc = (perc / sum(perc)))
+count_waffle <- count |>
+  mutate(remainder = perc * 100 - floor(perc * 100),
+         floored = floor(perc * 100)) |>
+  arrange(desc(remainder)) |>
+  mutate(number = ifelse(100 - sum(floored) >= row_number(), floored + 1, floored)) |>
+  arrange(perc)
+
+write_csv(count_waffle,
+          path = 'data/shinyapp_data/flights_ntsb_waffle.csv')
+write_csv(probable_cause_flights,
+          path = 'data/shinyapp_data/flights_ntsb_density.csv')
