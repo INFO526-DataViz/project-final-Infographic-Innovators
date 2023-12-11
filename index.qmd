@@ -73,9 +73,7 @@ knitr::opts_chunk$set(
 # Reading the data using read_csv
 flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
 ```
-
 ## Abstract
-
 ```{r remove_columns, include=FALSE}
 # selecting columns which are required for our analysis
 flights_ntsb <- flights_ntsb |>
@@ -131,6 +129,15 @@ flights_ntsb <- flights_ntsb |>
   )
 ```
 
+Intro to project
+
+1.  Question 1 Objective: Methodology: Findings:
+
+2.  Question 2 Objective: Methodology: Findings:
+
+### Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
+
+#### Timeseries on number of crashes
 ```{r timeseries_data}
 # Creating a dataset for the timeSeries plot
 flights_ntsb_timeseries <- flights_ntsb |>
@@ -356,7 +363,119 @@ animated_fcdata
 ```
 
 ![](images/animated_fcdata.gif)
+Purpose:
 
+####Heatmap-- on number of crashes in different regions(US map) Purpose:
+
+```{r mapl_plot_data, include=FALSE}
+# Filtering out NA and invalid Latitude and Longitude values
+flights_ntsb_maps <- flights_ntsb |>
+  subset(!is.na(longitude) & !is.na(latitude)
+         & latitude < 75 & latitude > 10 & longitude < -60)
+
+# Creating a dataset for the map plot and picking the columns that we need
+flights_ntsb_maps <- flights_ntsb_maps |>
+  # getting total crashes and total injuries
+  group_by(state, event_year) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  drop_na()
+
+# getting unique states in the data
+unique_states <- unique(flights_ntsb_maps$state)
+
+# getting all years involved in the data
+all_years <- unique(flights_ntsb_maps$event_year)
+
+# combining above data so that we will be generating data of the states 
+# which are missing in the original data
+all_states_data <-
+  expand.grid(state = unique_states, event_year = all_years)
+
+flights_ntsb_maps <-
+  # using left_join() to combine the data based on state and event_year
+  left_join(all_states_data,
+            flights_ntsb_maps,
+            by = c("state", "event_year")) |>
+  mutate(
+    total_crashes = ifelse(is.na(total_crashes), 0, total_crashes),
+    total_injuries = ifelse(is.na(total_injuries), 0, total_injuries)
+  )
+```
+
+```{r function_hexbin, include=FALSE}
+# Creating a function to plot a Hex-Bin map
+getHexBinMap <- function(input_year) {
+  plot_data <- flights_ntsb_maps |>
+    filter(event_year == input_year)
+  
+  plot_usmap(data = plot_data,
+             values = "total_crashes", 
+             color = "black") +
+    theme_void() +
+    scale_fill_gradientn(
+      colors = met.brewer("Hokusai2"),
+      name = "Number of Crashes",
+      limits = c(0, 400)
+    ) +
+    labs(title = sprintf("Flight crashes in US states during %d", input_year)) +
+    theme(
+      legend.position = 'right',
+      plot.title = element_text(size = 40, hjust = 0.5, face = "bold", vjust = -1),
+      legend.text = element_text(size = 18),
+      legend.title = element_text(size = 20, face = "bold")
+    )
+}
+```
+
+```{r images_yearwise, include=FALSE}
+# Creating a list of Years from dataset
+years_list <- flights_ntsb_maps |>
+  arrange(event_year) |>
+  distinct(event_year) |>
+  pull()
+
+for (i in seq_along(years_list)) {
+  my_maps <-
+    paste0("images/map_plot/flight_crash_us_states",
+           years_list[i],
+           ".jpg")
+  getHexBinMap(input_year = years_list[i])
+  ggsave(
+    my_maps,
+    height = 9,
+    width  = 15,
+    unit   = "in",
+    dpi    = 200
+  )
+}
+```
+
+```{r animation_hexbin}
+# making gif using gganimate package
+hex_bin_maps <- list.files(path = "images/map_plot/", full.names = TRUE)
+hex_bin_maps_list <- lapply(hex_bin_maps, image_read)
+
+# Joining all the saved images
+joined_plots <- image_join(hex_bin_maps_list)
+
+# Animating the images using image_animate() and restting the resolution
+# Setting fps = 1
+hex_bin_maps_animation <- image_animate(image_scale(joined_plots, "2000x1000"), fps = 2)
+
+# Saving gif to the repository
+image_write(image = hex_bin_maps_animation,
+            path = "images/flight_crash_us_states.gif")
+
+hex_bin_maps_animation
+```
+Discussion:
+
+### Analysis of Causes of Crashes
+
+#### Waffle chart
 ```{r loading probablcause data, include=FALSE}
 probable_cause_data <- read_csv(here("data", "new_flights_PC.csv"))
 probable_cause_data <- subset(probable_cause_data, probable_cause_data$HighestInjuryLevel!="")
@@ -380,59 +499,56 @@ count_waffle <- count |>
 ```
 
 ```{r function-waffle}
-waffle_plot <- function(number, colour, colour_palette, symbol, symbol_size=8) {
+waffle_plot <- function(number, colour, symbol, symbol_size=8) {
   p <- expand.grid(x = 0:9,
-                   y = 0:9) %>%
+                   y = 0:9) |>
     rowwise() |>
     mutate(index = 1+sum(x * 10 + y >= cumsum(number)),
            col = colour[[index]]) |>
     ggplot(aes(x, y, color = forcats::fct_inorder(col))) +
     geom_text(label = symbol,
               size = symbol_size) +
-    scale_color_manual(values = colour_palette) +
+    scale_color_manual(
+    values = moma.colors("Warhol")
+  ) +
     coord_equal() +
     theme_void() +
-    labs(color = '') +
-    theme(
-      legend.position = 'top',
-      legend.margin = margin(1, 3, 1, 1, unit = 'mm'),
-      plot.margin = margin(3,3,3,3,unit = 'mm'),
-      legend.background = element_rect(fill = 'grey100', color = 'grey')
-    )
+    labs(title="Waffle chart showing different causes for crashes",
+         color = '')
   return(p)
 }
 ```
 
 ```{r wafflechart}
-#font_add(family = "FontAwesome")
-cols1=c("pilot's failure"="blue",
- 'Other'="yellow",
- 'loss of engine power'="green",
- 'physical damage'="maroon",
- 'impact with trees'="pink",
- 'inadequate flight maintenance'="darkgreen",
- 'aerodynamic stall'="lightblue",
- 'loss of plane control'="darkgrey",
- 'crosswinds'="red",
- 'in-flight fire'="darkred",
- 'out of fuel'="lightgreen",
- 'collision with birds'="lightpink",
- 'in-flight collision'="black",
- 'loss of directional'="orange",
- 'undetermined'="gold")
-
 airplane_emoji <- "\U2708"
 waffle_plot(number = count_waffle$number,
             colour = count_waffle$Probable_Cause,
-            colour_palette = cols1,
-            symbol="✈️",symbol_size=6)
+            symbol="✈",symbol_size=6)
 ```
+Purpose:
+
+#### density plot
 
 ```{r distribution}
 ggplot(subset(probable_cause_data, probable_cause_data$Probable_Cause=="pilot's failure")) +
-  geom_density(aes(x=year(EventDate), fill=HighestInjuryLevel), alpha=0.8)
+  geom_density(aes(x=year(EventDate), fill=HighestInjuryLevel))+
+  scale_fill_manual(values = c("#bcd67c","#82dfe2","#d398ff"))+
+  labs(title="Distribution of crashes caused by pilot's negligence over time",
+       x="Year",
+       y="Density")
   
 ```
+Purpose:
+
+Discussion:
+
+### Assessing the Influence of Weather Conditions on Crashes
+
+#### radar plot
+
+Purpose:
+
+Discussion:
 
 ```{r radarchart_data, include=FALSE}
 # Assigning different weather conditions to variables
@@ -659,109 +775,4 @@ flights_radial_bar_injuries
 # sources:
 # gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
 # ploty - https://plotly.com/r/animations/
-```
-
-```{r mapl_plot_data, include=FALSE}
-# Filtering out NA and invalid Latitude and Longitude values
-flights_ntsb_maps <- flights_ntsb |>
-  subset(!is.na(longitude) & !is.na(latitude)
-         & latitude < 75 & latitude > 10 & longitude < -60)
-
-# Creating a dataset for the map plot and picking the columns that we need
-flights_ntsb_maps <- flights_ntsb_maps |>
-  # getting total crashes and total injuries
-  group_by(state, event_year) |>
-  summarise(
-    total_crashes = n(),
-    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
-  ) |>
-  drop_na()
-
-# getting unique states in the data
-unique_states <- unique(flights_ntsb_maps$state)
-
-# getting all years involved in the data
-all_years <- unique(flights_ntsb_maps$event_year)
-
-# combining above data so that we will be generating data of the states 
-# which are missing in the original data
-all_states_data <-
-  expand.grid(state = unique_states, event_year = all_years)
-
-flights_ntsb_maps <-
-  # using left_join() to combine the data based on state and event_year
-  left_join(all_states_data,
-            flights_ntsb_maps,
-            by = c("state", "event_year")) |>
-  mutate(
-    total_crashes = ifelse(is.na(total_crashes), 0, total_crashes),
-    total_injuries = ifelse(is.na(total_injuries), 0, total_injuries)
-  )
-```
-
-```{r function_hexbin, include=FALSE}
-# Creating a function to plot a Hex-Bin map
-getHexBinMap <- function(input_year) {
-  plot_data <- flights_ntsb_maps |>
-    filter(event_year == input_year)
-  
-  plot_usmap(data = plot_data,
-             values = "total_crashes", 
-             color = "black") +
-    theme_void() +
-    scale_fill_gradientn(
-      colors = met.brewer("Hokusai2"),
-      name = "Number of Crashes",
-      limits = c(0, 400)
-    ) +
-    labs(title = sprintf("Flight crashes in US states during %d", input_year)) +
-    theme(
-      legend.position = 'right',
-      plot.title = element_text(size = 40, hjust = 0.5, face = "bold", vjust = -1),
-      legend.text = element_text(size = 18),
-      legend.title = element_text(size = 20, face = "bold")
-    )
-}
-```
-
-```{r images_yearwise, include=FALSE}
-# Creating a list of Years from dataset
-years_list <- flights_ntsb_maps |>
-  arrange(event_year) |>
-  distinct(event_year) |>
-  pull()
-
-for (i in seq_along(years_list)) {
-  my_maps <-
-    paste0("images/map_plot/flight_crash_us_states",
-           years_list[i],
-           ".jpg")
-  getHexBinMap(input_year = years_list[i])
-  ggsave(
-    my_maps,
-    height = 9,
-    width  = 15,
-    unit   = "in",
-    dpi    = 200
-  )
-}
-```
-
-```{r animation_hexbin}
-# making gif using gganimate package
-hex_bin_maps <- list.files(path = "images/map_plot/", full.names = TRUE)
-hex_bin_maps_list <- lapply(hex_bin_maps, image_read)
-
-# Joining all the saved images
-joined_plots <- image_join(hex_bin_maps_list)
-
-# Animating the images using image_animate() and restting the resolution
-# Setting fps = 1
-hex_bin_maps_animation <- image_animate(image_scale(joined_plots, "2000x1000"), fps = 2)
-
-# Saving gif to the repository
-image_write(image = hex_bin_maps_animation,
-            path = "images/flight_crash_us_states.gif")
-
-hex_bin_maps_animation
 ```
