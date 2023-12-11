@@ -1,0 +1,158 @@
+```{r}
+# data preparation
+library(dplyr)
+# data visualisation
+library(ggplot2)
+# symbols in waffle chart
+library(sysfonts)
+library(showtextdb)
+library(showtext)
+# showing plots side by side
+library(patchwork)
+```
+
+
+
+```{r}
+
+df <- read.csv("new_flights_PC.csv")
+df <- subset(df, df$HighestInjuryLevel!="")
+df
+```
+
+```{r}
+table(df$HighestInjuryLevel)
+```
+
+```{r}
+ggplot(df, aes(y=factor(Probable_Cause, levels=c("pilot's failure",
+ 'Other',
+ 'loss of engine power',
+ 'physical damage',
+ 'impact with trees',
+ 'inadequate flight maintenance',
+ 'aerodynamic stall',
+ 'loss of plane control',
+ 'crosswinds',
+ 'in-flight fire',
+ 'out of fuel',
+ 'collision with birds',
+ 'in-flight collision',
+ 'loss of directional',
+ 'undetermined'))))+
+  geom_bar()+
+  theme_minimal()
+
+```
+```{r}
+count <- df |>
+  group_by(Probable_Cause)|>
+  summarize(perc=n())|>
+  mutate(
+    perc= (perc/sum(perc))
+  )
+count
+count_waffle <- count |>
+  mutate(
+    remainder = perc * 100 - floor(perc * 100),
+    floored = floor(perc * 100)
+  ) |>
+  arrange(desc(remainder)) |>
+  mutate(number = ifelse(100 - sum(floored) >= row_number(), floored + 1, floored)) |>
+  arrange(perc)
+```
+
+```{r}
+sum(round(count$perc*100))
+```
+```{r}
+waffle_plot <- function(number, colour, colour_palette, symbol, symbol_size=8) {
+  p <- expand.grid(x = 0:9,
+                   y = 0:9) %>%
+    rowwise() |>
+    mutate(index = 1+sum(x * 10 + y >= cumsum(number)),
+           col = colour[[index]]) |>
+    ggplot(aes(x, y, color = forcats::fct_inorder(col))) +
+    geom_text(label = symbol,
+              family = 'FontAwesome',
+              size = symbol_size) +
+    scale_color_manual(values = colour_palette) +
+    coord_equal() +
+    theme_void() +
+    labs(color = '') +
+    theme(
+      legend.position = 'top',
+      legend.margin = margin(1, 3, 1, 1, unit = 'mm'),
+      plot.margin = margin(3,3,3,3,unit = 'mm'),
+      legend.background = element_rect(fill = 'grey100', color = 'grey')
+    )
+  return(p)
+}
+```
+
+```{r}
+cols1=c("pilot's failure"="blue",
+ 'Other'="yellow",
+ 'loss of engine power'="green",
+ 'physical damage'="maroon",
+ 'impact with trees'="pink",
+ 'inadequate flight maintenance'="darkgreen",
+ 'aerodynamic stall'="lightblue",
+ 'loss of plane control'="grey90",
+ 'crosswinds'="red",
+ 'in-flight fire'="darkred",
+ 'out of fuel'="lightgreen",
+ 'collision with birds'="lightpink",
+ 'in-flight collision'="black",
+ 'loss of directional'="orange",
+ 'undetermined'="white")
+
+
+waffle_plot(number = count_waffle$number,
+            colour = count_waffle$colour,
+            colour_palette = cols1,
+            symbol = '\uf06e', symbol_size=6) +
+  labs(caption='Eye colour prevalence among statistics students')
+```
+
+
+
+```{r}
+count|>
+  ggplot(aes(fill=Probable_Cause, values=count))+
+  geom_waffle(make_proportional = T)
+```
+
+```{r}
+# Assuming your dataset is named aircraft_crashes
+crash_summary <- subset(df, df$Probable_Cause=="pilot's failure") %>%
+  group_by(year(EventDate)) %>%
+  summarise(count = n()) %>%
+  ungroup()
+crash_summary
+```
+
+```{r}
+ggplot(subset(df, df$Probable_Cause=="pilot's failure")) +
+  geom_density(aes(x=year(EventDate), fill=HighestInjuryLevel), alpha=0.8)
+  
+```
+
+```{r}
+ggplot(df) +
+  geom_density(aes(x=year(EventDate), fill=factor(HighestInjuryLevel, levels=c("Fatal", "Serious","Minor"))), alpha=0.8, show.legend=F)
+```
+
+```{r}
+ggplot(crash_summary, aes(y = Probable_Cause, x = count, fill = factor(HighestInjuryLevel, levels = c("Fatal", "Serious", "Minor")))) +
+  geom_bar(position = "stack", stat="identity") +
+  labs(title = "Probable Causes and Highest Injury Levels of Aircraft Incidents",
+       x = "Probable Cause",
+       y = "Count",
+       fill = "Highest Injury Level") +
+  theme_minimal() 
+```
+```{r}
+waffle()
+```
+

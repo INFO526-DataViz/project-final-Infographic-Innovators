@@ -72,7 +72,6 @@ knitr::opts_chunk$set(
 ```{r load_dataset, include=FALSE}
 # Reading the data using read_csv
 flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
-probable_cause_flights <- read_csv(here("data","new_flights_PC.csv"))
 ```
 
 ## Abstract
@@ -89,31 +88,6 @@ flights_ntsb <- flights_ntsb |>
     Latitude, Longitude,
     AirCraftCategory, NumberOfEngines, 
     AirCraftDamage, WeatherCondition
-  ) |>
-  # cleaning column names using janitor package
-  clean_names()
-probable_cause_flights["CauseSummary"]<-probable_cause_flights["Probable_Cause"]
-#removing null values
-probable_cause_flights <- subset(probable_cause_flights, probable_cause_flights$HighestInjuryLevel!="")
-probable_cause_flights <- probable_cause_flights |>
-  select(
-    EventType,
-    EventDate,
-    City,
-    State,
-    ReportType,
-    HighestInjuryLevel,
-    FatalInjuryCount,
-    SeriousInjuryCount,
-    MinorInjuryCount,
-    ProbableCause,
-    Latitude,
-    Longitude,
-    AirCraftCategory,
-    NumberOfEngines,
-    AirCraftDamage,
-    WeatherCondition,
-    CauseSummary
   ) |>
   # cleaning column names using janitor package
   clean_names()
@@ -508,9 +482,14 @@ Discussion:
 
 #### Waffle chart
 
+```{r loading probablcause data, include=FALSE}
+probable_cause_data <- read_csv(here("data", "new_flights_PC.csv"))
+probable_cause_data <- subset(probable_cause_data, probable_cause_data$HighestInjuryLevel!="")
+```
+
 ```{r datawragling,include=FALSE}
-count <- probable_cause_flights |>
-  group_by(cause_summary)|>
+count <- probable_cause_data |>
+  group_by(Probable_Cause)|>
   summarize(perc=n())|>
   mutate(
     perc= (perc/sum(perc))
@@ -526,28 +505,22 @@ count_waffle <- count |>
 ```
 
 ```{r function-waffle}
-waffle_plot <- function(number, colour, colour_palette, symbol, symbol_size=8) {
+waffle_plot <- function(number, colour, symbol, symbol_size=8) {
   p <- expand.grid(x = 0:9,
-                   y = 0:9) %>%
+                   y = 0:9) |>
     rowwise() |>
     mutate(index = 1+sum(x * 10 + y >= cumsum(number)),
            col = colour[[index]]) |>
     ggplot(aes(x, y, color = forcats::fct_inorder(col))) +
     geom_text(label = symbol,
-              family = 'sans',
               size = symbol_size) +
     scale_color_manual(
-    values = moma.colors("Warhol")) +
+    values = moma.colors("Warhol")
+  ) +
     coord_equal() +
-    theme_void()+
-    theme(
-      legend.position = 'top',
-      legend.margin = margin(1, 3, 1, 1, unit = 'mm'),
-      plot.margin = margin(3,3,3,3,unit = 'mm'),
-      legend.background = element_rect(fill = 'grey100', color = 'grey')
-    )+
-    labs(title="Waffle chart showing different causes of crashes",
-              colour = 'Cause')
+    theme_void() +
+    labs(title="Waffle chart showing different causes for crashes",
+         color = '')
   return(p)
 }
 ```
@@ -555,7 +528,7 @@ waffle_plot <- function(number, colour, colour_palette, symbol, symbol_size=8) {
 ```{r wafflechart}
 airplane_emoji <- "\U2708"
 waffle_plot(number = count_waffle$number,
-            colour = count_waffle$cause_summary,
+            colour = count_waffle$Probable_Cause,
             symbol="✈",symbol_size=6)
 ```
 
@@ -564,8 +537,8 @@ Purpose:
 #### density plot
 
 ```{r distribution}
-ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pilot's failure")) +
-  geom_density(aes(x=year(event_date), fill=highest_injury_level), alpha=0.8)+
+ggplot(subset(probable_cause_data, probable_cause_data$Probable_Cause=="pilot's failure")) +
+  geom_density(aes(x=year(EventDate), fill=HighestInjuryLevel))+
   scale_fill_manual(values = c("#bcd67c","#82dfe2","#d398ff"))+
   labs(title="Distribution of crashes caused by pilot's negligence over time",
        x="Year",

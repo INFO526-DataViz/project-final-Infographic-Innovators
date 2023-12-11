@@ -1,0 +1,135 @@
+---
+title: "hexbin_map"
+author: "Infographic Innovators"
+editor: visual
+---
+
+```{r setup}
+#install.packages("rgeos")
+pacman::p_load(tidyverse,
+               geojsonio,
+               RColorBrewer,
+               #rgdal,
+               here,
+               broom,
+               sf)
+```
+
+```{r dataset}
+spdf <- geojson_read(here("data", "us_states_hexgrid.geojson"),  what = "sp")
+spdf@data = spdf@data %>%
+  mutate(google_name = gsub(" \\(United States\\)", "", google_name))
+flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
+# selecting columns which are required for our analysis
+flights_ntsb <- flights_ntsb |>
+  select(
+    EventType, EventDate,
+    City, State,
+    ReportType, HighestInjuryLevel,
+    FatalInjuryCount, SeriousInjuryCount,
+    MinorInjuryCount, ProbableCause,
+    Latitude, Longitude,
+    AirCraftCategory, NumberOfEngines, 
+    AirCraftDamage, WeatherCondition
+  ) |>
+  # cleaning column names using janitor package
+  clean_names()
+```
+
+```{r hexbin-plot-basic}
+#Import hexbins
+hex <- geojson_read(here("data", "us_states_hexgrid.geojson"), what = "sp") #where "sp" is spatial class
+
+#Reformat the 'google_name' field
+#This will remove the (United States) from each value
+#E.g., Vermont (United States) will be changed to Vermont 
+hex@data = hex@data %>% mutate(google_name = gsub(" \\(United States\\)", "", google_name))
+
+#Fortify the data to create a data format output
+#This format is needed to plot the map using the ggplot2 package
+hex_fortify <- tidy(hex, geometry = "google_name") 
+
+#Plot the hexbins
+#I chose a green hue for the fill and white for the outline
+ggplot () +
+  geom_polygon(data = hex_fortify, aes( x = long, y = lat, group = group), fill="#a1dab4", color="#f7f7f7") +
+  geom_text () +
+  theme_void () +
+  coord_map ()
+```
+```{r data-wrangling}
+flights_ntsb <- flights_ntsb |>
+  mutate(event_time = format(event_date, "%H:%M"),
+         .after = event_date) |>
+  mutate(
+    event_date = as.Date(event_date),
+    flight_phase = case_when(
+      grepl("Landing", probable_cause, ignore.case = TRUE) ~ "Landing",
+      grepl("Stop", probable_cause, ignore.case = TRUE) ~ "Landing",
+      grepl("Approach", probable_cause, ignore.case = TRUE) ~ "Approach",
+      grepl("Takeoff", probable_cause, ignore.case = TRUE) ~ "Takeoff",
+      grepl("Take-off", probable_cause, ignore.case = TRUE) ~ "Takeoff",
+      grepl("Maneuvering", probable_cause, ignore.case = TRUE) ~ "Maneuvering",
+      grepl("Climb", probable_cause, ignore.case = TRUE) ~ "Climb",
+      grepl("Descent", probable_cause, ignore.case = TRUE) ~ "Descent",
+      grepl("Taxi", probable_cause, ignore.case = TRUE) ~ "Taxi",
+      grepl("Cruise", probable_cause, ignore.case = TRUE) ~ "Cruise",
+      grepl("Hover", probable_cause, ignore.case = TRUE) ~ "Hover",
+      grepl("Standing", probable_cause, ignore.case = TRUE) ~ "Standing",
+      grepl("Uncontrolled Descent", probable_cause, ignore.case = TRUE) ~ "Uncontrolled Descent",
+      grepl("Emergency", probable_cause, ignore.case = TRUE) ~ "Emergency",
+      grepl("Holding", probable_cause, ignore.case = TRUE) ~ "Holding",
+    ),
+    .after = probable_cause
+  ) |>
+  mutate(
+    event_year = year(event_date),
+    event_month = month(event_date)
+  )
+```
+
+```{r}
+hex_fortify <- hex_fortify %>% 
+       left_join(. , flights_ntsb, by=c("id"="state")) 
+#Check if the join was successful
+view(hex_fortify)
+```
+
+```{r}
+mean(flights_ntsb$`2022`) 
+range(flights_ntsb$`2022`) 
+
+#Create bins
+#These labels will appear on the legend
+flights_ntsb$`2022` <- cut( flights_ntsb$`2022` , breaks=c(1000, 1500, 2000, 2500, 3000), labels=c("1000-1500", "1500-2000", "2000-2500", "2500+"))
+
+#Select a color ramp 
+#Display all colorblind-friendly ColorBrewer palettes
+display.brewer.all(colorblindFriendly = TRUE)
+
+#Choose a sequential ramp for our map 
+#Where n = number of data classes 
+my_palette <- brewer.pal(n=4, name="Greens")
+```
+
+```{r}
+ggplot() +
+  geom_polygon(data=hex_fortify, aes(fill= hex_fortify$fatal_injury_count, x=long, y=lat, group=group), size=0, alpha=0.9, color="#f7f7f7") +
+  #geom_text(data=centers, aes(x=x, y=y, label=id), color="#252525", size=5) + #Add our labels
+  theme_void() +
+  scale_fill_manual(
+    values= "", 
+    name="Map of Fatal Injuries in 2022", #Add legend title 
+    guide= guide_legend( keyheight=unit(4, units="mm"), keywidth=unit(10, units="mm"), direction="horizontal", label.position="bottom", title.position="top", nrow=1)
+  ) +
+  ggtitle( "Map of Fatal Injuries in the United States in 2022 " ) + #Add map title
+  theme(
+    legend.position = c(0.5, 0.9), #Choose legend positioning (horizontal, vertical)
+    text = element_text(color = "#f7f7f7", face="bold"), #This is where we customize the legend text
+    plot.background = element_rect(fill = "#252525", color = NA), #Choose the colour of the background behind the title
+    panel.background = element_rect(fill = "#252525", color = NA), #This is the main background
+    legend.background = element_rect(fill = "#252525", color = NA), #This is the legend background 
+    plot.title = element_text(size=18, hjust=0.5, color = "#f7f7f7", face="bold"), #This we where we customize the title 
+  )
+```
+

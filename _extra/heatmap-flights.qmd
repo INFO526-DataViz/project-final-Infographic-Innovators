@@ -1,0 +1,114 @@
+---
+title: "heatmap-flights"
+author: "Eshaan Mathakari"
+editor: visual
+---
+
+```{r setup}
+pacman::p_load(ggplot2, 
+               ggmap, 
+               transformr, 
+               sf, 
+               dplyr, 
+               lubridate, 
+               maps,
+               mapdata,
+               leaflet,
+               tidyverse)
+```
+
+```{r data-wrangling}
+# Load and prepare data
+flight_crash_data <- read.csv("/Users/apple/Desktop/INFO-526/project-final-Infographic-Innovators/data/flight_crash_data_NTSB.csv")
+flight_crash_data <- flight_crash_data |>
+  mutate(Year = year(EventDate),  # Extract year from the date
+         Latitude = as.numeric(Latitude),  
+         Longitude = as.numeric(Longitude))
+
+# to find count of crashes per year
+flight_crash_data <- flight_crash_data %>%
+  group_by(Year) %>%
+  mutate(Year_Count = n()) %>%
+  ungroup()
+
+# test year '2022' dataset
+flight_crash_data_2022 <- filter(flight_crash_data, Year == "2022" )
+flight_crash_data_2021 <- filter(flight_crash_data, Year == "2021" )
+flight_crash_data_2020 <- filter(flight_crash_data, Year == "2020" )
+flight_crash_data_2019 <- filter(flight_crash_data, Year == "2019" )
+flight_crash_data_2018 <- filter(flight_crash_data, Year == "2018" )
+
+```
+
+```{r}
+{r color}
+year_count_flight <- cut(flight_crash_data$Year_Count, breaks = c(1100, 1450, 1800, 2150, 2500, 2850, 3200, 3550, Inf),
+                     labels = c("1100 to 1450", "1451 to 1800", "1801 to 2150", "2151 to 2500",
+                                "2501 to 2850", "2851 to 3200", "3201 to 3550", "> 3550"))
+color_mapping <- c(
+  "1100 to 1450" = "#d73027",
+  "1451 to 1800" = "#f46d43",
+  "1801 to 2150" = "#fdae61",
+  "2151 to 2500" = "#fee08b",
+  "2501 to 2850" = "#d9ef8b",
+  "2851 to 3200" = "#a6d96a",
+  "3201 to 3550" = "#66bd63",
+  "> 3550" = "#1a9850"
+)
+```
+
+```{r 2022}
+states <- map_data("state")
+countries <- map_data("county")
+arrests <- USArrests
+usa <-map_data("usa")
+world <-map_data("world")  
+world2<-map_data("world2")
+ 
+# Function to plot maps using in-built map data
+map <- function(x,y,dataset,fill_column){
+  p <- ggplot(data = dataset,
+              mapping = aes(x = x, y = y, group = group, fill = fill_column))
+  p + geom_polygon() + guides(fill = FALSE)
+}
+ 
+# plotting USA states 
+map(states$long,states$lat,states,states$region)
+```
+
+```{r test-heatmap}
+merged_data <- left_join(usa_map, flight_crash_data_2022, by = c("long" = "Longitude", "lat" = "Latitude"))
+
+# Create the USA map plot with filled colors
+usa_plot_2022 <- ggplot() +
+  geom_polygon(data = merged_data, aes(x = long, y = lat, group = group, fill = as.factor(Year_Count)), color = "black") +
+  theme_minimal() +
+  labs(title = "USA Map")
+
+# Print the map
+print(usa_plot)  
+```
+
+```{r}
+# Loading map data
+states <- flight_crash_data_2022
+# Function to plot maps using in-built map data
+map <- function(x,y,dataset,fill_column){
+  p <- ggplot(data = dataset,
+              mapping = aes(x = x, y = y, fill = ))
+  p + geom_polygon() + guides(fill = FALSE)
+}
+ 
+# plotting USA states 
+map(states$Longitude,states$Latitude,states, states$Year_Count)
+
+```
+
+```{r}
+ggplot(data=usa, aes(x=long, y=lat, group=group)) + 
+  geom_polygon(fill= color_mapping) + 
+  theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank()) + 
+  ggtitle('U.S. Map') + 
+  coord_fixed(1.3)
+```

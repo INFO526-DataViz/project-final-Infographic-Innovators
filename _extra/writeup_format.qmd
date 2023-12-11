@@ -1,0 +1,43 @@
+---
+title: "From Mild to Wild"
+subtitle: "INFO 526 - Project 1"
+author: "ScatterPlot-Sorcerers"
+format: html
+editor: visual
+---
+
+## Abstract
+
+Intro to project
+
+1.  Question 1 Objective: Methodology: Findings:
+
+2.  Question 2 Objective: Methodology: Findings:
+
+### Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
+
+#### Timeseries on number of crashes
+
+Purpose: 
+
+####Heatmap-- on number of crashes in different regions(US map)
+Purpose: 
+
+Discussion:
+
+### Analysis of Causes of Crashes
+
+#### Waffle chart
+Purpose: 
+
+#### density plot
+Purpose: 
+
+Discussion:
+
+### Assessing the Influence of Weather Conditions on Crashes
+
+#### radar plot
+Purpose: 
+
+Discussion:
