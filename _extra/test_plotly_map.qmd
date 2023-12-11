@@ -737,3 +737,20 @@ fig <- fig %>% layout(title = 'Flight crashes in US states',
 
 fig
 ```
+
+```{r}
+plotly_plot <- plot_ly(flights_ntsb_radial, 
+                       x = ~fct_rev(flight_phase), 
+                       y = ~total_crashes, 
+                       type = 'bar',
+                       text = ~scales::comma(total_crashes),
+                       marker = list(color = ~flight_phase)) %>%
+  layout(
+    xaxis = list(title = NULL),
+    yaxis = list(title = NULL),
+    barmode = 'stack',
+    showlegend = FALSE,
+    polar = list(radialaxis = list(visible = TRUE, tickformat = ",d", tickmode = "linear"))
+  )
+plotly_plot
+```

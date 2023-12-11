@@ -73,7 +73,9 @@ knitr::opts_chunk$set(
 # Reading the data using read_csv
 flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
 ```
+
 ## Abstract
+
 ```{r remove_columns, include=FALSE}
 # selecting columns which are required for our analysis
 flights_ntsb <- flights_ntsb |>
@@ -138,7 +140,8 @@ Intro to project
 ### Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
 
 #### Timeseries on number of crashes
-```{r timeseries_data}
+
+```{r timeseries_data, include=FALSE}
 # Creating a dataset for the timeSeries plot
 flights_ntsb_timeseries <- flights_ntsb |>
   group_by(event_year) |>
@@ -174,7 +177,7 @@ p <-
 ggplotly(p)
 ```
 
-```{r timeseries_animated, include=FALSE}
+```{r time_series_gif}
 # Creating Animated Plot for Total Faltalities
 Image <-
   "images/airplane.png"  #Save Image instead of inserting emoji
@@ -206,6 +209,10 @@ animate(
   renderer = gifski_renderer()
 )
 
+animated_plot
+```
+
+```{r timeseries_animated, include=FALSE}
 # Labelling the axes and adding title to the plot for Serious Injuries
 p_serious_injuries <-
   ggplot(flights_ntsb_timeseries,
@@ -362,10 +369,7 @@ animated_fcdata <- animate(
 animated_fcdata
 ```
 
-![](images/animated_fcdata.gif)
-Purpose:
-
-####Heatmap-- on number of crashes in different regions(US map) Purpose:
+#### Heatmap-- on number of crashes in different regions(US map) Purpose:
 
 ```{r mapl_plot_data, include=FALSE}
 # Filtering out NA and invalid Latitude and Longitude values
@@ -471,11 +475,13 @@ image_write(image = hex_bin_maps_animation,
 
 hex_bin_maps_animation
 ```
+
 Discussion:
 
 ### Analysis of Causes of Crashes
 
 #### Waffle chart
+
 ```{r loading probablcause data, include=FALSE}
 probable_cause_data <- read_csv(here("data", "new_flights_PC.csv"))
 probable_cause_data <- subset(probable_cause_data, probable_cause_data$HighestInjuryLevel!="")
@@ -525,6 +531,7 @@ waffle_plot(number = count_waffle$number,
             colour = count_waffle$Probable_Cause,
             symbol="✈",symbol_size=6)
 ```
+
 Purpose:
 
 #### density plot
@@ -538,6 +545,7 @@ ggplot(subset(probable_cause_data, probable_cause_data$Probable_Cause=="pilot's 
        y="Density")
   
 ```
+
 Purpose:
 
 Discussion:
@@ -583,7 +591,7 @@ radar_trace_r1 <-
   c(
     radar_trace_r1,
     flights_ntsb_radar |> 
-      filter(weather_condition == "IMC" & event_month == 1) |> 
+      filter(weather_condition == "IMC" & event_month == 1) |>
       pull(total_crashes)
   )
 

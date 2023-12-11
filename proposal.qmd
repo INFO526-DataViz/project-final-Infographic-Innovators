@@ -141,7 +141,7 @@ Ultimately, we plan to utilize the interactive features of the Shiny application
 ### Variables of focus
 
 | Variable             | Description                                                                                |
-|---------------------|---------------------------------------------------|
+|----------------------|--------------------------------------------------------------------------------------------|
 | event_type           | Type of event - accident, incident or occurrence                                           |
 | event_date           | Date time of when the event has occurred                                                   |
 | city                 | The city or place location closest to the site of the event                                |
@@ -162,7 +162,7 @@ Ultimately, we plan to utilize the interactive features of the Shiny application
 ### Weekly Plan
 
 |               Week                | Weekly Tasks                                                        | Persons in Charge  |     Backup      |
-|:---------------:|---------------------|:---------------:|:---------------:|
+|:---------------------------------:|---------------------------------------------------------------------|:------------------:|:---------------:|
 |       until November 8^th^        | Explore and finalize the data set and the problem statements        |      Everyone      |    Everyone     |
 |                \-                 | Complete the proposal and assign some high-level tasks              |      Everyone      |    Everyone     |
 |     November 9^th^ to 15^th^      | Getting to know about Shiny application                             |      Antonio       |     Bharath     |

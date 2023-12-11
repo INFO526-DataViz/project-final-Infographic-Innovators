@@ -22,8 +22,8 @@ website:
 format:
   html:
     theme:
-      dark: darkly
       light: flatly
+      dark: darkly
     toc: true
 
 execute:
