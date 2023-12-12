@@ -9,10 +9,10 @@
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.3.450">
+  <meta name="generator" content="quarto-1.3.433">
 
-  <meta name="author" content="Author names">
-  <title>Infographic Innovators - Project title</title>
+  <meta name="author" content="Infographic Innovators - Antonio, Bharath, Eshaan, Thanoosha">
+  <title>Infographic Innovators - From Takeoff to Touchdown: Dissecting Data on Air Disasters</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -320,214 +320,213 @@
       margin-right: 0; 
     }
   </style>
-  
-  <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
-  <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+  <script src="site_libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+  <script src="site_libs/plotly-binding-4.10.3/plotly.js"></script>
+  <script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+  <script src="site_libs/jquery-3.5.1/jquery.min.js"></script>
+  <link href="site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
+  <script src="site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+  <link href="site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
+  <script src="site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 </head>
 <body class="quarto-light">
   <div class="reveal">
     <div class="slides">
 
 <section id="title-slide" data-background-image="images/watercolour_sys02_img34_teacup-ocean.jpg" data-background-opacity="0.7" data-background-size="stretch" data-slide-number="none" class="quarto-title-block center">
-  <h1 class="title">Project title</h1>
+  <h1 class="title">From Takeoff to Touchdown: Dissecting Data on Air Disasters</h1>
   <p class="subtitle">INFO 526 - Fall 2023 - Project Final</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Author names 
+Infographic Innovators - Antonio, Bharath, Eshaan, Thanoosha 
 </div>
-</div>
+        <p class="quarto-title-affiliation">
+            School of Information, University of Arizona
+          </p>
+    </div>
 </div>
 
 </section>
-<section>
-<section id="using-quarto-for-presentations" class="title-slide slide level1 center">
-<h1>Using Quarto for presentations</h1>
-
-</section>
-<section id="quarto" class="slide level2">
-<h2>Quarto</h2>
+<section id="objective" class="slide level2 smaller">
+<h2>Objective</h2>
+<div>
+<p>Conduct an in-depth analysis of aircraft crashes within the United States to uncover temporal trends and geographical patterns.</p>
+<p>Background:</p>
 <ul>
-<li><p>The presentation is created using the Quarto CLI</p></li>
-<li><p><code>##</code> sets the start of a new slide</p></li>
+<li><p>Dataset procured from the National Transportation Safety Board (NSTB).</p></li>
+<li><p>Contains records of aircraft crashes in the U.S. from Jan 1, 1980, to Dec 31, 2022.</p></li>
+<li><p>Originally comprised 89,134 rows and 38 columns, refined to 20 columns for focused analysis.</p></li>
 </ul>
-</section>
-<section id="layouts" class="slide level2">
-<h2>Layouts</h2>
-<p>You can use plain text</p>
-<div class="columns">
-<div class="column" style="width:40%;">
+</div>
+<div>
+<p><strong>Value</strong></p>
 <ul>
-<li>or bullet points<sup>1</sup></li>
+<li><p>Enhance understanding of aviation safety and factors contributing to aircraft crashes.</p></li>
+<li><p>Personalize insights based on diverse experiences with air travel.</p></li>
 </ul>
-</div><div class="column" style="width:60%;">
-<p>or in two columns</p>
-</div>
-</div>
-<ul>
-<li><p>like</p></li>
-<li><p>this</p></li>
-</ul>
-<aside><ol class="aside-footnotes"><li id="fn1"><p>And add footnotes</p></li></ol></aside></section>
-<section id="code" class="slide level2">
-<h2>Code</h2>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 5
-  term        estimate std.error statistic       p.value
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;
-1 (Intercept)   25.3      3.08        8.22 0.00000000358
-2 speed         -0.116    0.0642     -1.81 0.0806       </code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 12
-  r.squared adj.r.squared sigma statistic p.value    df logLik   AIC   BIC
-      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-1    0.0983        0.0682  5.82      3.27  0.0806     1  -101.  207.  212.
-# ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
-</div>
 </div>
 </section>
-<section id="plots" class="slide level2">
-<h2>Plots</h2>
-
-<img data-src="presentation_files/figure-revealjs/unnamed-chunk-5-1.png" width="1800" class="r-stretch"></section>
-<section id="plot-and-text" class="slide level2">
-<h2>Plot and text</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<ul>
-<li><p>Some text</p></li>
-<li><p>goes here</p></li>
-</ul>
-</div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-6-1.png" width="1650"></p>
-</div>
-</div>
-</div>
-</div>
-</section></section>
-<section>
-<section id="a-new-section" class="title-slide slide level1 center">
-<h1>A new section…</h1>
-
-</section>
-<section id="tables" class="slide level2">
-<h2>Tables</h2>
-<p>If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,</p>
-<div class="cell">
-<div class="cell-output-display">
-<table class="table" data-quarto-postprocess="true" style="margin-left: auto; margin-right: auto;">
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">species</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">island</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">bill_length_mm</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">bill_depth_mm</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">flipper_length_mm</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">body_mass_g</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">sex</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Adelie</td>
-<td style="text-align: left;">Torgersen</td>
-<td style="text-align: right;">39.1</td>
-<td style="text-align: right;">18.7</td>
-<td style="text-align: right;">181</td>
-<td style="text-align: right;">3750</td>
-<td style="text-align: left;">male</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Adelie</td>
-<td style="text-align: left;">Torgersen</td>
-<td style="text-align: right;">39.5</td>
-<td style="text-align: right;">17.4</td>
-<td style="text-align: right;">186</td>
-<td style="text-align: right;">3800</td>
-<td style="text-align: left;">female</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Adelie</td>
-<td style="text-align: left;">Torgersen</td>
-<td style="text-align: right;">40.3</td>
-<td style="text-align: right;">18.0</td>
-<td style="text-align: right;">195</td>
-<td style="text-align: right;">3250</td>
-<td style="text-align: left;">female</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Adelie</td>
-<td style="text-align: left;">Torgersen</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Adelie</td>
-<td style="text-align: left;">Torgersen</td>
-<td style="text-align: right;">36.7</td>
-<td style="text-align: right;">19.3</td>
-<td style="text-align: right;">193</td>
-<td style="text-align: right;">3450</td>
-<td style="text-align: left;">female</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Adelie</td>
-<td style="text-align: left;">Torgersen</td>
-<td style="text-align: right;">39.3</td>
-<td style="text-align: right;">20.6</td>
-<td style="text-align: right;">190</td>
-<td style="text-align: right;">3650</td>
-<td style="text-align: left;">male</td>
-</tr>
-</tbody>
-</table>
-
-
-</div>
-</div>
-</section>
-<section id="images" class="slide level2">
-<h2>Images</h2>
-
-<img data-src="images/watercolour_sys02_img34_teacup-ocean.png" width="500" class="r-stretch quarto-figure-center"><p class="caption">Image credit: Danielle Navarro, Percolate.</p></section>
-<section id="math-expressions" class="slide level2 smaller">
-<h2>Math Expressions</h2>
-<p>You can write LaTeX math expressions inside a pair of dollar signs, e.g.&nbsp;$\alpha+\beta$ renders <span class="math inline">\(\alpha + \beta\)</span>. You can use the display style with double dollar signs:</p>
-<pre><code>$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$</code></pre>
-<p><span class="math display">\[
-\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i
-\]</span></p>
-<p>Limitations:</p>
+<section id="questions-proposed" class="slide level2">
+<h2>Questions Proposed</h2>
+<div>
 <ol type="1">
-<li><p>The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting <code>$$</code> must appear in the very beginning of a line, followed immediately by a non-space character, and the ending <code>$$</code> must be at the end of a line, led by a non-space character;</p></li>
-<li><p>There should not be spaces after the opening <code>$</code> or before the closing <code>$</code>.</p></li>
+<li class="fragment"><p>What are the aircraft crashes’ locations, timings, and consequences?</p></li>
+<li class="fragment"><p>What contributes to the crashes, and does weather significantly impact the increase in aircraft crashes?</p></li>
 </ol>
-</section></section>
+</div>
+</section>
 <section>
-<section id="wrap-up" class="title-slide slide level1 center">
-<h1>Wrap up</h1>
+<section id="navigating-through-the-timeline-of-flight-incidents" class="title-slide slide level1 center">
+<h1>Navigating Through the Timeline of Flight Incidents</h1>
 
 </section>
-<section id="feeling-adventurous" class="slide level2">
-<h2>Feeling adventurous?</h2>
+<section id="time-series-analysis" class="slide level2 smaller">
+<h2>Time-Series Analysis</h2>
+<div>
+<p>Trends in aircraft crashes, focusing on fatalities and injury types. Highlights notable historical crashes and examines fatalities <code>fatal_injury_count</code>, serious injuries <code>serious_injury_count</code>, and minor injuries <code>minor_injury_count</code>.</p>
+</div>
+
+<img data-src="images/animated_fcdata.gif" class="r-stretch"></section>
+<section id="heatmap" class="slide level2 smaller">
+<h2>HeatMap</h2>
+<div>
 <ul>
-<li><p>You are welcomed to use the default styling of the slides. In fact, that’s what I expect majority of you will do. You will differentiate yourself with the content of your presentation.</p></li>
-<li><p>But some of you might want to play around with slide styling. Some solutions for this can be found at https://quarto.org/docs/presentations/revealjs.</p></li>
+<li><p>Animated visualization of crashes across the U.S. over time.</p></li>
+<li><p>Utilizes latitude and longitude coordinates to illustrate regional frequency and patterns.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/animation_hexbin-1.gif"></p>
+</figure>
+</div>
+</div>
+</div></li>
 </ul>
+</div>
+</section></section>
+<section>
+<section id="analysis-of-causes-of-crashes" class="title-slide slide level1 center">
+<h1>Analysis of Causes of Crashes</h1>
+
+</section>
+<section id="waffle-chart" class="slide level2 smaller">
+<h2>Waffle Chart</h2>
+<div>
+<ul>
+<li>Overview of common causes, utilizing the probable_cause column.</li>
+<li>Employs text summarization to categorize causes.</li>
+</ul>
+</div>
+</section>
+<section id="density-plot" class="slide level2">
+<h2>Density Plot</h2>
+<div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/distribution-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="assessing-the-influence-of-weather-conditions-on-crashes" class="title-slide slide level1 center">
+<h1>Assessing the Influence of Weather Conditions on Crashes</h1>
+
+</section>
+<section id="radar-plot" class="slide level2 smaller">
+<h2>Radar Plot</h2>
+<div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-7bf932435281c1a73034" style="width:1600px;height:988.8px;"></div>
+<script type="application/json" data-for="htmlwidget-7bf932435281c1a73034">{"x":{"visdat":{"c68c168a1929":["function () ","plotlyVisDat"]},"cur_data":"c68c168a1929","attrs":{"c68c168a1929":{"fill":"toself","mode":"lines+markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatterpolar"},"c68c168a1929.1":{"fill":"toself","mode":"lines+markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatterpolar","r":[4075,4517,5905,6804,8208,9252,10429,9630,7884,6267,4758,4094,4075],"theta":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec","Jan"],"name":"VMC","inherit":true},"c68c168a1929.2":{"fill":"toself","mode":"lines+markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatterpolar","r":[732,623,632,488,372,375,343,388,422,526,633,798,732],"theta":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec","Jan"],"name":"IMC","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"polar":{"radialaxis":{"visible":true,"range":[0,10500]}},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"fillcolor":"rgba(31,119,180,0.5)","fill":"toself","mode":"lines+markers","type":"scatterpolar","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"line":{"color":"rgba(31,119,180,1)"},"frame":null},{"fillcolor":"rgba(255,127,14,0.5)","fill":"toself","mode":"lines+markers","type":"scatterpolar","r":[4075,4517,5905,6804,8208,9252,10429,9630,7884,6267,4758,4094,4075],"theta":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec","Jan"],"name":"VMC","marker":{"color":"rgba(255,127,14,1)","line":{"color":"rgba(255,127,14,1)"}},"line":{"color":"rgba(255,127,14,1)"},"frame":null},{"fillcolor":"rgba(44,160,44,0.5)","fill":"toself","mode":"lines+markers","type":"scatterpolar","r":[732,623,632,488,372,375,343,388,422,526,633,798,732],"theta":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec","Jan"],"name":"IMC","marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"line":{"color":"rgba(44,160,44,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>Here, VMC stands for <code>Visual Meteorological Conditions</code> and IMC stands for <code>Instrument Meteorological Conditions</code>.</p>
+</div>
+</section>
+<section id="radial-bar-plot" class="slide level2">
+<h2>Radial Bar-Plot</h2>
+<h3 id="radial-bar-plot---total-crashes">Radial Bar Plot - Total Crashes</h3>
+<div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/radial_plot_crashes-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<h3 id="radial-bar-plot---total-injuries">Radial Bar Plot - Total Injuries</h3>
+<div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/radial_plot_injuries-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="conclusion" class="slide level2 smaller">
+<h2>Conclusion</h2>
+<div>
+<ul>
+<li class="fragment">Annual crash occurrences remain notable, but a declining trend is observed over the decades from 1980 to 2022.</li>
+<li class="fragment">The consistent decrease in the number of crashes indicates an improvement in aviation safety standards and practices.</li>
+<li class="fragment">Strict regulations within the aviation industry have contributed to the reduction in both crash frequency and fatalities.</li>
+<li class="fragment">The decline in fatalities over time underscores the effectiveness of safety measures and protocols implemented in the aviation sector.</li>
+</ul>
+</div>
+</section>
+<section id="conclusion-1" class="slide level2 smaller">
+<h2>Conclusion</h2>
+<div>
+<ul>
+<li class="fragment">The overall trend suggests a positive shift towards a safer and more efficient mode of transportation.</li>
+<li class="fragment">As fatalities and crashes continue to decrease, air travel becomes an increasingly secure and rapid means of global transportation.</li>
+<li class="fragment">The ongoing improvement in aviation safety reflects the industry’s commitment to providing a reliable and secure travel experience.</li>
+<li class="fragment">The collective progress in safety measures signifies a broader positive trajectory for the aviation sector, fostering confidence in air travel for passengers worldwide.</li>
+</ul>
+</div>
+</section>
+<section id="problems-faced" class="slide level2 smaller">
+<h2>Problems Faced</h2>
+<div>
+<ul>
+<li>Immense amount of Data to work from.</li>
+<li>The obtained dataset was partially skewed which made it harder to normalise certain metrics for visualisation.</li>
+<li>Performing Data Wrangling on the dataset was difficult as it was of size <code>89,134 rows and 20 columns</code>.</li>
+<li>But, because the Dataset was vast, we could also create multiple visualisations which we could present for this project.</li>
+</ul>
+</div>
+</section>
+<section id="future-scope" class="slide level2 smaller">
+<h2>Future Scope</h2>
+<div>
+<ul>
+<li>Exploring other countries and finding a credible source for the data.</li>
+<li>Exploring Data and correlating with other credible sources to find the exact reason behind the crash.</li>
+<li>The developed Shiny App can be used as an alternative to the current dashboard which visualizes flight crashes on the <code>NTSB.gov</code> website.</li>
+<li>Diving in Deeper into flight crashes and visualising flight paths and plotting real-time status of flights.</li>
+</ul>
+</div>
 
 <div class="footer footer-default">
 
 </div>
 </section></section>
-
     </div>
   </div>
 
