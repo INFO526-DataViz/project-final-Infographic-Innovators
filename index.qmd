@@ -715,11 +715,11 @@ flight_plot
 
 **Approach**
 
-The waffle chart shows different causes of aircraft crashes. Pilot's failure was the highest scoring cause of crashes, followed by loss of engine power.
+We prepare data by calculating percentages and determining tile numbers for causes of airplane crashes. It generates a waffle chart using ggplot2, displaying causes represented by '✈' symbols in a grid layout, each tile proportional to the cause's percentage, and then converts it into an interactive plot using plotly for visualization.
 
 **Findings**
 
-The waffle chart effectively showcased the distribution of crash causes, emphasizing the prominence of human error in aviation incidents. The data highlighted the need for enhanced safety measures and training to address the identified causes of crashes.
+The waffle chart effectively showcased the distribution of crash causes, emphasizing the prominence of human error(pilot failures) in aviation incidents. The data highlighted the need for enhanced safety measures and training to address the identified causes of crashes.
 
 ### Density Plot
 
