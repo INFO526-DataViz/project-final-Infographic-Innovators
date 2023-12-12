@@ -28,7 +28,7 @@ We wanted provide an in-depth analysis of aircraft crashes in the United States 
 
     Methodology: Utilization of a detailed dataset from the National Transportation Safety Board, incorporating various data visualization techniques and time-series analyses. We created a heatmap on number of crashes in the different regions, and radial car plot to visualize crashes during certain flight phases.
 
-    Findings: -
+    Findings: Overall when looking at the crashes through 1980-2020 the number of total fatalitles from crashes have gone down. There was a significant jump in 2001 which we concluded was from the 9/11 attacks. After which the number of fatalies decreased significatly.
 
 2.  Question: What contributes to the crashes, and does weather significantly impact the increase in aircraft crashes?
 
@@ -181,7 +181,9 @@ flights_ntsb <- flights_ntsb |>
 
 ### Question 1: Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
 
-#### Timeseries on number of crashes
+#### Timeseries analysis of fatalities, and types of injuries. 
+
+Total Fatalitites Over The Years
 
 ```{r timeseries_data, include=FALSE}
 # Creating a dataset for the timeSeries plot
