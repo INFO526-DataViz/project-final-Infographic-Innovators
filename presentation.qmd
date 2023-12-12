@@ -84,34 +84,54 @@ probable_cause_flights <- read_csv(here("data","new_flights_PC.csv"))
 ```
 
 ## Objective
-::: nonincremental
 
+::: nonincremental
+\- Conduct an in-depth analysis of aircraft crashes within the United States to uncover temporal trends and geographical patterns.
+
+Background:
+
+\- Dataset procured from the National Transportation Safety Board (NSTB).
+
+\- Contains records of aircraft crashes in the U.S. from Jan 1, 1980, to Dec 31, 2022.
+
+\- Originally comprised 89,134 rows and 38 columns, refined to 20 columns for focused analysis.
+
+Value:
+
+\- Enhance understanding of aviation safety and factors contributing to aircraft crashes.
+
+\- Personalize insights based on diverse experiences with air travel.
 :::
 
 ## Questions Proposed
-::: incremental
 
+::: incremental
+1.  What are the aircraft crashes' locations, timings, and consequences?
+
+2.  What contributes to the crashes, and does weather significantly impact the increase in aircraft crashes?
 :::
 
 # Navigating Through the Timeline of Flight Incidents
-## Time-Series Analysis
-::: nonincremental
 
+## Time-Series Analysis
+
+::: nonincremental
 :::
 
 ## HeatMap
-::: nonincremental
 
+::: nonincremental
 :::
 
 # Analysis of Causes of Crashes
 
 ## Waffle Chart
-::: nonincremental
 
+::: nonincremental
 :::
 
 ## Density Plot
+
 ::: nonincremental
 ```{r distribution}
 ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pilot's failure")) +
@@ -127,6 +147,7 @@ ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pil
 # Assessing the Influence of Weather Conditions on Crashes
 
 ## Radar Plot
+
 ::: nonincremental
 ```{r radarchart_data, include=FALSE}
 # Assigning different weather conditions to variables
@@ -210,13 +231,15 @@ radar_chart <- radar_chart |>
 
 radar_chart
 ```
-Here, VMC stands for `Visual Meteorological Conditions` and IMC stands for `Instrument Meteorological Conditions`.
 
+Here, VMC stands for `Visual Meteorological Conditions` and IMC stands for `Instrument Meteorological Conditions`.
 :::
 
 ## Radial Bar-Plot
+
 ::: nonincremental
 Radial Bar Plot - Total Crashes
+
 ```{r radial_plot, include=FALSE}
 # Creating a filtered dataset for Radial Plot
 flights_ntsb_radial <- flights_ntsb |>
@@ -245,7 +268,9 @@ flights_ntsb_radial <- flights_ntsb_radial |>
 
 flights_ntsb_radial
 ```
+
 Radial Bar Plot - Total Crashes
+
 ```{r radial_plot_crashes}
 #| code-fold: true
 #| code-summary: "Radial Bar Plot - Total Crashes"
@@ -295,7 +320,9 @@ flights_radial_bar_crashes <-
     )
 flights_radial_bar_crashes
 ```
+
 Radial Bar Plot - Total Injuries
+
 ```{r radial_plot_injuries}
 #| code-fold: true
 #| code-summary: "Radial Bar Plot - Total Injuries"
@@ -350,7 +377,8 @@ flights_radial_bar_injuries
 ```
 :::
 
-## Conclusion 
+## Conclusion
+
 ::: incremental
 -   Annual crash occurrences remain notable, but a declining trend is observed over the decades from 1980 to 2022.
 -   The consistent decrease in the number of crashes indicates an improvement in aviation safety standards and practices.
@@ -358,7 +386,8 @@ flights_radial_bar_injuries
 -   The decline in fatalities over time underscores the effectiveness of safety measures and protocols implemented in the aviation sector.
 :::
 
-## Conclusion 
+## Conclusion
+
 ::: incremental
 -   The overall trend suggests a positive shift towards a safer and more efficient mode of transportation.
 -   As fatalities and crashes continue to decrease, air travel becomes an increasingly secure and rapid means of global transportation.
@@ -367,8 +396,6 @@ flights_radial_bar_injuries
 :::
 
 ## Problems Faced and Future Scope
+
 ::: nonincremental
-
 :::
-
-
