@@ -358,7 +358,7 @@ ggplotly(p)
 
 ## Radial Bar - Total Crashes
 
-::: nonincremental
+
 ```{r radial_plot, include=FALSE}
 # Creating a filtered dataset for Radial Plot
 flights_ntsb_radial <- flights_ntsb |>
@@ -388,7 +388,7 @@ flights_ntsb_radial <- flights_ntsb_radial |>
 flights_ntsb_radial
 ```
 
-```{r radial_plot_crashes, fig.height=6, fig.width=6}
+```{r radial_plot_crashes}
 #| code-fold: true
 #| code-summary: "Radial Bar Plot - Total Crashes"
 
@@ -439,12 +439,12 @@ flights_radial_bar_crashes <-
     )
 flights_radial_bar_crashes
 ```
-:::
+
 
 ## Radial Bar Plot - Total Injuries
 
-::: nonincremental
-```{r radial_plot_injuries, fig.height=6, fig.width=6}
+
+```{r radial_plot_injuries}
 #| code-fold: true
 #| code-summary: "Radial Bar Plot - Total Injuries"
 
@@ -498,13 +498,13 @@ flights_radial_bar_injuries
 # interactive - plotly
 # animate - plotly by years or gganimate bar growth
 ```
-:::
+
 
 # Analysis of Causes of Crashes
 
 ## Waffle Chart {.smaller}
 
-::: nonincremental
+
 ```{r datawragling,include=FALSE}
 count <- probable_cause_flights |>
   group_by(cause_summary)|>
@@ -547,12 +547,12 @@ flight_plot <- ggplotly(p, tooltip = c("color")) |>
 
 flight_plot
 ```
-:::
+
 
 ## Density Plot
 
-::: nonincremental
-```{r distribution, fig.height=4.5, fig.width=4.5}
+
+```{r distribution}
 ggplot(
   subset(
     probable_cause_flights,
@@ -577,7 +577,7 @@ ggplot(
     )
 
 ```
-:::
+
 
 # Assessing the Influence of Weather Conditions on Crashes
 
@@ -697,6 +697,7 @@ Here, VMC stands for `Visual Meteorological Conditions` and IMC stands for `Inst
 :::
 
 ## Thank you
+
 ::: nonincremental
 ![](images/thankyou.png){fig-align="center" width="600" height="450"}
 :::
