@@ -157,7 +157,6 @@ Value:
 Trends in aircraft crashes, focusing on fatalities and injury types.
 
 Highlights notable historical crashes and examines fatalities (fatal_injury_count), serious injuries (serious_injury_count), and minor injuries (minor_injury_count).
-:::
 
 ```{r timeseries_data, include=FALSE}
 # Creating a dataset for the timeSeries plot
@@ -194,6 +193,7 @@ p <-
 
 ggplotly(p)
 ```
+:::
 
 ![](images/animated_fcdata.gif)
 
@@ -203,70 +203,71 @@ ggplotly(p)
 -    Animated visualization of crashes across the U.S. over time.
 
 -   Utilizes latitude and longitude coordinates to illustrate regional frequency and patterns.
+
+    ```{r mapl_plot_data, include=FALSE}
+    # Filtering out NA and invalid Latitude and Longitude values
+    flights_ntsb_maps <- flights_ntsb |>
+      subset(!is.na(longitude) & !is.na(latitude)
+             & latitude < 75 & latitude > 10 & longitude < -60)
+
+    # Creating a dataset for the map plot and picking the columns that we need
+    flights_ntsb_maps <- flights_ntsb_maps |>
+      # getting total crashes and total injuries
+      group_by(state, event_year) |>
+      summarise(
+        total_crashes = n(),
+        total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+      ) |>
+      drop_na()
+
+    # getting unique states in the data
+    unique_states <- unique(flights_ntsb_maps$state)
+
+    # getting all years involved in the data
+    all_years <- unique(flights_ntsb_maps$event_year)
+
+    # combining above data so that we will be generating data of the states 
+    # which are missing in the original data
+    all_states_data <-
+      expand.grid(state = unique_states, event_year = all_years)
+
+    flights_ntsb_maps <-
+      # using left_join() to combine the data based on state and event_year
+      left_join(all_states_data,
+                flights_ntsb_maps,
+                by = c("state", "event_year")) |>
+      mutate(
+        total_crashes = ifelse(is.na(total_crashes), 0, total_crashes),
+        total_injuries = ifelse(is.na(total_injuries), 0, total_injuries)
+      )
+
+    ```
+
+    ```{r function_hexbin, include=FALSE}
+    # Creating a function to plot a Hex-Bin map
+    getHexBinMap <- function(input_year) {
+      plot_data <- flights_ntsb_maps |>
+        filter(event_year == input_year)
+      
+      plot_usmap(data = plot_data,
+                 values = "total_crashes", 
+                 color = "black") +
+        theme_void() +
+        scale_fill_gradientn(
+          colors = met.brewer("Hokusai2"),
+          name = "Number of Crashes",
+          limits = c(0, 400)
+        ) +
+        labs(title = sprintf("Flight crashes in US states during %d", input_year)) +
+        theme(
+          legend.position = 'right',
+          plot.title = element_text(size = 40, hjust = 0.5, face = "bold", vjust = -1),
+          legend.text = element_text(size = 18),
+          legend.title = element_text(size = 20, face = "bold")
+        )
+    }
+    ```
 :::
-
-```{r mapl_plot_data, include=FALSE}
-# Filtering out NA and invalid Latitude and Longitude values
-flights_ntsb_maps <- flights_ntsb |>
-  subset(!is.na(longitude) & !is.na(latitude)
-         & latitude < 75 & latitude > 10 & longitude < -60)
-
-# Creating a dataset for the map plot and picking the columns that we need
-flights_ntsb_maps <- flights_ntsb_maps |>
-  # getting total crashes and total injuries
-  group_by(state, event_year) |>
-  summarise(
-    total_crashes = n(),
-    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
-  ) |>
-  drop_na()
-
-# getting unique states in the data
-unique_states <- unique(flights_ntsb_maps$state)
-
-# getting all years involved in the data
-all_years <- unique(flights_ntsb_maps$event_year)
-
-# combining above data so that we will be generating data of the states 
-# which are missing in the original data
-all_states_data <-
-  expand.grid(state = unique_states, event_year = all_years)
-
-flights_ntsb_maps <-
-  # using left_join() to combine the data based on state and event_year
-  left_join(all_states_data,
-            flights_ntsb_maps,
-            by = c("state", "event_year")) |>
-  mutate(
-    total_crashes = ifelse(is.na(total_crashes), 0, total_crashes),
-    total_injuries = ifelse(is.na(total_injuries), 0, total_injuries)
-  )
-```
-
-```{r function_hexbin, include=FALSE}
-# Creating a function to plot a Hex-Bin map
-getHexBinMap <- function(input_year) {
-  plot_data <- flights_ntsb_maps |>
-    filter(event_year == input_year)
-  
-  plot_usmap(data = plot_data,
-             values = "total_crashes", 
-             color = "black") +
-    theme_void() +
-    scale_fill_gradientn(
-      colors = met.brewer("Hokusai2"),
-      name = "Number of Crashes",
-      limits = c(0, 400)
-    ) +
-    labs(title = sprintf("Flight crashes in US states during %d", input_year)) +
-    theme(
-      legend.position = 'right',
-      plot.title = element_text(size = 40, hjust = 0.5, face = "bold", vjust = -1),
-      legend.text = element_text(size = 18),
-      legend.title = element_text(size = 20, face = "bold")
-    )
-}
-```
 
 ```{r images_yearwise, include=FALSE}
 # Creating a list of Years from dataset
@@ -292,8 +293,7 @@ for (i in seq_along(years_list)) {
 
 ```
 
-```{r}
-{r animation_hexbin}
+```{r animation_hexbin}
 # making gif using gganimate package
 hex_bin_maps <- list.files(path = "images/map_plot/", full.names = TRUE)
 hex_bin_maps_list <- lapply(hex_bin_maps, image_read)
@@ -317,6 +317,23 @@ hex_bin_maps_animation
 ## Waffle Chart
 
 ::: nonincremental
+```{r datawragling,include=FALSE}
+count <- probable_cause_flights |>
+  group_by(cause_summary)|>
+  summarize(perc=n())|>
+  mutate(
+    perc= (perc/sum(perc))
+  )
+count_waffle <- count |>
+  mutate(
+    remainder = perc * 100 - floor(perc * 100),
+    floored = floor(perc * 100)
+  ) |>
+  arrange(desc(remainder)) |>
+  mutate(number = ifelse(100 - sum(floored) >= row_number(), floored + 1, floored)) |>
+  arrange(perc)
+
+```
 :::
 
 ## Density Plot
