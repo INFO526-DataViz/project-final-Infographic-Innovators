@@ -583,9 +583,9 @@ Discussion:  This visual representation allows us to identify clusters of high d
 
 #### Radar Plot
 
-Purpose:
+Purpose: We plot the Radar Plot using Plotly for R  to comprehensively assess the influence of weather conditions on flight crashes. Leveraging the `flights_ntsb_radar` dataset which we derived from the original `flights_ntsb` dataset and categorizing flight crashes based on `Visual Meteorological Conditions (VMC)` and `Instrument Meteorological Conditions (IMC)`. This visualization seeks to highlight the varying degrees of impact these conditions have on aviation safety. By layering both datasets on a radar plot, we aim to provide a holistic perspective on how different weather scenarios contribute to flight incidents.
 
-Discussion:
+Discussion: The radar plot serves as an effective means to showcase the multivariate nature of weather conditions and their relationship with flight crashes. Each axis on the radar represents a specific parameter related to aviation safety, such as visibility, cloud cover, wind speed, and temperature. The radar plot allows for the simultaneous comparison of these parameters for VMC and IMC, unveiling patterns and discrepancies in their respective contributions to incidents.
 
 ```{r radarchart_data, include=FALSE}
 # Assigning different weather conditions to variables
@@ -670,6 +670,12 @@ radar_chart <- radar_chart |>
 radar_chart
 ```
 
+#### Radial Bar Plot
+Purpose: We plotted the radial bar plot to explore the distribution of flight crashes and associated injuries across different phases of flight. By categorizing flight phases into `Landing, Takeoff, Approach, Maneuvering, Climb, and Other` this visualization aims to uncover insights into the critical moments during a flight where incidents are more likely to occur. The first graph highlights the count of crashes in each phase, while the second graph focuses on the count of injuries, providing a broad perspective on the safety challenges associated with each phase.
+
+Discussion:The radial bar plot offers an intuitive and visually appealing representation of the distribution of crashes and injuries throughout various phases of flight. In the first graph, the bars radiating from the center depict the count of crashes in each phase, allowing for a quick comparison of their frequencies. This visualization enables the identification of phases that might be particularly prone to incidents, guiding further investigation into the contributing factors.
+
+The second graph, depicting injuries, provides an additional layer of analysis. By comparing the counts of injuries across different flight phases, we can discern whether certain phases are more likely to result in severe consequences. This insight is crucial for understanding the potential risks associated with specific segments of a flight, informing safety measures and protocols.
 ```{r radial_plot, include=FALSE}
 # Creating a filtered dataset for Radial Plot
 flights_ntsb_radial <- flights_ntsb |>
@@ -750,9 +756,6 @@ flights_radial_bar_crashes
 # remaining - titles, some texts
 # interactive - plotly
 # animate - plotly by years or gganimate bar growth
-# sources:
-# gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
-# ploty - https://plotly.com/r/animations/
 ```
 
 ```{r radial_plot_injuries}
@@ -809,11 +812,11 @@ flights_radial_bar_injuries
 # remaining - titles, some texts
 # interactive - plotly
 # animate - plotly by years or gganimate bar growth
-# sources:
-# gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
-# ploty - https://plotly.com/r/animations/
 ```
 
 ## Conclusion
+We can conclude stating that a lot of crashes take place every year but the number of crashes has been decreasing over the past few decades. The number of fatalities has also gone down due to the stringent rules in the Aviation industry. With the fatalities and crashes decreasing over time and more we are moving towards a safer and faster mode of transport which can get us around the globe in a span of a couple hours. 
 
 ## References
+gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
+ploty - https://plotly.com/r/animations/
