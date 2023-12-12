@@ -18,6 +18,28 @@ execute:
   echo: false
 ---
 
+# Abstract:
+
+We wanted provide an in-depth analysis of aircraft crashes in the United States from 1980 to 2022, focusing on locations, timings, and consequences, along with exploring causes and weather conditions' influence on these incidents.
+
+1.  Question: What are the locations, timings, and consequences of the aircraft crashes?
+
+    Objective: To discover if there were any correlations that contribute to aircraft crashes during a certain time period. As well as looking to see if certain locations have higher numbers of crashes than others.
+
+    Methodology: Utilization of a detailed dataset from the National Transportation Safety Board, incorporating various data visualization techniques and time-series analyses. We created a heatmap on number of crashes in the different regions, and radial car plot to visualize crashes during certain flight phases.
+
+    Findings: -
+
+2.  Question: What contributes to the crashes, and does weather significantly impact the increase in aircraft crashes?
+
+    Objective: To identify and categorize the most frequent causes of crashes and to correlate crash causes with the severity of outcomes.
+
+    Methodology: Using the dataset, we created a bar plot to show the common cause of aircraft crashes, a stacked area chart to show the causes and severity of crashes, and a radar plot to visualize crashes by month and weather conditions.
+
+    Findings:
+
+    ## Analysis:
+
 ```{r load_packages, message=FALSE, include=FALSE}
 # GETTING THE LIBRARIES
 if (!require(pacman))
@@ -76,8 +98,6 @@ knitr::opts_chunk$set(
 flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
 probable_cause_flights <- read_csv(here("data","new_flights_PC.csv"))
 ```
-
-## Abstract
 
 ```{r remove_columns, include=FALSE}
 # selecting columns which are required for our analysis
@@ -159,25 +179,7 @@ flights_ntsb <- flights_ntsb |>
   )
 ```
 
-## Introduction:
-
-We wanted provide an in-depth analysis of aircraft crashes in the United States from 1980 to 2022, focusing on locations, timings, and consequences, along with exploring causes and weather conditions' influence on these incidents.
-
-1.  Question: What are the locations, timings, and consequences of the aircraft crashes?
-
-    Objective: To discover if there were any correlations that contribute to aircraft crashes during a certain time period. As well as looking to see if certain locations have higher numbers of crashes than others.
-
-    Methodology: Utilization of a detailed dataset from the National Transportation Safety Board, incorporating various data visualization techniques and time-series analyses. We created a heatmap on number of crashes in the different regions, and radial car plot to visualize crashes during certain flight phases.
-
-    Findings: -
-
-2.  Question: What contributes to the crashes, and does weather significantly impact the increase in aircraft crashes?
-
-    Objective: To identify and categorize the most frequent causes of crashes and to correlate crash causes with the severity of outcomes.
-
-    Methodology: Using the dataset, we created a bar plot to show the common cause of aircraft crashes, a stacked area chart to show the causes and severity of crashes, and a radar plot to visualize crashes by month and weather conditions.
-
-    Findings:
+Analy
 
 ### Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
 
