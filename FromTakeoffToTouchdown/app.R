@@ -268,12 +268,21 @@ generate_plots <- function(plot_type) {
     flight_plot
     
   } else if (plot_type == "Distribution of cause - Pilot's failure"){
-    p <-ggplot(subset(flights_ntsb_density, flights_ntsb_density$cause_summary=="pilot's failure")) +
-      geom_density(aes(x=year(event_date), fill=highest_injury_level), alpha=0.8)+
-      scale_fill_manual(values = c("#bcd67c","#82dfe2","#d398ff"))+
-      labs(title="Distribution of crashes caused by pilot's negligence over time",
-           x="Year",
-           y="Density")+
+    p <- ggplot(
+      subset(
+        probable_cause_flights,
+        probable_cause_flights$cause_summary == "pilot's failure"
+      )
+    ) +
+      geom_density(aes(
+        x = year(event_date),
+        fill = factor(highest_injury_level, levels = c("Fatal", "Serious", "Minor"))
+      ), alpha = 0.7) +
+      scale_fill_manual(values = c("#bcd67c", "#d398ff", "#82dfe2")) +
+      labs(title = "Distribution of crashes caused by pilot's negligence over time",
+           x = "Year",
+           y = "Density",
+           fill = "Highest Injury Level") + 
       theme_minimal()
     flight_plot <- ggplotly(p)
   }

@@ -7,17 +7,24 @@ author:
       - name: "School of Information, University of Arizona"
 description: "A shiny app integration with aircraft crash analysis"
 title-slide-attributes:
-  data-background-image: images/watercolour_sys02_img34_teacup-ocean.jpg
+  data-background-image: images/presentation_2.png
   data-background-size: stretch
-  data-background-opacity: "0.7"
+  data-background-opacity: "0.8"
   data-slide-number: none
 format:
   revealjs:
     theme:  ['data/customtheming.scss']
+    transition: slide
+    background-transition: fade
+    logo: images\flight_logo.png
+    footer: "[✈️ Infographic Innovators](https://github.com/INFO526-DataViz/project-final-Infographic-Innovators)"
+    scrollable: true
+    
 code-fold: true
 editor: visual
 execute:
   echo: false
+  warning: false
 ---
 
 ```{r}
@@ -164,6 +171,7 @@ flights_ntsb <- flights_ntsb |>
 ```
 
 ## Objective {.smaller}
+
 ::: nonincremental
 Conduct an in-depth analysis of aircraft crashes within the United States to uncover temporal trends and geographical patterns.
 
@@ -193,9 +201,10 @@ Conduct an in-depth analysis of aircraft crashes within the United States to unc
 :::
 
 # Navigating Through the Timeline of Flight Incidents
-## Time-Series Analysis {.smaller}
-::: nonincremental
 
+## Time-Series Analysis {.smaller}
+
+::: nonincremental
 ```{r timeseries_data, include=FALSE}
 # Creating a dataset for the timeSeries plot
 flights_ntsb_timeseries <- flights_ntsb |>
@@ -236,9 +245,9 @@ ggplotly(p)
 ![](images/animated_fcdata.gif)
 
 ## Choropleth Map {.smaller}
-::: nonincremental
 
-    ```{r mapl_plot_data, include=FALSE}
+::: nonincremental
+```{r mapl_plot_data, include=FALSE}
     # Filtering out NA and invalid Latitude and Longitude values
     flights_ntsb_maps <- flights_ntsb |>
       subset(!is.na(longitude) & !is.na(latitude)
@@ -275,9 +284,9 @@ ggplotly(p)
         total_injuries = ifelse(is.na(total_injuries), 0, total_injuries)
       )
 
-    ```
+```
 
-    ```{r function_hexbin, include=FALSE}
+```{r function_hexbin, include=FALSE}
     # Creating a function to plot a Hex-Bin map
     getHexBinMap <- function(input_year) {
       plot_data <- flights_ntsb_maps |>
@@ -300,9 +309,9 @@ ggplotly(p)
           legend.title = element_text(size = 20, face = "bold")
         )
     }
-    ```
+```
 
-    ```{r images_yearwise, include=FALSE}
+```{r images_yearwise, include=FALSE}
     # Creating a list of Years from dataset
     years_list <- flights_ntsb_maps |>
       arrange(event_year) |>
@@ -324,9 +333,9 @@ ggplotly(p)
       )
     }
 
-    ```
+```
 
-    ```{r animation_hexbin}
+```{r animation_hexbin}
     # making gif using gganimate package
     hex_bin_maps <- list.files(path = "images/map_plot/", full.names = TRUE)
     hex_bin_maps_list <- lapply(hex_bin_maps, image_read)
@@ -344,11 +353,157 @@ ggplotly(p)
 
     hex_bin_maps_animation
 
-    ```
+```
+:::
+
+## Radial Bar - Total Crashes
+
+::: nonincremental
+```{r radial_plot, include=FALSE}
+# Creating a filtered dataset for Radial Plot
+flights_ntsb_radial <- flights_ntsb |>
+  # getting total crashes and total injuries
+  group_by(flight_phase) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  drop_na() |>
+  arrange(desc(total_crashes))
+
+# getting top 5 flight phases where flight crashes occured
+flights_ntsb_radial <- flights_ntsb_radial |>
+  slice(1:5) |>
+  bind_rows(
+    flights_ntsb_radial |>
+      slice(-(1:5)) |>
+      summarize(
+        flight_phase = "Other",
+        total_crashes = sum(total_crashes),
+        total_injuries = sum(total_injuries)
+      )
+  ) |>
+  mutate(flight_phase = fct_inorder(flight_phase))
+
+flights_ntsb_radial
+```
+
+```{r radial_plot_crashes, fig.height=6, fig.width=6}
+#| code-fold: true
+#| code-summary: "Radial Bar Plot - Total Crashes"
+
+# Plotting a Radial Barplot to show the Total Count of Crashes and phase of flight 
+flights_radial_bar_crashes <-
+  ggplot(flights_ntsb_radial,
+         aes(x = fct_rev(flight_phase), y = total_crashes, 
+             fill = flight_phase)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_text(hjust = 1.2, size = 4.8, 
+            aes(y = 0, label = comma(total_crashes))) +
+  coord_polar(theta = "y") +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "Phase of Flight",
+    title = "A Radial View of Total Crashes",
+    subtitle = "as per the phase of flight",
+    caption = ""
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 27000, by = 5000),
+    limits = c(0, 27000)
+  ) +
+  scale_x_discrete(expand = c(0.35, 0)) + 
+  scale_fill_frontiers() +
+  theme(
+    legend.position = "bottom",
+    axis.text = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    plot.title = element_text(size = 18, face = "bold"),
+    plot.subtitle = element_text(size = 14)
+    ) +
+  guides(
+      fill = guide_legend(
+        nrow = 1,
+        direction = "horizontal",
+        title.position = "top",
+        title.hjust = 0.5,
+        label.position = "bottom",
+        label.hjust = 1,
+        label.vjust = 1,
+        label.theme = element_text(lineheight = 0.25, size = 14),
+        keywidth = 1.5,
+        keyheight = 0.5
+      )
+    )
+flights_radial_bar_crashes
+```
+:::
+
+## Radial Bar Plot - Total Injuries
+
+::: nonincremental
+```{r radial_plot_injuries, fig.height=6, fig.width=6}
+#| code-fold: true
+#| code-summary: "Radial Bar Plot - Total Injuries"
+
+flights_radial_bar_injuries <-
+  ggplot(flights_ntsb_radial,
+         aes(x = fct_rev(flight_phase), y = total_injuries, 
+             fill = flight_phase)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_text(hjust = 1.2, size = 4.8, 
+            aes(y = 0, label = comma(total_injuries))) +
+  coord_polar(theta = "y") +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "Phase of Flight",
+    title = "A Radial View of Total Injuries",
+    subtitle = "as per the phase of flight",
+    caption = ""
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 13200, by = 1000),
+    limits = c(0, 13200)
+  ) +
+  scale_x_discrete(expand = c(0.35, 0)) + 
+  scale_fill_frontiers() +
+  theme(
+    legend.position = "bottom",
+    axis.text = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    plot.title = element_text(size = 18, face = "bold"),
+    plot.subtitle = element_text(size = 14)
+    ) +
+  guides(
+      fill = guide_legend(
+        nrow = 1,
+        direction = "horizontal",
+        title.position = "top",
+        title.hjust = 0.5,
+        label.position = "bottom",
+        label.hjust = 1,
+        label.vjust = 1,
+        label.theme = element_text(lineheight = 0.25, size = 14),
+        keywidth = 1.5,
+        keyheight = 0.5
+      )
+    ) 
+
+flights_radial_bar_injuries
+# remaining - titles, some texts
+# interactive - plotly
+# animate - plotly by years or gganimate bar growth
+```
 :::
 
 # Analysis of Causes of Crashes
+
 ## Waffle Chart {.smaller}
+
 ::: nonincremental
 ```{r datawragling,include=FALSE}
 count <- probable_cause_flights |>
@@ -395,21 +550,32 @@ flight_plot
 :::
 
 ## Density Plot
+
 ::: nonincremental
-```{r distribution}
-ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pilot's failure")) +
-  geom_density(aes(x=year(event_date), fill=fct_reorder(highest_injury_level,levels=c("Fatal","Serious","Minor")), alpha=0.8))+
-  scale_fill_manual(values = c("#bcd67c","#d398ff", "#82dfe2"))+
-  labs(title="Distribution of crashes caused by pilot's negligence over time",
-       x="Year",
-       y="Density",
-       fill="Highest Injury Level")
-  
+```{r distribution, fig.height=5, fig.width=5}
+ggplot(
+  subset(
+    probable_cause_flights,
+    probable_cause_flights$cause_summary == "pilot's failure"
+  )
+) +
+  geom_density(aes(
+    x = year(event_date),
+    fill = factor(highest_injury_level, levels = c("Fatal", "Serious", "Minor"))
+  ), alpha = 0.7) +
+  scale_fill_manual(values = c("#bcd67c", "#d398ff", "#82dfe2")) +
+  labs(title = "Distribution of crashes caused by pilot's negligence over time",
+       x = "Year",
+       y = "Density",
+       fill = "Highest Injury Level")
+
 ```
 :::
 
 # Assessing the Influence of Weather Conditions on Crashes
+
 ## Radar Plot {.smaller}
+
 ::: nonincremental
 ```{r radarchart_data, include=FALSE}
 # Assigning different weather conditions to variables
@@ -464,7 +630,7 @@ radar_trace_r2 <-
 radar_theta <- c("Jan" , "Feb" , "Mar" , "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec", "Jan")
 ```
 
-```{r radar_chart_plotly}
+```{r radar_chart_plotly, fig.height=5, fig.width=5}
 # Plotting an Interactive Radar Plot using Plotly
 radar_chart <- plot_ly(type = 'scatterpolar',
                fill = 'toself',
@@ -497,161 +663,27 @@ radar_chart
 Here, VMC stands for `Visual Meteorological Conditions` and IMC stands for `Instrument Meteorological Conditions`.
 :::
 
-## Radial Bar - Total Crashes
-::: nonincremental
-```{r radial_plot, include=FALSE}
-# Creating a filtered dataset for Radial Plot
-flights_ntsb_radial <- flights_ntsb |>
-  # getting total crashes and total injuries
-  group_by(flight_phase) |>
-  summarise(
-    total_crashes = n(),
-    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
-  ) |>
-  drop_na() |>
-  arrange(desc(total_crashes))
-
-# getting top 5 flight phases where flight crashes occured
-flights_ntsb_radial <- flights_ntsb_radial |>
-  slice(1:5) |>
-  bind_rows(
-    flights_ntsb_radial |>
-      slice(-(1:5)) |>
-      summarize(
-        flight_phase = "Other",
-        total_crashes = sum(total_crashes),
-        total_injuries = sum(total_injuries)
-      )
-  ) |>
-  mutate(flight_phase = fct_inorder(flight_phase))
-
-flights_ntsb_radial
-```
-
-```{r radial_plot_crashes}
-#| code-fold: true
-#| code-summary: "Radial Bar Plot - Total Crashes"
-
-# Plotting a Radial Barplot to show the Total Count of Crashes and phase of flight 
-flights_radial_bar_crashes <-
-  ggplot(flights_ntsb_radial,
-         aes(x = fct_rev(flight_phase), y = total_crashes, 
-             fill = flight_phase)) +
-  geom_bar(stat = "identity", width = 0.8) +
-  geom_text(hjust = 1.2, size = 4.2, 
-            aes(y = 0, label = comma(total_crashes))) +
-  coord_polar(theta = "y") +
-  labs(
-    x = NULL,
-    y = NULL,
-    fill = "Phase of Flight",
-    title = "A Radial View of Total Crashes",
-    subtitle = "as per the phase of flight",
-    caption = ""
-  ) +
-  scale_y_continuous(
-    breaks = seq(0, 27000, by = 5000),
-    limits = c(0, 27000)
-  ) +
-  scale_x_discrete(expand = c(0.35, 0)) + 
-  scale_fill_frontiers() +
-  theme(
-    legend.position = "bottom",
-    axis.text = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.grid.major = element_blank()
-    ) +
-  guides(
-      fill = guide_legend(
-        nrow = 1,
-        direction = "horizontal",
-        title.position = "top",
-        title.hjust = 0.5,
-        label.position = "bottom",
-        label.hjust = 1,
-        label.vjust = 1,
-        label.theme = element_text(lineheight = 0.25, size = 14),
-        keywidth = 1.5,
-        keyheight = 0.5
-      )
-    )
-flights_radial_bar_crashes
-```
-:::
-### Radial Bar Plot - Total Injuries
-::: nonincremental
-```{r radial_plot_injuries}
-#| code-fold: true
-#| code-summary: "Radial Bar Plot - Total Injuries"
-
-# Plotting a Radial Barplot to show the Total Count of Injuries and phase of flight 
-flights_radial_bar_injuries <-
-  ggplot(flights_ntsb_radial,
-         aes(x = fct_rev(flight_phase), y = total_injuries, 
-             fill = flight_phase)) +
-  geom_bar(stat = "identity", width = 0.8) +
-  geom_text(hjust = 1.2, size = 4.2, 
-            aes(y = 0, label = comma(total_injuries))) +
-  coord_polar(theta = "y") +
-  labs(
-    x = NULL,
-    y = NULL,
-    fill = "Phase of Flight",
-    title = "A Radial View of Total Injuries",
-    subtitle = "as per the phase of flight",
-    caption = ""
-  ) +
-  scale_y_continuous(
-    breaks = seq(0, 13200, by = 1000),
-    limits = c(0, 13200)
-  ) +
-  scale_x_discrete(expand = c(0.35, 0)) + 
-  scale_color_brewer(palette="Paired") +
-  theme(
-    legend.position = "bottom",
-    axis.text = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.grid.major = element_blank()
-    ) +
-  guides(
-      fill = guide_legend(
-        nrow = 1,
-        direction = "horizontal",
-        title.position = "top",
-        title.hjust = 0.5,
-        label.position = "bottom",
-        label.hjust = 1,
-        label.vjust = 1,
-        label.theme = element_text(lineheight = 0.25, size = 14),
-        keywidth = 1.5,
-        keyheight = 0.5
-      )
-    ) 
-
-flights_radial_bar_injuries
-```
-:::
-
 ## Conclusion {.smaller}
+
 ::: incremental
 -   Annual crash occurrences remain notable, but a declining trend is observed over the decades from 1980 to 2022.
 -   The decline in fatalities over time underscores the effectiveness of safety measures and protocols implemented in the aviation sector.
-
 :::
 
 ## Problems Faced {.smaller}
+
 ::: nonincremental
-- Lot of information from the to process and visualize.
-- The obtained dataset was partially skewed which made it harder to normalize certain metrics for visualization.
+-   Lot of information from the to process and visualize.
+-   The obtained dataset was partially skewed which made it harder to normalize certain metrics for visualization.
 -   Performing Data Wrangling on the dataset was difficult as it was of size `89,134 rows and 20 columns`.
--  But, because the dataset was vast, we could also create multiple visualizations which we could present for this project.
+-   But, because the dataset was vast, we could also create multiple visualizations which we could present for this project.
 :::
 
 ## Future Scope {.smaller}
+
 ::: nonincremental
 -   Exploring other countries and finding a credible source for the data.
 -   Exploring Data and correlating with other credible sources to find the exact reason behind the crash.
 -   The developed Shiny App can be used as an alternative to the current dashboard which visualizes flight crashes on the `NTSB.gov` website.
 -   Diving in Deeper into flight crashes and visualizing flight paths and plotting real-time status of flights.
 :::
-

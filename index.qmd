@@ -169,7 +169,9 @@ flights_ntsb <- flights_ntsb |>
 
 ## Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
 
-### Timeseries analysis of fatalities, and types of injuries.
+### Timeseries analysis of fatalities, and types of injuries
+
+**Approach**
 
 ```{r timeseries_data, include=FALSE}
 # Creating a dataset for the timeSeries plot
@@ -332,6 +334,10 @@ p <- ggplot(long_fcdata, aes(x = event_year,
 ggplotly(p)
 ```
 
+**Findings**
+
+There has been a general decrease in the number of total fatalities from 1980 to 2022. A notable spike in fatalities was observed in 2001, attributed to the 9/11 attacks. Post-2001, a significant decline in fatalities was noted.
+
 ```{r animated_labels}
 # all 3 plots with label - animated 
 
@@ -344,8 +350,8 @@ fcdata <- flights_ntsb_timeseries |>
   mutate(
     Category = case_when(
       Category == "total_fatalities" ~ "Fatalities",
-      Category == "total_serious_injuries" ~ "Serious Injuries",
-      Category == "total_minor_injuries" ~ "Minor Injuries"
+      Category == "total_serious_injuries" ~ "Serious\nInjuries",
+      Category == "total_minor_injuries" ~ "Minor\nInjuries"
     )
   )
 
@@ -357,7 +363,7 @@ animation_fcdata <- ggplot(fcdata,
                                Count,
                                group = Category,
                                color = Category)) +
-  geom_line(size = 1.25, show.legend = FALSE) +
+  geom_line(size = 1.3, show.legend = FALSE) +
   geom_segment(
     aes(xend = max(event_year) +
           0.1,
@@ -374,13 +380,18 @@ animation_fcdata <- ggplot(fcdata,
       label = Category,
       color = "#000000"
     ),
+    size = 5,
     hjust = 0,
     show.legend = FALSE
   ) +
-  geom_vline(xintercept = 2001, color = "red", size = 1.5) +
+  geom_vline(xintercept = 2001, color = "red", size = 1.25) +
   transition_reveal(event_year) +
   coord_cartesian(clip = 'off') +
-  theme(plot.title = element_text(size = 20)) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 20),
+        plot.margin = margin(5.5, 40, 5.5, 5.5),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(hjust = 0, size = 12)) +
   labs(title = 'Aircraft Crash Statistics Over Time',
        y = 'Number of Crashes',
        x = element_blank())
@@ -399,13 +410,9 @@ animated_fcdata <- animate(
 animated_fcdata
 ```
 
-**Approach**
-
-**Findings**
-
-There has been a general decrease in the number of total fatalities from 1980 to 2022. A notable spike in fatalities was observed in 2001, attributed to the 9/11 attacks. Post-2001, a significant decline in fatalities was noted.
-
 ### Choropleth map on number of crashes in different regions(US map)
+
+**Approach**
 
 ```{r mapl_plot_data, include=FALSE}
 # Filtering out NA and invalid Latitude and Longitude values
@@ -512,8 +519,6 @@ image_write(image = hex_bin_maps_animation,
 hex_bin_maps_animation
 ```
 
-**Approach**
-
 **Findings**
 
 Looking at the choropleth map Alaska, Arizona, Texas, and Florida has the highest number of crashes.
@@ -523,10 +528,6 @@ Looking at the choropleth map Alaska, Arizona, Texas, and Florida has the highes
 **Approach**
 
 We plotted the radial bar plot to explore the distribution of flight crashes and associated injuries across different phases of flight. By categorizing flight phases into `Landing, Takeoff, Approach, Maneuvering, Climb, and Other` this visualization aims to uncover insights into the critical moments during a flight where incidents are more likely to occur. The first graph highlights the count of crashes in each phase, while the second graph focuses on the count of injuries, providing a broad perspective on the safety challenges associated with each phase.
-
-**Findings**
-
-The radial bar plot offers an intuitive and visually appealing representation of the distribution of crashes and injuries throughout various phases of flight. In the first graph, the bars radiating from the center depict the count of crashes in each phase, allowing for a quick comparison of their frequencies. This visualization enables the identification of phases that might be particularly prone to incidents, guiding further investigation into the contributing factors.
 
 ```{r radial_plot, include=FALSE}
 # Creating a filtered dataset for Radial Plot
@@ -567,7 +568,7 @@ flights_radial_bar_crashes <-
          aes(x = fct_rev(flight_phase), y = total_crashes, 
              fill = flight_phase)) +
   geom_bar(stat = "identity", width = 0.8) +
-  geom_text(hjust = 1.2, size = 4.2, 
+  geom_text(hjust = 1.2, size = 4.8, 
             aes(y = 0, label = comma(total_crashes))) +
   coord_polar(theta = "y") +
   labs(
@@ -588,7 +589,9 @@ flights_radial_bar_crashes <-
     legend.position = "bottom",
     axis.text = element_blank(),
     panel.grid.minor = element_blank(),
-    panel.grid.major = element_blank()
+    panel.grid.major = element_blank(),
+    plot.title = element_text(size = 18, face = "bold"),
+    plot.subtitle = element_text(size = 14)
     ) +
   guides(
       fill = guide_legend(
@@ -610,6 +613,10 @@ flights_radial_bar_crashes
 # animate - plotly by years or gganimate bar growth
 ```
 
+**Findings**
+
+The radial bar plot offers an intuitive and visually appealing representation of the distribution of crashes and injuries throughout various phases of flight. In the first graph, the bars radiating from the center depict the count of crashes in each phase, allowing for a quick comparison of their frequencies. This visualization enables the identification of phases that might be particularly prone to incidents, guiding further investigation into the contributing factors.
+
 ```{r radial_plot_injuries}
 #| code-fold: true
 #| code-summary: "Radial Bar Plot - Total Injuries"
@@ -620,7 +627,7 @@ flights_radial_bar_injuries <-
          aes(x = fct_rev(flight_phase), y = total_injuries, 
              fill = flight_phase)) +
   geom_bar(stat = "identity", width = 0.8) +
-  geom_text(hjust = 1.2, size = 4.2, 
+  geom_text(hjust = 1.2, size = 4.8, 
             aes(y = 0, label = comma(total_injuries))) +
   coord_polar(theta = "y") +
   labs(
@@ -636,12 +643,14 @@ flights_radial_bar_injuries <-
     limits = c(0, 13200)
   ) +
   scale_x_discrete(expand = c(0.35, 0)) + 
-  scale_color_brewer(palette="Paired") +
+  scale_fill_frontiers() +
   theme(
     legend.position = "bottom",
     axis.text = element_blank(),
     panel.grid.minor = element_blank(),
-    panel.grid.major = element_blank()
+    panel.grid.major = element_blank(),
+    plot.title = element_text(size = 18, face = "bold"),
+    plot.subtitle = element_text(size = 14)
     ) +
   guides(
       fill = guide_legend(
@@ -669,6 +678,10 @@ The second graph, depicting injuries, provides an additional layer of analysis. 
 ## Analysis of Causes of Crashes
 
 ### Waffle chart
+
+**Approach**
+
+We prepare data by calculating percentages and determining tile numbers for causes of airplane crashes. It generates a waffle chart using ggplot2, displaying causes represented by '✈' symbols in a grid layout, each tile proportional to the cause's percentage, and then converts it into an interactive plot using plotly for visualization.
 
 ```{r datawragling,include=FALSE}
 count <- probable_cause_flights |>
@@ -713,29 +726,34 @@ flight_plot <- ggplotly(p, tooltip = c("color")) |>
 flight_plot
 ```
 
-**Approach**
-
-We prepare data by calculating percentages and determining tile numbers for causes of airplane crashes. It generates a waffle chart using ggplot2, displaying causes represented by '✈' symbols in a grid layout, each tile proportional to the cause's percentage, and then converts it into an interactive plot using plotly for visualization.
-
 **Findings**
 
 The waffle chart effectively showcased the distribution of crash causes, emphasizing the prominence of human error(pilot failures) in aviation incidents. The data highlighted the need for enhanced safety measures and training to address the identified causes of crashes.
 
 ### Density Plot
 
-```{r distribution}
-ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pilot's failure")) +
-  geom_density(aes(x=year(event_date), fill=highest_injury_level), alpha=0.8)+
-  scale_fill_manual(values = c("#bcd67c","#82dfe2","#d398ff"))+
-  labs(title="Distribution of crashes caused by pilot's negligence over time",
-       x="Year",
-       y="Density")
-  
-```
-
 **Approach**
 
 We plotted the density plot using ggplot's `geom_density` function is to visually analyze the distribution of flight crashes over the years based on their probable causes. By utilizing the `probable_cause_flights` dataset and focusing on the `cause_summary` column, this visualization aims to provide insights into the changing patterns and trends of aviation incidents. The x-axis represents the years, offering a chronological perspective, while the y-axis portrays the density of crashes associated with specific causes. Here, we have focused on the attribute `Pilot's Failure`
+
+```{r distribution}
+ggplot(
+  subset(
+    probable_cause_flights,
+    probable_cause_flights$cause_summary == "pilot's failure"
+  )
+) +
+  geom_density(aes(
+    x = year(event_date),
+    fill = factor(highest_injury_level, levels = c("Fatal", "Serious", "Minor"))
+  ), alpha = 0.7) +
+  scale_fill_manual(values = c("#bcd67c", "#d398ff", "#82dfe2")) +
+  labs(title = "Distribution of crashes caused by pilot's negligence over time",
+       x = "Year",
+       y = "Density",
+       fill = "Highest Injury Level")
+  
+```
 
 **Findings**
 
@@ -844,6 +862,6 @@ Overall trends indicate a decrease in total fatalities from crashes over the 198
 
 ## References
 
-gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
+gganimate - [gganimate](https://r-graph-gallery.com/288-animated-barplot-transition.html)
 
-plotly - https://plotly.com/r/animations/
+plotly - [plotly](https://plotly.com/r/animations/)
