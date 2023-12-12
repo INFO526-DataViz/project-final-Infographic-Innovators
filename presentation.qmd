@@ -163,8 +163,7 @@ flights_ntsb <- flights_ntsb |>
   )
 ```
 
-## Objective
-
+## Objective {.smaller}
 ::: nonincremental
 Conduct an in-depth analysis of aircraft crashes within the United States to uncover temporal trends and geographical patterns.
 
@@ -180,7 +179,7 @@ Background:
 ::: nonincremental
 **Value**
 
-Enhance understanding of aviation safety and factors contributing to aircraft crashes.
+-   Enhance understanding of aviation safety and factors contributing to aircraft crashes.
 
 -   Personalize insights based on diverse experiences with air travel.
 :::
@@ -194,14 +193,10 @@ Enhance understanding of aviation safety and factors contributing to aircraft cr
 :::
 
 # Navigating Through the Timeline of Flight Incidents
-
-## Time-Series Analysis
-
+## Time-Series Analysis {.smaller}
 ::: nonincremental
 Trends in aircraft crashes, focusing on fatalities and injury types.
-
-Highlights notable historical crashes and examines fatalities (fatal_injury_count), serious injuries (serious_injury_count), and minor injuries (minor_injury_count).
-
+Highlights notable historical crashes and examines fatalities `fatal_injury_count`, serious injuries `serious_injury_count`, and minor injuries `minor_injury_count`.
 ```{r timeseries_data, include=FALSE}
 # Creating a dataset for the timeSeries plot
 flights_ntsb_timeseries <- flights_ntsb |>
@@ -241,13 +236,10 @@ ggplotly(p)
 
 ![](images/animated_fcdata.gif)
 
-## HeatMap
-
+## HeatMap {.smaller}
 ::: nonincremental
 -   Animated visualization of crashes across the U.S. over time.
-
 -   Utilizes latitude and longitude coordinates to illustrate regional frequency and patterns.
-
     ```{r mapl_plot_data, include=FALSE}
     # Filtering out NA and invalid Latitude and Longitude values
     flights_ntsb_maps <- flights_ntsb |>
@@ -358,14 +350,10 @@ ggplotly(p)
 :::
 
 # Analysis of Causes of Crashes
-
-## Waffle Chart
-
+## Waffle Chart {.smaller}
 ::: nonincremental
 -   Overview of common causes, utilizing the probable_cause column.
-
 -   Employs text summarization to categorize causes.
-
 ```{r datawragling,include=FALSE}
 count <- probable_cause_flights |>
   group_by(cause_summary)|>
@@ -386,7 +374,6 @@ count_waffle <- count |>
 :::
 
 ## Density Plot
-
 ::: nonincremental
 ```{r distribution}
 ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pilot's failure")) +
@@ -400,9 +387,7 @@ ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pil
 :::
 
 # Assessing the Influence of Weather Conditions on Crashes
-
-## Radar Plot
-
+## Radar Plot {.smaller}
 ::: nonincremental
 ```{r radarchart_data, include=FALSE}
 # Assigning different weather conditions to variables
@@ -491,10 +476,8 @@ Here, VMC stands for `Visual Meteorological Conditions` and IMC stands for `Inst
 :::
 
 ## Radial Bar-Plot
-
+### Radial Bar Plot - Total Crashes
 ::: nonincremental
-Radial Bar Plot - Total Crashes
-
 ```{r radial_plot, include=FALSE}
 # Creating a filtered dataset for Radial Plot
 flights_ntsb_radial <- flights_ntsb |>
@@ -523,8 +506,6 @@ flights_ntsb_radial <- flights_ntsb_radial |>
 
 flights_ntsb_radial
 ```
-
-Radial Bar Plot - Total Crashes
 
 ```{r radial_plot_crashes}
 #| code-fold: true
@@ -575,9 +556,9 @@ flights_radial_bar_crashes <-
     )
 flights_radial_bar_crashes
 ```
-
-Radial Bar Plot - Total Injuries
-
+:::
+### Radial Bar Plot - Total Injuries
+::: nonincremental
 ```{r radial_plot_injuries}
 #| code-fold: true
 #| code-summary: "Radial Bar Plot - Total Injuries"
@@ -632,8 +613,7 @@ flights_radial_bar_injuries
 ```
 :::
 
-## Conclusion
-
+## Conclusion {.smaller}
 ::: incremental
 -   Annual crash occurrences remain notable, but a declining trend is observed over the decades from 1980 to 2022.
 -   The consistent decrease in the number of crashes indicates an improvement in aviation safety standards and practices.
@@ -641,8 +621,7 @@ flights_radial_bar_injuries
 -   The decline in fatalities over time underscores the effectiveness of safety measures and protocols implemented in the aviation sector.
 :::
 
-## Conclusion
-
+## Conclusion {.smaller}
 ::: incremental
 -   The overall trend suggests a positive shift towards a safer and more efficient mode of transportation.
 -   As fatalities and crashes continue to decrease, air travel becomes an increasingly secure and rapid means of global transportation.
@@ -650,20 +629,19 @@ flights_radial_bar_injuries
 -   The collective progress in safety measures signifies a broader positive trajectory for the aviation sector, fostering confidence in air travel for passengers worldwide.
 :::
 
-## Problems Faced 
-
+## Problems Faced {.smaller}
 ::: nonincremental
 -   Immense amount of Data to work from.
 -   The obtained dataset was partially skewed which made it harder to normalise certain metrics for visualisation.
 -   Performing Data Wrangling on the dataset was difficult as it was of size `89,134 rows and 20 columns`.
--  But, because the Dataset was vast, we could also create multiple visualisations which we could present for this project 
+-  But, because the Dataset was vast, we could also create multiple visualisations which we could present for this project.
 :::
 
-## Future Scope
+## Future Scope {.smaller}
 ::: nonincremental
 -   Exploring other countries and finding a credible source for the data.
 -   Exploring Data and correlating with other credible sources to find the exact reason behind the crash.
 -   The developed Shiny App can be used as an alternative to the current dashboard which visualizes flight crashes on the `NTSB.gov` website.
--   Diving in Deeper into flight crashes and visualising flight paths and plotting real-time status of flights. 
+-   Diving in Deeper into flight crashes and visualising flight paths and plotting real-time status of flights.
 :::
 
