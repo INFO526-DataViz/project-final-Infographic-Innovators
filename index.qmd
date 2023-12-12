@@ -840,6 +840,8 @@ The radar plot serves as an effective means to showcase the multivariate nature 
 
 We can conclude stating that a lot of crashes take place every year but the number of crashes has been decreasing over the past few decades. The number of fatalities has also gone down due to the stringent rules in the Aviation industry. With the fatalities and crashes decreasing over time and more we are moving towards a safer and faster mode of transport which can get us around the globe in a span of a couple hours.
 
+Overall trends indicate a decrease in total fatalities from crashes over the 1980-2020 period, with a notable spike in 2001 attributed to the events of 9/11. Specific regions like Alaska, Arizona, Texas, and Florida exhibited higher crash frequencies. Pilot error emerged as the predominant cause, followed by mechanical failures. Severity of crashes varied based on different causes, as depicted in the stacked area chart. Furthermore, distinct weather patterns correlated with increased crash occurrences in specific months, as revealed by the radar plot.
+
 ## References
 
 gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
