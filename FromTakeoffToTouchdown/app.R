@@ -328,6 +328,9 @@ ui <- navbarPage(
                  selected = "Flight Crashes vs US states"
                ),
                br(),
+               span(
+                 "This study delves into a comprehensive analysis of aircraft crashes in the United States spanning from 1980 to 2022. It focuses on exploring crash locations, timings, consequences, and the influencing factors behind these incidents."
+               ),
                br(),
                hr(),
                span(
