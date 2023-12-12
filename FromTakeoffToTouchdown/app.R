@@ -27,7 +27,6 @@ pacman::p_load(
   shinyjs
 )
 
-pacman::p_load_gh("BlakeRMills/MoMAColors")
 
 # Load datasets for each plot
 flights_ntsb_maps <-
@@ -43,11 +42,53 @@ flights_ntsb_waffle <-
 flights_ntsb_density <-
   read_csv(here("data/shinyapp_data", "flights_ntsb_density.csv"))
 
+
 # Function to generate plots
 generate_plots <- function(plot_type) {
   # Replace this with your actual plot code based on the selected type
   if (plot_type == "Time Series Analysis") {
-    return(NULL)
+    flight_plot <- plot_ly(flights_ntsb_timeseries, x = ~event_year) %>%
+      add_trace(
+        type = "scatter",
+        mode = "lines",
+        name = "Fatalities",
+        x = ~event_year,
+        y = ~total_fatalities
+      ) %>%
+      add_trace(
+        type = "scatter",
+        mode = "lines",
+        name = "Serious Injuries",
+        x = ~event_year,
+        y = ~total_serious_injuries
+      ) %>% 
+      add_trace(
+        type = "scatter",
+        mode = "lines",
+        name = "Minor Injuries",
+        x = ~event_year,
+        y = ~total_minor_injuries
+      ) %>%
+      layout(
+        title = "Aviation Accidents Over Time",
+        yaxis = list(title = "Number of People"),
+        xaxis = list(
+          title = "Event Year",
+          tickvals = seq(1980, max(flights_ntsb_timeseries$event_year), by = 5),
+          ticktext = seq(1980, max(flights_ntsb_timeseries$event_year), by = 5)
+        ),
+        shapes = list(
+          list(
+            type = "line",
+            x0 = 2001,
+            x1 = 2001,
+            y0 = 0,
+            y1 = 1,
+            yref = "paper",
+            line = list(color = "red", width = 2)
+          )
+        )
+      )
   } else if (plot_type == "Flight Crashes vs Flight Phases") {
     flights_ntsb_radial <- flights_ntsb_radial |>
       arrange(desc(total_crashes))
@@ -227,7 +268,7 @@ generate_plots <- function(plot_type) {
     flight_plot
     
   } else if (plot_type == "Distribution of cause - Pilot's failure"){
-    p <-ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pilot's failure")) +
+    p <-ggplot(subset(flights_ntsb_density, flights_ntsb_density$cause_summary=="pilot's failure")) +
       geom_density(aes(x=year(event_date), fill=highest_injury_level), alpha=0.8)+
       scale_fill_manual(values = c("#bcd67c","#82dfe2","#d398ff"))+
       labs(title="Distribution of crashes caused by pilot's negligence over time",
