@@ -167,7 +167,7 @@ flights_ntsb <- flights_ntsb |>
 ::: nonincremental
 Conduct an in-depth analysis of aircraft crashes within the United States to uncover temporal trends and geographical patterns.
 
-Background:
+**Background**
 
 -   Dataset procured from the National Transportation Safety Board (NSTB).
 
@@ -195,8 +195,7 @@ Background:
 # Navigating Through the Timeline of Flight Incidents
 ## Time-Series Analysis {.smaller}
 ::: nonincremental
-Trends in aircraft crashes, focusing on fatalities and injury types.
-Highlights notable historical crashes and examines fatalities `fatal_injury_count`, serious injuries `serious_injury_count`, and minor injuries `minor_injury_count`.
+
 ```{r timeseries_data, include=FALSE}
 # Creating a dataset for the timeSeries plot
 flights_ntsb_timeseries <- flights_ntsb |>
@@ -236,10 +235,9 @@ ggplotly(p)
 
 ![](images/animated_fcdata.gif)
 
-## HeatMap {.smaller}
+## Choropleth Map {.smaller}
 ::: nonincremental
--   Animated visualization of crashes across the U.S. over time.
--   Utilizes latitude and longitude coordinates to illustrate regional frequency and patterns.
+
     ```{r mapl_plot_data, include=FALSE}
     # Filtering out NA and invalid Latitude and Longitude values
     flights_ntsb_maps <- flights_ntsb |>
@@ -352,8 +350,6 @@ ggplotly(p)
 # Analysis of Causes of Crashes
 ## Waffle Chart {.smaller}
 ::: nonincremental
--   Overview of common causes, utilizing the probable_cause column.
--   Employs text summarization to categorize causes.
 ```{r datawragling,include=FALSE}
 count <- probable_cause_flights |>
   group_by(cause_summary)|>
@@ -402,11 +398,12 @@ flight_plot
 ::: nonincremental
 ```{r distribution}
 ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pilot's failure")) +
-  geom_density(aes(x=year(event_date), fill=highest_injury_level), alpha=0.8)+
-  scale_fill_manual(values = c("#bcd67c","#82dfe2","#d398ff"))+
+  geom_density(aes(x=year(event_date), fill=fct_reorder(highest_injury_level,levels=c("Fatal","Serious","Minor")), alpha=0.8))+
+  scale_fill_manual(values = c("#bcd67c","#d398ff", "#82dfe2"))+
   labs(title="Distribution of crashes caused by pilot's negligence over time",
        x="Year",
-       y="Density")
+       y="Density",
+       fill="Highest Injury Level")
   
 ```
 :::
@@ -500,8 +497,7 @@ radar_chart
 Here, VMC stands for `Visual Meteorological Conditions` and IMC stands for `Instrument Meteorological Conditions`.
 :::
 
-## Radial Bar-Plot
-### Radial Bar Plot - Total Crashes
+## Radial Bar - Total Crashes
 ::: nonincremental
 ```{r radial_plot, include=FALSE}
 # Creating a filtered dataset for Radial Plot
@@ -639,25 +635,16 @@ flights_radial_bar_injuries
 ## Conclusion {.smaller}
 ::: incremental
 -   Annual crash occurrences remain notable, but a declining trend is observed over the decades from 1980 to 2022.
--   The consistent decrease in the number of crashes indicates an improvement in aviation safety standards and practices.
--   Strict regulations within the aviation industry have contributed to the reduction in both crash frequency and fatalities.
 -   The decline in fatalities over time underscores the effectiveness of safety measures and protocols implemented in the aviation sector.
-:::
 
-## Conclusion {.smaller}
-::: incremental
--   The overall trend suggests a positive shift towards a safer and more efficient mode of transportation.
--   As fatalities and crashes continue to decrease, air travel becomes an increasingly secure and rapid means of global transportation.
--   The ongoing improvement in aviation safety reflects the industry's commitment to providing a reliable and secure travel experience.
--   The collective progress in safety measures signifies a broader positive trajectory for the aviation sector, fostering confidence in air travel for passengers worldwide.
 :::
 
 ## Problems Faced {.smaller}
 ::: nonincremental
--   Immense amount of Data to work from.
--   The obtained dataset was partially skewed which made it harder to normalise certain metrics for visualisation.
+- Lot of information from the to process and visualize.
+- The obtained dataset was partially skewed which made it harder to normalize certain metrics for visualization.
 -   Performing Data Wrangling on the dataset was difficult as it was of size `89,134 rows and 20 columns`.
--  But, because the Dataset was vast, we could also create multiple visualisations which we could present for this project.
+-  But, because the dataset was vast, we could also create multiple visualizations which we could present for this project.
 :::
 
 ## Future Scope {.smaller}
@@ -665,6 +652,6 @@ flights_radial_bar_injuries
 -   Exploring other countries and finding a credible source for the data.
 -   Exploring Data and correlating with other credible sources to find the exact reason behind the crash.
 -   The developed Shiny App can be used as an alternative to the current dashboard which visualizes flight crashes on the `NTSB.gov` website.
--   Diving in Deeper into flight crashes and visualising flight paths and plotting real-time status of flights.
+-   Diving in Deeper into flight crashes and visualizing flight paths and plotting real-time status of flights.
 :::
 
