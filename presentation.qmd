@@ -244,7 +244,7 @@ ggplotly(p)
 ## HeatMap
 
 ::: nonincremental
--    Animated visualization of crashes across the U.S. over time.
+-   Animated visualization of crashes across the U.S. over time.
 
 -   Utilizes latitude and longitude coordinates to illustrate regional frequency and patterns.
 
@@ -364,7 +364,7 @@ ggplotly(p)
 ::: nonincremental
 -   Overview of common causes, utilizing the probable_cause column.
 
--    Employs text summarization to categorize causes.
+-   Employs text summarization to categorize causes.
 
 ```{r datawragling,include=FALSE}
 count <- probable_cause_flights |>
@@ -650,7 +650,20 @@ flights_radial_bar_injuries
 -   The collective progress in safety measures signifies a broader positive trajectory for the aviation sector, fostering confidence in air travel for passengers worldwide.
 :::
 
-## Problems Faced and Future Scope
+## Problems Faced 
 
 ::: nonincremental
+-   Immense amount of Data to work from.
+-   The obtained dataset was partially skewed which made it harder to normalise certain metrics for visualisation.
+-   Performing Data Wrangling on the dataset was difficult as it was of size `89,134 rows and 20 columns`.
+-  But, because the Dataset was vast, we could also create multiple visualisations which we could present for this project 
 :::
+
+## Future Scope
+::: nonincremental
+-   Exploring other countries and finding a credible source for the data.
+-   Exploring Data and correlating with other credible sources to find the exact reason behind the crash.
+-   The developed Shiny App can be used as an alternative to the current dashboard which visualizes flight crashes on the `NTSB.gov` website.
+-   Diving in Deeper into flight crashes and visualising flight paths and plotting real-time status of flights. 
+:::
+
