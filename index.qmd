@@ -179,9 +179,7 @@ flights_ntsb <- flights_ntsb |>
   )
 ```
 
-Analy
-
-### Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
+### Question 1: Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
 
 #### Timeseries on number of crashes
 
@@ -522,7 +520,7 @@ hex_bin_maps_animation
 
 Discussion:
 
-### Analysis of Causes of Crashes
+### Questions 2: Analysis of Causes of Crashes
 
 #### Waffle chart
 
