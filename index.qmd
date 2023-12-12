@@ -36,7 +36,7 @@ We wanted to provide an in-depth analysis of aircraft crashes in the United Stat
 
     Methodology: Using the dataset, we created a bar plot to show the common cause of aircraft crashes, a stacked area chart to show the causes and severity of crashes, and a radar plot to visualize crashes by month and weather conditions.
 
-    Findings:
+    Findings: Pilot error emerged as the leading cause of crashes, followed by mechanical failures like loss of engine power. The severity of crashes varied with different causes, as shown in the stacked area chart. Weather-related crashes showed distinct patterns in the radar plot, correlating specific weather conditions with increased crash occurrences in certain months.
 
     ## Analysis:
 
@@ -588,6 +588,8 @@ waffle_plot(number = count_waffle$number,
 ```
 
 Purpose: The waffle chart shows different causes of aircraft crashes. Pilot's failure was the highest scoring cause of crashes, followed by loss of engine power.
+
+Findings: - The waffle chart effectively showcased the distribution of crash causes, emphasizing the prominence of human error in aviation incidents. The data highlighted the need for enhanced safety measures and training to address the identified causes of crashes.
 
 #### Density Plot
 
