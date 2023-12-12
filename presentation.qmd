@@ -83,6 +83,48 @@ flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
 probable_cause_flights <- read_csv(here("data","new_flights_PC.csv"))
 ```
 
+```{r remove_columns, include=FALSE}
+# selecting columns which are required for our analysis
+flights_ntsb <- flights_ntsb |>
+  select(
+    EventType, EventDate,
+    City, State,
+    ReportType, HighestInjuryLevel,
+    FatalInjuryCount, SeriousInjuryCount,
+    MinorInjuryCount, ProbableCause,
+    Latitude, Longitude,
+    AirCraftCategory, NumberOfEngines, 
+    AirCraftDamage, WeatherCondition
+  ) |>
+  # cleaning column names using janitor package
+  clean_names()
+probable_cause_flights["CauseSummary"]<-probable_cause_flights["Probable_Cause"]
+#removing null values
+probable_cause_flights <- subset(probable_cause_flights, probable_cause_flights$HighestInjuryLevel!="")
+probable_cause_flights <- probable_cause_flights |>
+  select(
+    EventType,
+    EventDate,
+    City,
+    State,
+    ReportType,
+    HighestInjuryLevel,
+    FatalInjuryCount,
+    SeriousInjuryCount,
+    MinorInjuryCount,
+    ProbableCause,
+    Latitude,
+    Longitude,
+    AirCraftCategory,
+    NumberOfEngines,
+    AirCraftDamage,
+    WeatherCondition,
+    CauseSummary
+  ) |>
+  # cleaning column names using janitor package
+  clean_names()
+```
+
 ```{r data_wrangle, include=FALSE}
 # Modifying the data using mutate()
 flights_ntsb <- flights_ntsb |>
@@ -267,56 +309,61 @@ ggplotly(p)
         )
     }
     ```
+
+    ```{r images_yearwise, include=FALSE}
+    # Creating a list of Years from dataset
+    years_list <- flights_ntsb_maps |>
+      arrange(event_year) |>
+      distinct(event_year) |>
+      pull()
+
+    for (i in seq_along(years_list)) {
+      my_maps <-
+        paste0("images/map_plot/flight_crash_us_states",
+               years_list[i],
+               ".jpg")
+      getHexBinMap(input_year = years_list[i])
+      ggsave(
+        my_maps,
+        height = 9,
+        width  = 15,
+        unit   = "in",
+        dpi    = 200
+      )
+    }
+
+    ```
+
+    ```{r animation_hexbin}
+    # making gif using gganimate package
+    hex_bin_maps <- list.files(path = "images/map_plot/", full.names = TRUE)
+    hex_bin_maps_list <- lapply(hex_bin_maps, image_read)
+
+    # Joining all the saved images
+    joined_plots <- image_join(hex_bin_maps_list)
+
+    # Animating the images using image_animate() and restting the resolution
+    # Setting fps = 1
+    hex_bin_maps_animation <- image_animate(image_scale(joined_plots, "2000x1000"), fps = 2)
+
+    # Saving gif to the repository
+    image_write(image = hex_bin_maps_animation,
+                path = "images/flight_crash_us_states.gif")
+
+    hex_bin_maps_animation
+
+    ```
 :::
-
-```{r images_yearwise, include=FALSE}
-# Creating a list of Years from dataset
-years_list <- flights_ntsb_maps |>
-  arrange(event_year) |>
-  distinct(event_year) |>
-  pull()
-
-for (i in seq_along(years_list)) {
-  my_maps <-
-    paste0("images/map_plot/flight_crash_us_states",
-           years_list[i],
-           ".jpg")
-  getHexBinMap(input_year = years_list[i])
-  ggsave(
-    my_maps,
-    height = 9,
-    width  = 15,
-    unit   = "in",
-    dpi    = 200
-  )
-}
-
-```
-
-```{r animation_hexbin}
-# making gif using gganimate package
-hex_bin_maps <- list.files(path = "images/map_plot/", full.names = TRUE)
-hex_bin_maps_list <- lapply(hex_bin_maps, image_read)
-
-# Joining all the saved images
-joined_plots <- image_join(hex_bin_maps_list)
-
-# Animating the images using image_animate() and restting the resolution
-# Setting fps = 1
-hex_bin_maps_animation <- image_animate(image_scale(joined_plots, "2000x1000"), fps = 2)
-
-# Saving gif to the repository
-image_write(image = hex_bin_maps_animation,
-            path = "images/flight_crash_us_states.gif")
-
-hex_bin_maps_animation
-```
 
 # Analysis of Causes of Crashes
 
 ## Waffle Chart
 
 ::: nonincremental
+-   Overview of common causes, utilizing the probable_cause column.
+
+-    Employs text summarization to categorize causes.
+
 ```{r datawragling,include=FALSE}
 count <- probable_cause_flights |>
   group_by(cause_summary)|>
