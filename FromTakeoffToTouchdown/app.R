@@ -221,9 +221,8 @@ generate_plots <- function(plot_type) {
       locations = ~ state_abb,
       frame = ~ event_year,
       color = ~ total_crashes,
-      colors = "Purples",
       colorbar = list(title = 'Total Crashes', len = 0.7),
-      colorscale = met.brewer(name = "Tam"),
+      colorscale = met.brewer(name = "Hokusai2"),
       zmin = 0,
       zmax = 400
     )
@@ -270,8 +269,8 @@ generate_plots <- function(plot_type) {
   } else if (plot_type == "Distribution of cause - Pilot's failure"){
     p <- ggplot(
       subset(
-        probable_cause_flights,
-        probable_cause_flights$cause_summary == "pilot's failure"
+        flights_ntsb_density,
+        flights_ntsb_density$cause_summary == "pilot's failure"
       )
     ) +
       geom_density(aes(

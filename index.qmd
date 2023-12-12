@@ -206,7 +206,10 @@ p <-
             size = 5) +
   labs(title = "Yearly Aircraft Crash Fatalities",
        x = "Year",
-       y = "Total Fatalities")
+       y = "Total Fatalities") +
+  theme(plot.title = element_text(size = 20),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(hjust = 0, size = 12))
 
 ggplotly(p)
 ```
@@ -224,12 +227,9 @@ p <- ggplot(flights_ntsb_timeseries,
   geom_image(aes(image = Image),
              size = 0.05) +
   labs(title = "Yearly Aircraft Crash Fatalities",
-       x = NULL,
+       x = "Year",
        y = "Total Fatalities") +
-  theme_minimal()  +
-  theme(plot.title = element_text(size = 20),
-        axis.text = element_text(size = 12),
-        axis.title = element_text(hjust = 0, size = 12))
+  theme_minimal()
 
 # Animating the plot
 animated_plot <- p +
@@ -577,7 +577,7 @@ flights_radial_bar_crashes <-
          aes(x = fct_rev(flight_phase), y = total_crashes, 
              fill = flight_phase)) +
   geom_bar(stat = "identity", width = 0.8) +
-  geom_text(hjust = 1.2, size = 5, 
+  geom_text(hjust = 1.2, size = 4.8, 
             aes(y = 0, label = comma(total_crashes))) +
   coord_polar(theta = "y") +
   labs(
@@ -636,7 +636,7 @@ flights_radial_bar_injuries <-
          aes(x = fct_rev(flight_phase), y = total_injuries, 
              fill = flight_phase)) +
   geom_bar(stat = "identity", width = 0.8) +
-  geom_text(hjust = 1.2, size = 5, 
+  geom_text(hjust = 1.2, size = 4.8, 
             aes(y = 0, label = comma(total_injuries))) +
   coord_polar(theta = "y") +
   labs(
@@ -730,7 +730,7 @@ p<- ggplot(plot_data, aes(x, y, color = cause, group=cause), show.legend=F) +
            colour = 'Cause')
 flight_plot <- ggplotly(p, tooltip = c("color")) |>
   layout(xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE, title=""),
-         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE, title=""))
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE, title=""), showlegend= FALSE)
 
 flight_plot
 ```
@@ -765,8 +765,8 @@ ggplot(
     panel.grid.major = element_blank(),
     plot.title = element_text(size = 20, face = "bold"),
     plot.subtitle = element_text(size = 15),
-    axis.text = element_text(size = 14),
-    axis.title = element_text(hjust = 0, size = 14)
+    axis.text = element_text(size = 12),
+    axis.title = element_text(hjust = 0, size = 12)
     )
   
 ```
