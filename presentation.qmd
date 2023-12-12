@@ -1,7 +1,11 @@
 ---
-title: "Project title"
+title: "From Takeoff to Touchdown: Dissecting Data on Air Disasters"
 subtitle: "INFO 526 - Fall 2023 - Project Final"
-author: "Author names"
+author: 
+  - name: "Infographic Innovators - Antonio, Bharath, Eshaan, Thanoosha"
+    affiliations:
+      - name: "School of Information, University of Arizona"
+description: "A shiny app integration with aircraft crash analysis"
 title-slide-attributes:
   data-background-image: images/watercolour_sys02_img34_teacup-ocean.jpg
   data-background-size: stretch
@@ -10,7 +14,7 @@ title-slide-attributes:
 format:
   revealjs:
     theme:  ['data/customtheming.scss']
-  
+code-fold: true
 editor: visual
 execute:
   echo: false
@@ -19,147 +23,119 @@ execute:
 ```{r}
 #| label: load-packages
 #| include: false
+if (!require(pacman))
+  install.packages(pacman)
 
-# Load packages here
-pacman::p_load(tidymodels,
-               tidyverse)
 
+pacman::p_load(tidyverse,
+               dplyr,
+               janitor,
+               dlookr,
+               here,
+               ggpubr,
+               maps,
+               plotly,
+               gganimate,
+               MetBrewer,
+               ggsci,
+               scales,
+               fmsb,
+               gifski,
+               ggimage,
+               ggtext,
+               emojifont,
+               magick,
+               lubridate,
+               patchwork,
+               viridis,
+               usmap,
+               sf,
+               sp,
+               animation)
+
+pacman::p_load_gh("BlakeRMills/MoMAColors")
 ```
 
 ```{r}
 #| label: setup
 #| include: false
+# setting theme for ggplot2
+ggplot2::theme_set(ggplot2::theme_minimal(base_size = 14, base_family = "sans"))
 
-# Plot theme
-ggplot2::theme_set(ggplot2::theme_minimal(base_size = 11))
+# setting width of code output
+options(width = 65)
 
-# For better figure resolution
+# setting figure parameters for knitr
 knitr::opts_chunk$set(
-  fig.retina = 3, 
-  dpi = 300, 
-  fig.width = 6, 
-  fig.asp = 0.618 
-  )
+  fig.width = 8,        # 8" width
+  fig.asp = 0.618,      # the golden ratio
+  fig.retina = 1,       # dpi multiplier for displaying HTML output on retina
+  fig.align = "center", # center align figures
+  dpi = 200,            # higher dpi, sharper image
+  message = FALSE
+)
 ```
 
 ```{r}
-#| label: load-data
+#| label: dataset
 #| include: false
-# Load data here
-data(mtcars)
-mtcars$speed <- mtcars$hp / mtcars$wt
-
-data("penguins")
+flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
+probable_cause_flights <- read_csv(here("data","new_flights_PC.csv"))
 ```
 
-# Using Quarto for presentations
+## Objective
+::: nonincremental
 
-## Quarto
-
--   The presentation is created using the Quarto CLI
-
--   `##` sets the start of a new slide
-
-## Layouts
-
-You can use plain text
-
-::: columns
-::: {.column width="40%"}
--   or bullet points[^1]
 :::
 
-::: {.column width="60%"}
-or in two columns
-:::
-:::
+## Questions Proposed
+::: incremental
 
-[^1]: And add footnotes
-
--   like
-
--   this
-
-## Code
-
-```{r, echo=FALSE}
-model <- lm(mpg ~ speed, data = mtcars) 
-
-model |> tidy()
-
-model |> glance()
-
-```
-
-## Plots
-
-```{r}
-penguins |>
-  mutate(species = ifelse(species == "Adelie", "Adelie", "Other")) |>
-  ggplot(aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
-  geom_point()
-```
-
-## Plot and text
-
-::: columns
-::: {.column width="50%"}
--   Some text
-
--   goes here
 :::
 
-::: {.column width="50%"}
-```{r, warning=FALSE, fig.width=5.5}
-penguins |>
-  ggplot(aes(x = bill_length_mm, y = species, color = species)) +
-  geom_boxplot(linewidth = 0.75,
-               outlier.size = 2.5) +
-  theme_minimal(base_size = 15) +
-  theme(legend.key.size = unit(0.8, "cm"))
-```
-:::
+# Navigating Through the Timeline of Flight Incidents
+## Time-Series Analysis
+::: nonincremental
+
 :::
 
-# A new section...
+## HeatMap
+::: nonincremental
 
-## Tables
+:::
 
-If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
+# Analysis of Causes of Crashes
 
-```{r}
-penguins |> 
-  head() |>
-  kableExtra::kable() |>
-  kableExtra::kable_styling()
-```
+## Waffle Chart
+::: nonincremental
 
-## Images
+:::
 
-![Image credit: Danielle Navarro, Percolate.](images/watercolour_sys02_img34_teacup-ocean.png){fig-align="center" width="500"}
+## Density Plot
+::: nonincremental
 
-## Math Expressions {.smaller}
+:::
 
-You can write LaTeX math expressions inside a pair of dollar signs, e.g. \$\\alpha+\\beta\$ renders $\alpha + \beta$. You can use the display style with double dollar signs:
+# Assessing the Influence of Weather Conditions on Crashes
 
-```         
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
-```
+## Radar Plot
+::: nonincremental
 
-$$
-\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i
-$$
+:::
 
-Limitations:
+## Radial Bar-Plot
+::: nonincremental
 
-1.  The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
+:::
 
-2.  There should not be spaces after the opening `$` or before the closing `$`.
+## Conclusion 
+::: incremental
 
-# Wrap up
+:::
 
-## Feeling adventurous?
+## Problems Faced and Future Scope
+::: nonincremental
 
--   You are welcomed to use the default styling of the slides. In fact, that's what I expect majority of you will do. You will differentiate yourself with the content of your presentation.
+:::
 
--   But some of you might want to play around with slide styling. Some solutions for this can be found at https://quarto.org/docs/presentations/revealjs.
+
