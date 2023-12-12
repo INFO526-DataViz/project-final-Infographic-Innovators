@@ -113,24 +113,257 @@ probable_cause_flights <- read_csv(here("data","new_flights_PC.csv"))
 
 ## Density Plot
 ::: nonincremental
-
+```{r distribution}
+ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pilot's failure")) +
+  geom_density(aes(x=year(event_date), fill=highest_injury_level), alpha=0.8)+
+  scale_fill_manual(values = c("#bcd67c","#82dfe2","#d398ff"))+
+  labs(title="Distribution of crashes caused by pilot's negligence over time",
+       x="Year",
+       y="Density")
+  
+```
 :::
 
 # Assessing the Influence of Weather Conditions on Crashes
 
 ## Radar Plot
 ::: nonincremental
+```{r radarchart_data, include=FALSE}
+# Assigning different weather conditions to variables
+# IFR and IMC are same conditions so we are combining them
+# VFR and VMC are same conditions so we are combining them
+flights_ntsb_radar <- flights_ntsb |>
+  mutate(
+    weather_condition = case_when(
+      weather_condition == "IFR" ~ "IMC",
+      weather_condition == "VFR" ~ "VMC",
+      weather_condition == "Unknown" ~ "UNK",
+      is.na(weather_condition) ~ "UNK",
+      TRUE ~ weather_condition
+    )
+  ) |>
+  # getting total crashes and total injuries
+  group_by(event_month, weather_condition) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  arrange(event_month)
+```
+
+```{r radar_chart, include=FALSE}
+# Filtering out weather condition 'IMC'
+radar_trace_r1 <- flights_ntsb_radar |>
+  filter(weather_condition %in% c("IMC")) |>
+  pull(total_crashes)
+
+radar_trace_r1 <-
+  c(
+    radar_trace_r1,
+    flights_ntsb_radar |> 
+      filter(weather_condition == "IMC" & event_month == 1) |>
+      pull(total_crashes)
+  )
+
+# Filtering out weather condition 'VMC'
+radar_trace_r2 <- flights_ntsb_radar |>
+  filter(weather_condition %in% c("VMC")) |>
+  pull(total_crashes)
+
+radar_trace_r2 <-
+  c(
+    radar_trace_r2,
+    flights_ntsb_radar |> 
+      filter(weather_condition == "VMC" & event_month == 1) |> 
+      pull(total_crashes)
+  )
+
+radar_theta <- c("Jan" , "Feb" , "Mar" , "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec", "Jan")
+```
+
+```{r radar_chart_plotly}
+# Plotting an Interactive Radar Plot using Plotly
+radar_chart <- plot_ly(type = 'scatterpolar',
+               fill = 'toself',
+               mode = 'lines+markers')
+
+# first plot tracing of VMC data
+radar_chart <- radar_chart |>
+  add_trace(
+    r = radar_trace_r2,
+    theta = radar_theta,
+    name = 'VMC'
+  )
+# second plot tracing of IMC data
+radar_chart <- radar_chart |>
+  add_trace(
+    r = radar_trace_r1,
+    theta = radar_theta,
+    name = 'IMC'
+  )
+# plot layout configuration
+radar_chart <- radar_chart |>
+  layout(polar = list(radialaxis = list(
+    visible = T,
+    range = c(0, 10500)
+  )))
+
+radar_chart
+```
+Here, VMC stands for `Visual Meteorological Conditions` and IMC stands for `Instrument Meteorological Conditions`.
 
 :::
 
 ## Radial Bar-Plot
 ::: nonincremental
+Radial Bar Plot - Total Crashes
+```{r radial_plot, include=FALSE}
+# Creating a filtered dataset for Radial Plot
+flights_ntsb_radial <- flights_ntsb |>
+  # getting total crashes and total injuries
+  group_by(flight_phase) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  drop_na() |>
+  arrange(desc(total_crashes))
 
+# getting top 5 flight phases where flight crashes occured
+flights_ntsb_radial <- flights_ntsb_radial |>
+  slice(1:5) |>
+  bind_rows(
+    flights_ntsb_radial |>
+      slice(-(1:5)) |>
+      summarize(
+        flight_phase = "Other",
+        total_crashes = sum(total_crashes),
+        total_injuries = sum(total_injuries)
+      )
+  ) |>
+  mutate(flight_phase = fct_inorder(flight_phase))
+
+flights_ntsb_radial
+```
+Radial Bar Plot - Total Crashes
+```{r radial_plot_crashes}
+#| code-fold: true
+#| code-summary: "Radial Bar Plot - Total Crashes"
+
+# Plotting a Radial Barplot to show the Total Count of Crashes and phase of flight 
+flights_radial_bar_crashes <-
+  ggplot(flights_ntsb_radial,
+         aes(x = fct_rev(flight_phase), y = total_crashes, 
+             fill = flight_phase)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_text(hjust = 1.2, size = 4.2, 
+            aes(y = 0, label = comma(total_crashes))) +
+  coord_polar(theta = "y") +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "Phase of Flight",
+    title = "A Radial View of Total Crashes",
+    subtitle = "as per the phase of flight",
+    caption = ""
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 27000, by = 5000),
+    limits = c(0, 27000)
+  ) +
+  scale_x_discrete(expand = c(0.35, 0)) + 
+  scale_fill_frontiers() +
+  theme(
+    legend.position = "bottom",
+    axis.text = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank()
+    ) +
+  guides(
+      fill = guide_legend(
+        nrow = 1,
+        direction = "horizontal",
+        title.position = "top",
+        title.hjust = 0.5,
+        label.position = "bottom",
+        label.hjust = 1,
+        label.vjust = 1,
+        label.theme = element_text(lineheight = 0.25, size = 14),
+        keywidth = 1.5,
+        keyheight = 0.5
+      )
+    )
+flights_radial_bar_crashes
+```
+Radial Bar Plot - Total Injuries
+```{r radial_plot_injuries}
+#| code-fold: true
+#| code-summary: "Radial Bar Plot - Total Injuries"
+
+# Plotting a Radial Barplot to show the Total Count of Injuries and phase of flight 
+flights_radial_bar_injuries <-
+  ggplot(flights_ntsb_radial,
+         aes(x = fct_rev(flight_phase), y = total_injuries, 
+             fill = flight_phase)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_text(hjust = 1.2, size = 4.2, 
+            aes(y = 0, label = comma(total_injuries))) +
+  coord_polar(theta = "y") +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "Phase of Flight",
+    title = "A Radial View of Total Injuries",
+    subtitle = "as per the phase of flight",
+    caption = ""
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 13200, by = 1000),
+    limits = c(0, 13200)
+  ) +
+  scale_x_discrete(expand = c(0.35, 0)) + 
+  scale_fill_manual(
+    values = moma.colors("VanGogh")
+  ) +
+  theme(
+    legend.position = "bottom",
+    axis.text = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank()
+    ) +
+  guides(
+      fill = guide_legend(
+        nrow = 1,
+        direction = "horizontal",
+        title.position = "top",
+        title.hjust = 0.5,
+        label.position = "bottom",
+        label.hjust = 1,
+        label.vjust = 1,
+        label.theme = element_text(lineheight = 0.25, size = 14),
+        keywidth = 1.5,
+        keyheight = 0.5
+      )
+    ) 
+
+flights_radial_bar_injuries
+```
 :::
 
 ## Conclusion 
 ::: incremental
+-   Annual crash occurrences remain notable, but a declining trend is observed over the decades from 1980 to 2022.
+-   The consistent decrease in the number of crashes indicates an improvement in aviation safety standards and practices.
+-   Strict regulations within the aviation industry have contributed to the reduction in both crash frequency and fatalities.
+-   The decline in fatalities over time underscores the effectiveness of safety measures and protocols implemented in the aviation sector.
+:::
 
+## Conclusion 
+::: incremental
+-   The overall trend suggests a positive shift towards a safer and more efficient mode of transportation.
+-   As fatalities and crashes continue to decrease, air travel becomes an increasingly secure and rapid means of global transportation.
+-   The ongoing improvement in aviation safety reflects the industry's commitment to providing a reliable and secure travel experience.
+-   The collective progress in safety measures signifies a broader positive trajectory for the aviation sector, fostering confidence in air travel for passengers worldwide.
 :::
 
 ## Problems Faced and Future Scope
