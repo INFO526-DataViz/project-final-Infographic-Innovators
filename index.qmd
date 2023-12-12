@@ -575,9 +575,9 @@ ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pil
   
 ```
 
-Purpose:
+Purpose: We plotted the density plot using ggplot's `geom_density` function is to visually analyze the distribution of flight crashes over the years based on their probable causes. By utilizing the `probable_cause_flights` dataset and focusing on the `cause_summary` column, this visualization aims to provide insights into the changing patterns and trends of aviation incidents. The x-axis represents the years, offering a chronological perspective, while the y-axis portrays the density of crashes associated with specific causes. Here, we have focused on the attribute `Pilot's Failure` 
 
-Discussion:
+Discussion:  This visual representation allows us to identify clusters of high density, indicating periods or years where certain causes were more prevalent. Additionally, it facilitates the detection of outliers or shifts in patterns, enabling a more nuanced exploration of the dataset. Here, we can see that injuries in particular have reduced overtime with the number of Fatal Injuries reducing significantly over the past few decades.
 
 ### Assessing the Influence of Weather Conditions on Crashes
 
