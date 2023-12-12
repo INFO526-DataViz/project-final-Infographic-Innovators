@@ -695,3 +695,8 @@ Here, VMC stands for `Visual Meteorological Conditions` and IMC stands for `Inst
 -   The developed Shiny App can be used as an alternative to the current dashboard which visualizes flight crashes on the `NTSB.gov` website.
 -   Diving in Deeper into flight crashes and visualizing flight paths and plotting real-time status of flights.
 :::
+
+## Thank you
+::: nonincremental
+![](images/thankyou.png){fig-align="center" width="600" height="450"}
+:::
