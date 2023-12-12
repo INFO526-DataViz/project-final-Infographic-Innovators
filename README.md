@@ -1,6 +1,10 @@
-# From Takeoff to Touchdown: Dissecting Data on Air Disasters
+# From Takeoff to Touchdown 
+
+## Overview
+This repository contains code and data for a project focused on visualizing flight crashes from 1980 to 2022. The project aims to analyze trends, causes, and safety improvements within the aviation industry over the past few decades. 
 
 This project was developed by **Inforgraphic Innovators.** For [INFO 526 - Data Analysis & Visualization](#0) at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.
+
 
 -   Team member 1: Eshaan Mathakari: First-year graduate student in Data Science at University of Arizona., github: @eshaanmathakari
 
@@ -12,20 +16,30 @@ This project was developed by **Inforgraphic Innovators.** For [INFO 526 - Data 
 
 Affiliation: School of Information, University of Arizona
 
-### Project Setup - 12/06/2023
+### Getting Started
+To get started with this project, follow the instructions below.
+
+#### Prerequisites
+Ensure you have the following prerequisites installed:
+- R (version 3.3.0+)
+- RStudio (optional but recommended)
+
+### Project Setup - 12/12/2023
 
 -   We have implemented visualizations related to flight crashes using the NTSB data.
 -   We have implemented:
-    -   A time series analysis plot with animation.
-    -   A radial bar plot distinguishing total crashes and total injuries across different flight phases.
-    -   A radar plot visualizing total crashes across different months.
-    -   A Hex Bin Map plot to visualize at what places in the US most crashes have been recorder.
+    -   A Time Series Analysis plot with animation.
+    -   A Radial Bar Plot distinguishing total crashes and total injuries across different flight phases.
+    -   A Radar Plot Visualizing total crashes across different months.
+    -   A Heat-Map Plot to visualize at what places in the US most crashes have been recorded.
+    -   A Waffle Plot showing the reason behind the crash which levarages an additional `probable cause` dataset.
+    -   A Density Plot which shows the fatality of crashes over the past 4 decades.
 
-### Thing to do
+### Visualizations
+![TimeSeries Analysis on Flight crashes in USA](https://github.com/INFO526-DataViz/project-final-Infographic-Innovators/blob/main/images/animated_fcdata.gif)
 
--   Exploring `probable cause` for the crashes and visualizing it.
--   Refining the generated visualizations.
--   Implementing a shiny app or a dashboard to display all the visualizations we have analyzed.
+![Heatmap of count of crashes per state over past 4 decades](https://github.com/INFO526-DataViz/project-final-Infographic-Innovators/blob/main/images/flight_crash_us_states.gif)
+
 
 #### Disclosure:
 
