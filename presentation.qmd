@@ -18,6 +18,9 @@ code-fold: true
 editor: visual
 execute:
   echo: false
+  warning: false
+  
+logo: images/flight_logo.png
 ---
 
 ```{r}
