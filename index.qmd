@@ -563,7 +563,7 @@ waffle_plot(number = count_waffle$number,
 
 Purpose:
 
-#### density plot
+#### Density Plot
 
 ```{r distribution}
 ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pilot's failure")) +
@@ -581,7 +581,7 @@ Discussion:
 
 ### Assessing the Influence of Weather Conditions on Crashes
 
-#### radar plot
+#### Radar Plot
 
 Purpose:
 
@@ -813,3 +813,7 @@ flights_radial_bar_injuries
 # gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
 # ploty - https://plotly.com/r/animations/
 ```
+
+## Conclusion
+
+## References
