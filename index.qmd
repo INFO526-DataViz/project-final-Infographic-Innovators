@@ -18,27 +18,15 @@ execute:
   echo: false
 ---
 
-# Abstract:
+## Abstract:
 
-We wanted to provide an in-depth analysis of aircraft crashes in the United States from 1980 to 2022, focusing on locations, timings, and consequences, along with exploring causes and weather conditions' influence on these incidents.
+This study delves into a comprehensive analysis of aircraft crashes in the United States spanning from 1980 to 2022. It focuses on exploring crash locations, timings, consequences, and the influencing factors behind these incidents. Leveraging a detailed dataset sourced from the National Transportation Safety Board (NTSB), the research utilizes data visualization techniques and time-series analyses to uncover correlations and trends associated with these aviation mishaps.
 
-1.  Question: What are the aircraft crashes' locations, timings, and consequences?
+## Introduction:
 
-    Objective: To discover if any correlations that contributed to aircraft crashes during a certain time period. As well as looking to see if specific locations have higher numbers of crashes than others.
+The objective of this study is to meticulously examine aircraft crashes' locations, timings, and consequences during the specified timeframe. The research aims to discern correlations, if any, contributing to these incidents and to ascertain whether certain regions are more prone to a higher number of crashes.
 
-    Methodology: Utilization of a detailed dataset from the National Transportation Safety Board, incorporating various data visualization techniques and time-series analyses. We created a heatmap on number of crashes in the different regions, and radial car plot to visualize crashes during certain flight phases.
-
-    Findings: Overall, when looking at the crashes through 1980-2020, the number of total fatalities from crashes have decreased. There was a significant jump in 2001 which we concluded was from the 9/11 attacks. After this, the number of fatalities decreased significantly. The heatmap analysis revealed that Alaska, Arizona, Texas, and Florida had the highest number of crashes. The radial bar plot indicated specific flight phases where crashes were more prevalent.
-
-2.  Question: What contributes to the crashes, and does weather significantly impact the increase in aircraft crashes?
-
-    Objective: To identify and categorize the most frequent causes of crashes and to correlate crash causes with the severity of outcomes.
-
-    Methodology: Using the dataset, we created a bar plot to show the common cause of aircraft crashes, a stacked area chart to show the causes and severity of crashes, and a radar plot to visualize crashes by month and weather conditions.
-
-    Findings: Pilot error emerged as the leading cause of crashes, followed by mechanical failures like loss of engine power. The severity of crashes varied with different causes, as shown in the stacked area chart. Weather-related crashes showed distinct patterns in the radar plot, correlating specific weather conditions with increased crash occurrences in certain months.
-
-    ## Analysis:
+The research methodology involves a thorough analysis of the NTSB dataset, employing various data visualization tools and statistical analyses. Specifically, a heatmap is generated to visualize crash frequencies across different regions, while a radial bar plot illustrates crashes during specific flight phases. Additionally, the study investigates crash causes and their correlation with the severity of outcomes through bar plots and stacked area charts. A radar plot is utilized to explore crash occurrences concerning weather conditions and months.
 
 ```{r load_packages, message=FALSE, include=FALSE}
 # GETTING THE LIBRARIES
@@ -179,11 +167,9 @@ flights_ntsb <- flights_ntsb |>
   )
 ```
 
-### Question 1: Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
+## Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
 
-#### Timeseries analysis of fatalities, and types of injuries.
-
-Total Fatalities Over The Years
+### Timeseries analysis of fatalities, and types of injuries.
 
 ```{r timeseries_data, include=FALSE}
 # Creating a dataset for the timeSeries plot
@@ -221,8 +207,6 @@ p <-
 ggplotly(p)
 ```
 
-Animation of Total Fatalities
-
 ```{r time_series_gif}
 # Creating Animated Plot for Total Faltalities
 Image <-
@@ -257,8 +241,6 @@ animate(
 
 animated_plot
 ```
-
-Timeseries Animations of Serious Injuries & Minor Injuries.
 
 ```{r timeseries_animated, include=FALSE}
 # Labelling the axes and adding title to the plot for Serious Injuries
@@ -350,8 +332,6 @@ p <- ggplot(long_fcdata, aes(x = event_year,
 ggplotly(p)
 ```
 
-Animated Combined Timeseries of Aircraft Crashes
-
 ```{r animated_labels}
 # all 3 plots with label - animated 
 
@@ -419,11 +399,13 @@ animated_fcdata <- animate(
 animated_fcdata
 ```
 
-Findings
+**Approach**
+
+**Findings**
 
 There has been a general decrease in the number of total fatalities from 1980 to 2022. A notable spike in fatalities was observed in 2001, attributed to the 9/11 attacks. Post-2001, a significant decline in fatalities was noted.
 
-#### Heatmap-- on number of crashes in different regions(US map)
+### Choropleth map on number of crashes in different regions(US map)
 
 ```{r mapl_plot_data, include=FALSE}
 # Filtering out NA and invalid Latitude and Longitude values
@@ -530,173 +512,21 @@ image_write(image = hex_bin_maps_animation,
 hex_bin_maps_animation
 ```
 
-Discussion: Looking at the heatmap Alaska, Arizona, Texas, and Florida has the highest number of crashes.
+**Approach**
 
-### Questions 2: Analysis of Causes of Crashes
+**Findings**
 
-#### Waffle chart
+Looking at the choropleth map Alaska, Arizona, Texas, and Florida has the highest number of crashes.
 
-```{r datawragling,include=FALSE}
-count <- probable_cause_flights |>
-  group_by(cause_summary)|>
-  summarize(perc=n())|>
-  mutate(
-    perc= (perc/sum(perc))
-  )
-count_waffle <- count |>
-  mutate(
-    remainder = perc * 100 - floor(perc * 100),
-    floored = floor(perc * 100)
-  ) |>
-  arrange(desc(remainder)) |>
-  mutate(number = ifelse(100 - sum(floored) >= row_number(), floored + 1, floored)) |>
-  arrange(perc)
-```
+### Radial Bar Plot
 
-```{r function-waffle}
-waffle_data <- count_waffle %>%
-      slice(rep(1:n(), times = number)) %>%
-      mutate(fill_value = ifelse(row_number() <= sum(floored), floored, floored + 1))
-    
-plot_data <- expand.grid(x = 0:9,y = 0:9) %>%
-      rowwise() |>
-      mutate(index = 1+sum(x * 10 + y >= cumsum(count_waffle$number)),
-             cause = count_waffle$cause_summary[[index]])
-    
-    # Create a waffle plot
-p<- ggplot(plot_data, aes(x, y, color = cause, group=cause), show.legend=F) +
-      geom_text(label = "✈",
-                family = 'sans',
-                size = 8) +
-  scale_color_manual(values=met.brewer("Redon"))+
-      coord_equal()+
-      labs(title="Waffle chart showing different causes of crashes",
-           colour = 'Cause')
-flight_plot <- ggplotly(p, tooltip = c("color")) |>
-  layout(xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE, title=""),
-         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE, title=""))
+**Approach**
 
-flight_plot
-```
+We plotted the radial bar plot to explore the distribution of flight crashes and associated injuries across different phases of flight. By categorizing flight phases into `Landing, Takeoff, Approach, Maneuvering, Climb, and Other` this visualization aims to uncover insights into the critical moments during a flight where incidents are more likely to occur. The first graph highlights the count of crashes in each phase, while the second graph focuses on the count of injuries, providing a broad perspective on the safety challenges associated with each phase.
 
-Purpose: The waffle chart shows different causes of aircraft crashes. Pilot's failure was the highest scoring cause of crashes, followed by loss of engine power.
+**Findings**
 
-Findings: - The waffle chart effectively showcased the distribution of crash causes, emphasizing the prominence of human error in aviation incidents. The data highlighted the need for enhanced safety measures and training to address the identified causes of crashes.
-
-#### Density Plot
-
-```{r distribution}
-ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pilot's failure")) +
-  geom_density(aes(x=year(event_date), fill=highest_injury_level), alpha=0.8)+
-  scale_fill_manual(values = c("#bcd67c","#82dfe2","#d398ff"))+
-  labs(title="Distribution of crashes caused by pilot's negligence over time",
-       x="Year",
-       y="Density")
-  
-```
-
-Purpose: We plotted the density plot using ggplot's `geom_density` function is to visually analyze the distribution of flight crashes over the years based on their probable causes. By utilizing the `probable_cause_flights` dataset and focusing on the `cause_summary` column, this visualization aims to provide insights into the changing patterns and trends of aviation incidents. The x-axis represents the years, offering a chronological perspective, while the y-axis portrays the density of crashes associated with specific causes. Here, we have focused on the attribute `Pilot's Failure`
-
-Discussion: This visual representation allows us to identify clusters of high density, indicating periods or years where certain causes were more prevalent. Additionally, it facilitates the detection of outliers or shifts in patterns, enabling a more nuanced exploration of the dataset. Here, we can see that injuries in particular have reduced overtime with the number of Fatal Injuries reducing significantly over the past few decades.
-
-### Assessing the Influence of Weather Conditions on Crashes
-
-#### Radar Plot
-
-Purpose: We plot the Radar Plot using Plotly for R to comprehensively assess the influence of weather conditions on flight crashes. Leveraging the `flights_ntsb_radar` dataset which we derived from the original `flights_ntsb` dataset and categorizing flight crashes based on `Visual Meteorological Conditions (VMC)` and `Instrument Meteorological Conditions (IMC)`. This visualization seeks to highlight the varying degrees of impact these conditions have on aviation safety. By layering both datasets on a radar plot, we aim to provide a holistic perspective on how different weather scenarios contribute to flight incidents.
-
-Discussion: The radar plot serves as an effective means to showcase the multivariate nature of weather conditions and their relationship with flight crashes. Each axis on the radar represents a specific parameter related to aviation safety, such as visibility, cloud cover, wind speed, and temperature. The radar plot allows for the simultaneous comparison of these parameters for VMC and IMC, unveiling patterns and discrepancies in their respective contributions to incidents.
-
-```{r radarchart_data, include=FALSE}
-# Assigning different weather conditions to variables
-# IFR and IMC are same conditions so we are combining them
-# VFR and VMC are same conditions so we are combining them
-flights_ntsb_radar <- flights_ntsb |>
-  mutate(
-    weather_condition = case_when(
-      weather_condition == "IFR" ~ "IMC",
-      weather_condition == "VFR" ~ "VMC",
-      weather_condition == "Unknown" ~ "UNK",
-      is.na(weather_condition) ~ "UNK",
-      TRUE ~ weather_condition
-    )
-  ) |>
-  # getting total crashes and total injuries
-  group_by(event_month, weather_condition) |>
-  summarise(
-    total_crashes = n(),
-    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
-  ) |>
-  arrange(event_month)
-```
-
-```{r radar_chart, include=FALSE}
-# Filtering out weather condition 'IMC'
-radar_trace_r1 <- flights_ntsb_radar |>
-  filter(weather_condition %in% c("IMC")) |>
-  pull(total_crashes)
-
-radar_trace_r1 <-
-  c(
-    radar_trace_r1,
-    flights_ntsb_radar |> 
-      filter(weather_condition == "IMC" & event_month == 1) |>
-      pull(total_crashes)
-  )
-
-# Filtering out weather condition 'VMC'
-radar_trace_r2 <- flights_ntsb_radar |>
-  filter(weather_condition %in% c("VMC")) |>
-  pull(total_crashes)
-
-radar_trace_r2 <-
-  c(
-    radar_trace_r2,
-    flights_ntsb_radar |> 
-      filter(weather_condition == "VMC" & event_month == 1) |> 
-      pull(total_crashes)
-  )
-
-radar_theta <- c("Jan" , "Feb" , "Mar" , "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec", "Jan")
-```
-
-```{r radar_chart_plotly}
-# Plotting an Interactive Radar Plot using Plotly
-radar_chart <- plot_ly(type = 'scatterpolar',
-               fill = 'toself',
-               mode = 'lines+markers')
-
-# first plot tracing of VMC data
-radar_chart <- radar_chart |>
-  add_trace(
-    r = radar_trace_r2,
-    theta = radar_theta,
-    name = 'VMC'
-  )
-# second plot tracing of IMC data
-radar_chart <- radar_chart |>
-  add_trace(
-    r = radar_trace_r1,
-    theta = radar_theta,
-    name = 'IMC'
-  )
-# plot layout configuration
-radar_chart <- radar_chart |>
-  layout(polar = list(radialaxis = list(
-    visible = T,
-    range = c(0, 10500)
-  )))
-
-radar_chart
-```
-
-#### Radial Bar Plot
-
-Purpose: We plotted the radial bar plot to explore the distribution of flight crashes and associated injuries across different phases of flight. By categorizing flight phases into `Landing, Takeoff, Approach, Maneuvering, Climb, and Other` this visualization aims to uncover insights into the critical moments during a flight where incidents are more likely to occur. The first graph highlights the count of crashes in each phase, while the second graph focuses on the count of injuries, providing a broad perspective on the safety challenges associated with each phase.
-
-Discussion: The radial bar plot offers an intuitive and visually appealing representation of the distribution of crashes and injuries throughout various phases of flight. In the first graph, the bars radiating from the center depict the count of crashes in each phase, allowing for a quick comparison of their frequencies. This visualization enables the identification of phases that might be particularly prone to incidents, guiding further investigation into the contributing factors.
-
-The second graph, depicting injuries, provides an additional layer of analysis. By comparing the counts of injuries across different flight phases, we can discern whether certain phases are more likely to result in severe consequences. This insight is crucial for understanding the potential risks associated with specific segments of a flight, informing safety measures and protocols.
+The radial bar plot offers an intuitive and visually appealing representation of the distribution of crashes and injuries throughout various phases of flight. In the first graph, the bars radiating from the center depict the count of crashes in each phase, allowing for a quick comparison of their frequencies. This visualization enables the identification of phases that might be particularly prone to incidents, guiding further investigation into the contributing factors.
 
 ```{r radial_plot, include=FALSE}
 # Creating a filtered dataset for Radial Plot
@@ -834,10 +664,184 @@ flights_radial_bar_injuries
 # animate - plotly by years or gganimate bar growth
 ```
 
+The second graph, depicting injuries, provides an additional layer of analysis. By comparing the counts of injuries across different flight phases, we can discern whether certain phases are more likely to result in severe consequences. This insight is crucial for understanding the potential risks associated with specific segments of a flight, informing safety measures and protocols.
+
+## Analysis of Causes of Crashes
+
+### Waffle chart
+
+```{r datawragling,include=FALSE}
+count <- probable_cause_flights |>
+  group_by(cause_summary)|>
+  summarize(perc=n())|>
+  mutate(
+    perc= (perc/sum(perc))
+  )
+count_waffle <- count |>
+  mutate(
+    remainder = perc * 100 - floor(perc * 100),
+    floored = floor(perc * 100)
+  ) |>
+  arrange(desc(remainder)) |>
+  mutate(number = ifelse(100 - sum(floored) >= row_number(), floored + 1, floored)) |>
+  arrange(perc)
+```
+
+```{r function-waffle}
+waffle_data <- count_waffle %>%
+      slice(rep(1:n(), times = number)) %>%
+      mutate(fill_value = ifelse(row_number() <= sum(floored), floored, floored + 1))
+    
+plot_data <- expand.grid(x = 0:9,y = 0:9) %>%
+      rowwise() |>
+      mutate(index = 1+sum(x * 10 + y >= cumsum(count_waffle$number)),
+             cause = count_waffle$cause_summary[[index]])
+    
+    # Create a waffle plot
+p<- ggplot(plot_data, aes(x, y, color = cause, group=cause), show.legend=F) +
+      geom_text(label = "✈",
+                family = 'sans',
+                size = 8) +
+  scale_color_manual(values=met.brewer("Redon"))+
+      coord_equal()+
+      labs(title="Waffle chart showing different causes of crashes",
+           colour = 'Cause')
+flight_plot <- ggplotly(p, tooltip = c("color")) |>
+  layout(xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE, title=""),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE, title=""))
+
+flight_plot
+```
+
+**Approach**
+
+The waffle chart shows different causes of aircraft crashes. Pilot's failure was the highest scoring cause of crashes, followed by loss of engine power.
+
+**Findings**
+
+The waffle chart effectively showcased the distribution of crash causes, emphasizing the prominence of human error in aviation incidents. The data highlighted the need for enhanced safety measures and training to address the identified causes of crashes.
+
+### Density Plot
+
+```{r distribution}
+ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pilot's failure")) +
+  geom_density(aes(x=year(event_date), fill=highest_injury_level), alpha=0.8)+
+  scale_fill_manual(values = c("#bcd67c","#82dfe2","#d398ff"))+
+  labs(title="Distribution of crashes caused by pilot's negligence over time",
+       x="Year",
+       y="Density")
+  
+```
+
+**Approach**
+
+We plotted the density plot using ggplot's `geom_density` function is to visually analyze the distribution of flight crashes over the years based on their probable causes. By utilizing the `probable_cause_flights` dataset and focusing on the `cause_summary` column, this visualization aims to provide insights into the changing patterns and trends of aviation incidents. The x-axis represents the years, offering a chronological perspective, while the y-axis portrays the density of crashes associated with specific causes. Here, we have focused on the attribute `Pilot's Failure`
+
+**Findings**
+
+This visual representation allows us to identify clusters of high density, indicating periods or years where certain causes were more prevalent. Additionally, it facilitates the detection of outliers or shifts in patterns, enabling a more nuanced exploration of the dataset. Here, we can see that injuries in particular have reduced overtime with the number of Fatal Injuries reducing significantly over the past few decades.
+
+## Assessing the Influence of Weather Conditions on Crashes
+
+### Radar Plot
+
+**Approach**
+
+We plot the Radar Plot using Plotly for R to comprehensively assess the influence of weather conditions on flight crashes. Leveraging the `flights_ntsb_radar` dataset which we derived from the original `flights_ntsb` dataset and categorizing flight crashes based on `Visual Meteorological Conditions (VMC)` and `Instrument Meteorological Conditions (IMC)`. This visualization seeks to highlight the varying degrees of impact these conditions have on aviation safety. By layering both datasets on a radar plot, we aim to provide a holistic perspective on how different weather scenarios contribute to flight incidents.
+
+```{r radarchart_data, include=FALSE}
+# Assigning different weather conditions to variables
+# IFR and IMC are same conditions so we are combining them
+# VFR and VMC are same conditions so we are combining them
+flights_ntsb_radar <- flights_ntsb |>
+  mutate(
+    weather_condition = case_when(
+      weather_condition == "IFR" ~ "IMC",
+      weather_condition == "VFR" ~ "VMC",
+      weather_condition == "Unknown" ~ "UNK",
+      is.na(weather_condition) ~ "UNK",
+      TRUE ~ weather_condition
+    )
+  ) |>
+  # getting total crashes and total injuries
+  group_by(event_month, weather_condition) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(fatal_injury_count, na.rm = TRUE) + sum(serious_injury_count, na.rm = TRUE) + sum(minor_injury_count, na.rm = TRUE)
+  ) |>
+  arrange(event_month)
+```
+
+```{r radar_chart, include=FALSE}
+# Filtering out weather condition 'IMC'
+radar_trace_r1 <- flights_ntsb_radar |>
+  filter(weather_condition %in% c("IMC")) |>
+  pull(total_crashes)
+
+radar_trace_r1 <-
+  c(
+    radar_trace_r1,
+    flights_ntsb_radar |> 
+      filter(weather_condition == "IMC" & event_month == 1) |>
+      pull(total_crashes)
+  )
+
+# Filtering out weather condition 'VMC'
+radar_trace_r2 <- flights_ntsb_radar |>
+  filter(weather_condition %in% c("VMC")) |>
+  pull(total_crashes)
+
+radar_trace_r2 <-
+  c(
+    radar_trace_r2,
+    flights_ntsb_radar |> 
+      filter(weather_condition == "VMC" & event_month == 1) |> 
+      pull(total_crashes)
+  )
+
+radar_theta <- c("Jan" , "Feb" , "Mar" , "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec", "Jan")
+```
+
+```{r radar_chart_plotly}
+# Plotting an Interactive Radar Plot using Plotly
+radar_chart <- plot_ly(type = 'scatterpolar',
+               fill = 'toself',
+               mode = 'lines+markers')
+
+# first plot tracing of VMC data
+radar_chart <- radar_chart |>
+  add_trace(
+    r = radar_trace_r2,
+    theta = radar_theta,
+    name = 'VMC'
+  )
+# second plot tracing of IMC data
+radar_chart <- radar_chart |>
+  add_trace(
+    r = radar_trace_r1,
+    theta = radar_theta,
+    name = 'IMC'
+  )
+# plot layout configuration
+radar_chart <- radar_chart |>
+  layout(polar = list(radialaxis = list(
+    visible = T,
+    range = c(0, 10500)
+  )))
+
+radar_chart
+```
+
+**Findings**
+
+The radar plot serves as an effective means to showcase the multivariate nature of weather conditions and their relationship with flight crashes. Each axis on the radar represents a specific parameter related to aviation safety, such as visibility, cloud cover, wind speed, and temperature. The radar plot allows for the simultaneous comparison of these parameters for VMC and IMC, unveiling patterns and discrepancies in their respective contributions to incidents.
+
 ## Conclusion
 
 We can conclude stating that a lot of crashes take place every year but the number of crashes has been decreasing over the past few decades. The number of fatalities has also gone down due to the stringent rules in the Aviation industry. With the fatalities and crashes decreasing over time and more we are moving towards a safer and faster mode of transport which can get us around the globe in a span of a couple hours.
 
 ## References
 
-gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html ploty - https://plotly.com/r/animations/
+gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
+
+plotly - https://plotly.com/r/animations/
