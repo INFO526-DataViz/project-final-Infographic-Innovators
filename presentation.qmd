@@ -166,7 +166,7 @@ flights_ntsb <- flights_ntsb |>
 ## Objective
 
 ::: nonincremental
--   Conduct an in-depth analysis of aircraft crashes within the United States to uncover temporal trends and geographical patterns.
+Conduct an in-depth analysis of aircraft crashes within the United States to uncover temporal trends and geographical patterns.
 
 Background:
 
@@ -175,10 +175,12 @@ Background:
 -   Contains records of aircraft crashes in the U.S. from Jan 1, 1980, to Dec 31, 2022.
 
 -   Originally comprised 89,134 rows and 38 columns, refined to 20 columns for focused analysis.
+:::
 
-Value:
+::: nonincremental
+**Value**
 
--   Enhance understanding of aviation safety and factors contributing to aircraft crashes.
+Enhance understanding of aviation safety and factors contributing to aircraft crashes.
 
 -   Personalize insights based on diverse experiences with air travel.
 :::
