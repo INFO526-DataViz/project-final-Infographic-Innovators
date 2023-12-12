@@ -17,7 +17,7 @@ format:
     transition: slide
     background-transition: fade
     logo: images\flight_logo.png
-    footer: "[✈️ Infographic Innovators](https://github.com/INFO526-DataViz/project-final-Infographic-Innovators)"
+    footer: "[✈️ Infographic Innovators](https://info526-dataviz.github.io/project-final-Infographic-Innovators/)"
     scrollable: true
     
 code-fold: true
@@ -420,8 +420,8 @@ flights_radial_bar_crashes <-
     axis.text = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major = element_blank(),
-    plot.title = element_text(size = 18, face = "bold"),
-    plot.subtitle = element_text(size = 14)
+    plot.title = element_text(size = 20, face = "bold"),
+    plot.subtitle = element_text(size = 15)
     ) +
   guides(
       fill = guide_legend(
@@ -475,8 +475,8 @@ flights_radial_bar_injuries <-
     axis.text = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major = element_blank(),
-    plot.title = element_text(size = 18, face = "bold"),
-    plot.subtitle = element_text(size = 14)
+    plot.title = element_text(size = 20, face = "bold"),
+    plot.subtitle = element_text(size = 15)
     ) +
   guides(
       fill = guide_legend(
@@ -522,7 +522,7 @@ count_waffle <- count |>
   arrange(perc)
 ```
 
-```{r function-waffle}
+```{r function-waffle, fig.height=4.5, fig.width=4.5}
 waffle_data <- count_waffle |>
       slice(rep(1:n(), times = number)) |>
       mutate(fill_value = ifelse(row_number() <= sum(floored), floored, floored + 1))
@@ -552,7 +552,7 @@ flight_plot
 ## Density Plot
 
 ::: nonincremental
-```{r distribution, fig.height=5, fig.width=5}
+```{r distribution, fig.height=4.5, fig.width=4.5}
 ggplot(
   subset(
     probable_cause_flights,
@@ -567,7 +567,14 @@ ggplot(
   labs(title = "Distribution of crashes caused by pilot's negligence over time",
        x = "Year",
        y = "Density",
-       fill = "Highest Injury Level")
+       fill = "Highest Injury Level") +
+  theme(
+    panel.grid.major = element_blank(),
+    plot.title = element_text(size = 20, face = "bold"),
+    plot.subtitle = element_text(size = 15),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(hjust = 0, size = 12)
+    )
 
 ```
 :::
@@ -630,7 +637,7 @@ radar_trace_r2 <-
 radar_theta <- c("Jan" , "Feb" , "Mar" , "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec", "Jan")
 ```
 
-```{r radar_chart_plotly, fig.height=5, fig.width=5}
+```{r radar_chart_plotly, fig.height=4.5, fig.width=4.5}
 # Plotting an Interactive Radar Plot using Plotly
 radar_chart <- plot_ly(type = 'scatterpolar',
                fill = 'toself',

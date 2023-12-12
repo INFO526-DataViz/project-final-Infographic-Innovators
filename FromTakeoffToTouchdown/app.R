@@ -283,7 +283,14 @@ generate_plots <- function(plot_type) {
            x = "Year",
            y = "Density",
            fill = "Highest Injury Level") + 
-      theme_minimal()
+      theme_minimal() +
+      theme(
+        panel.grid.major = element_blank(),
+        plot.title = element_text(size = 20, face = "bold"),
+        plot.subtitle = element_text(size = 15),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(hjust = 0, size = 12)
+      )
     flight_plot <- ggplotly(p)
   }
   
@@ -301,7 +308,7 @@ ui <- navbarPage(
                width = 3,
                br(),
                span(
-                 "<PROJECT INFO>",
+                 "From Takeoff to Touchdown: Dissecting Data on Air Disasters",
                  tags$a("Flight Crashes NTSB", href = "https://info526-dataviz.github.io/project-final-Infographic-Innovators/")
                ),
                br(),

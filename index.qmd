@@ -173,6 +173,8 @@ flights_ntsb <- flights_ntsb |>
 
 **Approach**
 
+We aim to analyze the historical data on fatalities and injuries to understand the trends over the years. To initiate our investigation, we have created two animations. The first animation illustrates the cumulative count of both fatalities and injuries over time, employing the `geom_line()` function and incorporating a flight image to signify the movement of data points within the plot. In the second animation, we have categorized fatalities based on the severity of injuries, providing a visual representation of how different types of fatalities have evolved over time.
+
 ```{r timeseries_data, include=FALSE}
 # Creating a dataset for the timeSeries plot
 flights_ntsb_timeseries <- flights_ntsb |>
@@ -204,7 +206,10 @@ p <-
             size = 5) +
   labs(title = "Yearly Aircraft Crash Fatalities",
        x = "Year",
-       y = "Total Fatalities")
+       y = "Total Fatalities") +
+  theme(plot.title = element_text(size = 20),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(hjust = 0, size = 12))
 
 ggplotly(p)
 ```
@@ -414,6 +419,10 @@ animated_fcdata
 
 **Approach**
 
+The approach for creating a choropleth map of flight crashes in different U.S. regions involves data preparation, map generation, and animation. The dataset is filtered for valid latitude and longitude values, and relevant columns are selected. To ensure completeness, unique states and all years are identified. A function, is defined to create maps for each input year, customizing color scales. Maps are saved for each year using a loop.
+
+The animation is created by loading saved map images, joining them into a sequence, and generating the animation. The resulting animation visually represents the temporal evolution of flight crashes across U.S. states.
+
 ```{r mapl_plot_data, include=FALSE}
 # Filtering out NA and invalid Latitude and Longitude values
 flights_ntsb_maps <- flights_ntsb |>
@@ -590,8 +599,8 @@ flights_radial_bar_crashes <-
     axis.text = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major = element_blank(),
-    plot.title = element_text(size = 18, face = "bold"),
-    plot.subtitle = element_text(size = 14)
+    plot.title = element_text(size = 20, face = "bold"),
+    plot.subtitle = element_text(size = 15)
     ) +
   guides(
       fill = guide_legend(
@@ -649,8 +658,8 @@ flights_radial_bar_injuries <-
     axis.text = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major = element_blank(),
-    plot.title = element_text(size = 18, face = "bold"),
-    plot.subtitle = element_text(size = 14)
+    plot.title = element_text(size = 20, face = "bold"),
+    plot.subtitle = element_text(size = 15)
     ) +
   guides(
       fill = guide_legend(
@@ -751,7 +760,14 @@ ggplot(
   labs(title = "Distribution of crashes caused by pilot's negligence over time",
        x = "Year",
        y = "Density",
-       fill = "Highest Injury Level")
+       fill = "Highest Injury Level") +
+  theme(
+    panel.grid.major = element_blank(),
+    plot.title = element_text(size = 20, face = "bold"),
+    plot.subtitle = element_text(size = 15),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(hjust = 0, size = 12)
+    )
   
 ```
 
@@ -865,3 +881,5 @@ Overall trends indicate a decrease in total fatalities from crashes over the 198
 gganimate - [gganimate](https://r-graph-gallery.com/288-animated-barplot-transition.html)
 
 plotly - [plotly](https://plotly.com/r/animations/)
+
+issues - [legend](https://community.plotly.com/t/how-to-remove-aa-from-the-legend/41506)
