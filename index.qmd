@@ -20,15 +20,15 @@ execute:
 
 # Abstract:
 
-We wanted provide an in-depth analysis of aircraft crashes in the United States from 1980 to 2022, focusing on locations, timings, and consequences, along with exploring causes and weather conditions' influence on these incidents.
+We wanted to provide an in-depth analysis of aircraft crashes in the United States from 1980 to 2022, focusing on locations, timings, and consequences, along with exploring causes and weather conditions' influence on these incidents.
 
-1.  Question: What are the locations, timings, and consequences of the aircraft crashes?
+1.  Question: What are the aircraft crashes' locations, timings, and consequences
 
-    Objective: To discover if there were any correlations that contribute to aircraft crashes during a certain time period. As well as looking to see if certain locations have higher numbers of crashes than others.
+    Objective: To discover if any correlations that contributed to aircraft crashes during a certain time period. As well as looking to see if specific locations have higher numbers of crashes than others.
 
     Methodology: Utilization of a detailed dataset from the National Transportation Safety Board, incorporating various data visualization techniques and time-series analyses. We created a heatmap on number of crashes in the different regions, and radial car plot to visualize crashes during certain flight phases.
 
-    Findings: Overall when looking at the crashes through 1980-2020 the number of total fatalitles from crashes have gone down. There was a significant jump in 2001 which we concluded was from the 9/11 attacks. After which the number of fatalies decreased significatly.
+    Findings: Overall, when looking at the crashes through 1980-2020, the number of total fatalities from crashes have decreased. There was a significant jump in 2001 which we concluded was from the 9/11 attacks. After this, the number of fatalities decreased significantly. The heatmap analysis revealed that Alaska, Arizona, Texas, and Florida had the highest number of crashes. The radial bar plot indicated specific flight phases where crashes were more prevalent.
 
 2.  Question: What contributes to the crashes, and does weather significantly impact the increase in aircraft crashes?
 
@@ -221,6 +221,8 @@ p <-
 ggplotly(p)
 ```
 
+Animation of Total Fatalities
+
 ```{r time_series_gif}
 # Creating Animated Plot for Total Faltalities
 Image <-
@@ -255,6 +257,8 @@ animate(
 
 animated_plot
 ```
+
+Timeseries Animations of Serious Injuries & Minor Injuries.
 
 ```{r timeseries_animated, include=FALSE}
 # Labelling the axes and adding title to the plot for Serious Injuries
@@ -346,6 +350,8 @@ p <- ggplot(long_fcdata, aes(x = event_year,
 ggplotly(p)
 ```
 
+Animated Combined Timeseries of Aircraft Crashes
+
 ```{r animated_labels}
 # all 3 plots with label - animated 
 
@@ -413,7 +419,11 @@ animated_fcdata <- animate(
 animated_fcdata
 ```
 
-#### Heatmap-- on number of crashes in different regions(US map) Purpose:
+Findings
+
+There has been a general decrease in the number of total fatalities from 1980 to 2022. A notable spike in fatalities was observed in 2001, attributed to the 9/11 attacks. Post-2001, a significant decline in fatalities was noted.
+
+#### Heatmap-- on number of crashes in different regions(US map)
 
 ```{r mapl_plot_data, include=FALSE}
 # Filtering out NA and invalid Latitude and Longitude values
@@ -520,7 +530,7 @@ image_write(image = hex_bin_maps_animation,
 hex_bin_maps_animation
 ```
 
-Discussion:
+Discussion: Looking at the heatmap Alaska, Arizona, Texas, and Florida has the highest number of crashes.
 
 ### Questions 2: Analysis of Causes of Crashes
 
@@ -577,7 +587,7 @@ waffle_plot(number = count_waffle$number,
             symbol = "✈",symbol_size=6)
 ```
 
-Purpose:
+Purpose: The waffle chart shows different causes of aircraft crashes. Pilot's failure was the highest scoring cause of crashes, followed by loss of engine power.
 
 #### Density Plot
 
