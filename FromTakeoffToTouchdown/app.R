@@ -209,8 +209,7 @@ generate_plots <- function(plot_type) {
       geom_text(label = "✈",
                 family = 'sans',
                 size = 8) +
-      scale_color_manual(
-        values = moma.colors("Warhol")) +
+      scale_color_manual(values=met.brewer("Redon")) +
       coord_equal() +
       theme_void()+
       theme(
@@ -221,9 +220,11 @@ generate_plots <- function(plot_type) {
       )+
       labs(title="Waffle chart showing different causes of crashes",
            colour = 'Cause')
-    flight_plot <- ggplotly(p,
-                            tooltip = c("color"))|>
-      layout(showlegend = FALSE)
+    flight_plot <- ggplotly(p, tooltip = c("color")) |>
+      layout(xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE, title=""),
+             yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE, title=""))
+    
+    flight_plot
     
   } else if (plot_type == "Distribution of cause - Pilot's failure"){
     p <-ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pilot's failure")) +

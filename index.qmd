@@ -554,37 +554,29 @@ count_waffle <- count |>
 ```
 
 ```{r function-waffle}
-waffle_plot <- function(number, colour, colour_palette, symbol, symbol_size=8) {
-  p <- expand.grid(x = 0:9,
-                   y = 0:9) %>%
-    rowwise() |>
-    mutate(index = 1+sum(x * 10 + y >= cumsum(number)),
-           col = colour[[index]]) |>
-    ggplot(aes(x, y, color = forcats::fct_inorder(col))) +
-    geom_text(label = symbol,
-              family = 'sans',
-              size = symbol_size) +
-    scale_color_manual(
-    values = moma.colors("Warhol")) +
-    coord_equal() +
-    theme_void()+
-    theme(
-      legend.position = 'top',
-      legend.margin = margin(1, 3, 1, 1, unit = 'mm'),
-      plot.margin = margin(3,3,3,3,unit = 'mm'),
-      legend.background = element_rect(fill = 'grey100', color = 'grey')
-    )+
-    labs(title="Waffle chart showing different causes of crashes",
-              colour = 'Cause')
-  return(p)
-}
-```
+waffle_data <- count_waffle %>%
+      slice(rep(1:n(), times = number)) %>%
+      mutate(fill_value = ifelse(row_number() <= sum(floored), floored, floored + 1))
+    
+plot_data <- expand.grid(x = 0:9,y = 0:9) %>%
+      rowwise() |>
+      mutate(index = 1+sum(x * 10 + y >= cumsum(count_waffle$number)),
+             cause = count_waffle$cause_summary[[index]])
+    
+    # Create a waffle plot
+p<- ggplot(plot_data, aes(x, y, color = cause, group=cause), show.legend=F) +
+      geom_text(label = "✈",
+                family = 'sans',
+                size = 8) +
+  scale_color_manual(values=met.brewer("Redon"))+
+      coord_equal()+
+      labs(title="Waffle chart showing different causes of crashes",
+           colour = 'Cause')
+flight_plot <- ggplotly(p, tooltip = c("color")) |>
+  layout(xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE, title=""),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE, title=""))
 
-```{r wafflechart}
-airplane_emoji <- "\U2708"
-waffle_plot(number = count_waffle$number,
-            colour = count_waffle$cause_summary,
-            symbol = "✈",symbol_size=6)
+flight_plot
 ```
 
 Purpose: The waffle chart shows different causes of aircraft crashes. Pilot's failure was the highest scoring cause of crashes, followed by loss of engine power.
@@ -814,9 +806,7 @@ flights_radial_bar_injuries <-
     limits = c(0, 13200)
   ) +
   scale_x_discrete(expand = c(0.35, 0)) + 
-  scale_fill_manual(
-    values = moma.colors("VanGogh")
-  ) +
+  scale_color_brewer(palette="Paired") +
   theme(
     legend.position = "bottom",
     axis.text = element_blank(),

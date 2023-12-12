@@ -369,7 +369,32 @@ count_waffle <- count |>
   arrange(desc(remainder)) |>
   mutate(number = ifelse(100 - sum(floored) >= row_number(), floored + 1, floored)) |>
   arrange(perc)
+```
 
+```{r function-waffle}
+waffle_data <- count_waffle |>
+      slice(rep(1:n(), times = number)) |>
+      mutate(fill_value = ifelse(row_number() <= sum(floored), floored, floored + 1))
+    
+plot_data <- expand.grid(x = 0:9,y = 0:9) |>
+      rowwise() |>
+      mutate(index = 1+sum(x * 10 + y >= cumsum(count_waffle$number)),
+             cause = count_waffle$cause_summary[[index]])
+    
+    # Create a waffle plot
+p<- ggplot(plot_data, aes(x, y, color = cause, group=cause), show.legend=F) +
+      geom_text(label = "✈",
+                family = 'sans',
+                size = 8) +
+  scale_color_manual(values=met.brewer("Redon"))+
+      coord_equal()+
+      labs(title="Waffle chart showing different causes of crashes",
+           colour = 'Cause')
+flight_plot <- ggplotly(p, tooltip = c("color")) |>
+  layout(xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE, title=""),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE, title=""))
+
+flight_plot
 ```
 :::
 
@@ -585,9 +610,7 @@ flights_radial_bar_injuries <-
     limits = c(0, 13200)
   ) +
   scale_x_discrete(expand = c(0.35, 0)) + 
-  scale_fill_manual(
-    values = moma.colors("VanGogh")
-  ) +
+  scale_color_brewer(palette="Paired") +
   theme(
     legend.position = "bottom",
     axis.text = element_blank(),
