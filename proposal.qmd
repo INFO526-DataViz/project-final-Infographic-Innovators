@@ -108,9 +108,9 @@ We conducted Exploratory Data Analysis on the dataset and categorized our analys
 
 ### Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
 
-1.  **Heat-Map - An Animated Heat-map of Aircraft Crashes in the United States Over Time:**
+1.  **Choropleth Map - An Animated Choropleth Map of Aircraft Crashes in the United States Over Time:**
 
-    The animated heat-map provides a dynamic and visually compelling representation of aircraft crashes across the United States. This data visualization leverages the latitude and longitude coordinates of crash locations and spans multiple years to reveal temporal patterns. This heat-map not only facilitates the identification of regions with higher crash frequencies but also offers insights into the evolving dynamics of air travel safety over time.
+    The animated Choropleth Map provides a dynamic and visually compelling representation of aircraft crashes across the United States. This data visualization leverages the US states of crash locations and spans multiple years to reveal temporal patterns. This Choropleth Map not only facilitates the identification of regions with higher crash frequencies but also offers insights into the evolving dynamics of air travel safety over time.
 
 2.  **Time-series Plot- Analysis of Aircraft Crashes and Fatalities:**
 
@@ -122,13 +122,13 @@ We conducted Exploratory Data Analysis on the dataset and categorized our analys
 
 ### Analysis of Causes of Crashes
 
-1.  **Bar plot - Common Causes of Aircraft Crashes:**
+1.  **Waffle plot - Common Causes of Aircraft Crashes:**
 
-    The bar plot offers an overview of the most common causes of aircraft crashes throughout the United States. Leveraging the `probable_cause` column, which contains concise descriptions of crash events, the bar plot employs text summarization techniques to extract and categorize these causes into manageable groups. This visualization provides a straightforward and insightful representation of the key factors contributing to aviation incidents, aiding in the identification of the primary causes that warrant further investigation.
+    The waffle plot offers an overview of the most common causes of aircraft crashes throughout the United States. Leveraging the `probable_cause` column, which contains concise descriptions of crash events, the waffle plot employs text summarization techniques to extract and categorize these causes into manageable groups. This visualization provides a straightforward and insightful representation of the key factors contributing to aviation incidents, aiding in the identification of the primary causes that warrant further investigation.
 
-2.  **Stacked Area Chart - Causes and Severity of Aircraft Crashes:**
+2.   **Density plot - Causes and Severity of Aircraft Crashes:**
 
-    The stacked area chart delves into the relationship between specific crash causes and the severity of injuries incurred. Drawing from the `probable_cause` column, as well as the `severity` and `event_date` columns, this visualization quantifies the number of crashes attributed to each cause while distinguishing between varying levels of severity. By visualizing this data in a stacked area format, it becomes evident which causes are associated with more severe injuries and which contribute to milder consequences.
+    The density polot delves into the relationship between specific crash cause ("pilot's failure") and the severity of injuries incurred. Drawing from the `probable_cause` column, as well as the `severity` and `event_date` columns, this visualization quantifies the number of crashes attributed to cause "pilot's failure"while distinguishing between varying levels of severity. By visualizing this data in a density plot, it becomes evident how severe are the crashes.
 
 ### Assessing the Influence of Weather Conditions on Crashes
 
@@ -141,7 +141,7 @@ Ultimately, we plan to utilize the interactive features of the Shiny application
 ### Variables of focus
 
 | Variable             | Description                                                                                |
-|----------------------|--------------------------------------------------------------------------------------------|
+|-----------------|-------------------------------------------------------|
 | event_type           | Type of event - accident, incident or occurrence                                           |
 | event_date           | Date time of when the event has occurred                                                   |
 | city                 | The city or place location closest to the site of the event                                |
@@ -162,7 +162,7 @@ Ultimately, we plan to utilize the interactive features of the Shiny application
 ### Weekly Plan
 
 |               Week                | Weekly Tasks                                                        | Persons in Charge  |     Backup      |
-|:---------------------------------:|---------------------------------------------------------------------|:------------------:|:---------------:|
+|:------------:|------------------------------|:------------:|:------------:|
 |       until November 8^th^        | Explore and finalize the data set and the problem statements        |      Everyone      |    Everyone     |
 |                \-                 | Complete the proposal and assign some high-level tasks              |      Everyone      |    Everyone     |
 |     November 9^th^ to 15^th^      | Getting to know about Shiny application                             |      Antonio       |     Bharath     |

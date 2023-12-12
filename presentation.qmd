@@ -675,7 +675,7 @@ Here, VMC stands for `Visual Meteorological Conditions` and IMC stands for `Inst
 ::: incremental
 -   Annual crash occurrences remain notable, but a declining trend is observed over the decades from 1980 to 2022.
 -   The decline in fatalities over time underscores the effectiveness of safety measures and protocols implemented in the aviation sector.
-- Shiny App - https://99javc-velamala-bharath.shinyapps.io/fromtakeofftotouchdown/
+-   Shiny App - [From Takeoff to Touchdown: Dissecting Data on Air Disasters](https://99javc-velamala-bharath.shinyapps.io/fromtakeofftotouchdown/)
 :::
 
 ## Problems Faced {.smaller}
