@@ -18,6 +18,28 @@ execute:
   echo: false
 ---
 
+# Abstract:
+
+We wanted provide an in-depth analysis of aircraft crashes in the United States from 1980 to 2022, focusing on locations, timings, and consequences, along with exploring causes and weather conditions' influence on these incidents.
+
+1.  Question: What are the locations, timings, and consequences of the aircraft crashes?
+
+    Objective: To discover if there were any correlations that contribute to aircraft crashes during a certain time period. As well as looking to see if certain locations have higher numbers of crashes than others.
+
+    Methodology: Utilization of a detailed dataset from the National Transportation Safety Board, incorporating various data visualization techniques and time-series analyses. We created a heatmap on number of crashes in the different regions, and radial car plot to visualize crashes during certain flight phases.
+
+    Findings: -
+
+2.  Question: What contributes to the crashes, and does weather significantly impact the increase in aircraft crashes?
+
+    Objective: To identify and categorize the most frequent causes of crashes and to correlate crash causes with the severity of outcomes.
+
+    Methodology: Using the dataset, we created a bar plot to show the common cause of aircraft crashes, a stacked area chart to show the causes and severity of crashes, and a radar plot to visualize crashes by month and weather conditions.
+
+    Findings:
+
+    ## Analysis:
+
 ```{r load_packages, message=FALSE, include=FALSE}
 # GETTING THE LIBRARIES
 if (!require(pacman))
@@ -76,8 +98,6 @@ knitr::opts_chunk$set(
 flights_ntsb <- read_csv(here("data", "flight_crash_data_NTSB.csv"))
 probable_cause_flights <- read_csv(here("data","new_flights_PC.csv"))
 ```
-
-## Abstract
 
 ```{r remove_columns, include=FALSE}
 # selecting columns which are required for our analysis
@@ -159,13 +179,7 @@ flights_ntsb <- flights_ntsb |>
   )
 ```
 
-Intro to project
-
-1.  Question 1 Objective: Methodology: Findings:
-
-2.  Question 2 Objective: Methodology: Findings:
-
-### Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
+### Question 1: Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
 
 #### Timeseries on number of crashes
 
@@ -506,7 +520,7 @@ hex_bin_maps_animation
 
 Discussion:
 
-### Analysis of Causes of Crashes
+### Questions 2: Analysis of Causes of Crashes
 
 #### Waffle chart
 
@@ -575,17 +589,17 @@ ggplot(subset(probable_cause_flights, probable_cause_flights$cause_summary=="pil
   
 ```
 
-Purpose: We plotted the density plot using ggplot's `geom_density` function is to visually analyze the distribution of flight crashes over the years based on their probable causes. By utilizing the `probable_cause_flights` dataset and focusing on the `cause_summary` column, this visualization aims to provide insights into the changing patterns and trends of aviation incidents. The x-axis represents the years, offering a chronological perspective, while the y-axis portrays the density of crashes associated with specific causes. Here, we have focused on the attribute `Pilot's Failure` 
+Purpose: We plotted the density plot using ggplot's `geom_density` function is to visually analyze the distribution of flight crashes over the years based on their probable causes. By utilizing the `probable_cause_flights` dataset and focusing on the `cause_summary` column, this visualization aims to provide insights into the changing patterns and trends of aviation incidents. The x-axis represents the years, offering a chronological perspective, while the y-axis portrays the density of crashes associated with specific causes. Here, we have focused on the attribute `Pilot's Failure`
 
-Discussion:  This visual representation allows us to identify clusters of high density, indicating periods or years where certain causes were more prevalent. Additionally, it facilitates the detection of outliers or shifts in patterns, enabling a more nuanced exploration of the dataset. Here, we can see that injuries in particular have reduced overtime with the number of Fatal Injuries reducing significantly over the past few decades.
+Discussion: This visual representation allows us to identify clusters of high density, indicating periods or years where certain causes were more prevalent. Additionally, it facilitates the detection of outliers or shifts in patterns, enabling a more nuanced exploration of the dataset. Here, we can see that injuries in particular have reduced overtime with the number of Fatal Injuries reducing significantly over the past few decades.
 
 ### Assessing the Influence of Weather Conditions on Crashes
 
 #### Radar Plot
 
-Purpose: We plot the Radar Plot using Plotly for R  to comprehensively assess the influence of weather conditions on flight crashes. Leveraging the `flights_ntsb_radar` dataset which we derived from the original `flights_ntsb` dataset and categorizing flight crashes based on `Visual Meteorological Conditions (VMC)` and `Instrument Meteorological Conditions (IMC)`. This visualization seeks to highlight the varying degrees of impact these conditions have on aviation safety. By layering both datasets on a radar plot, we aim to provide a holistic perspective on how different weather scenarios contribute to flight incidents.
+Purpose:
 
-Discussion: The radar plot serves as an effective means to showcase the multivariate nature of weather conditions and their relationship with flight crashes. Each axis on the radar represents a specific parameter related to aviation safety, such as visibility, cloud cover, wind speed, and temperature. The radar plot allows for the simultaneous comparison of these parameters for VMC and IMC, unveiling patterns and discrepancies in their respective contributions to incidents.
+Discussion:
 
 ```{r radarchart_data, include=FALSE}
 # Assigning different weather conditions to variables
@@ -670,12 +684,6 @@ radar_chart <- radar_chart |>
 radar_chart
 ```
 
-#### Radial Bar Plot
-Purpose: We plotted the radial bar plot to explore the distribution of flight crashes and associated injuries across different phases of flight. By categorizing flight phases into `Landing, Takeoff, Approach, Maneuvering, Climb, and Other` this visualization aims to uncover insights into the critical moments during a flight where incidents are more likely to occur. The first graph highlights the count of crashes in each phase, while the second graph focuses on the count of injuries, providing a broad perspective on the safety challenges associated with each phase.
-
-Discussion:The radial bar plot offers an intuitive and visually appealing representation of the distribution of crashes and injuries throughout various phases of flight. In the first graph, the bars radiating from the center depict the count of crashes in each phase, allowing for a quick comparison of their frequencies. This visualization enables the identification of phases that might be particularly prone to incidents, guiding further investigation into the contributing factors.
-
-The second graph, depicting injuries, provides an additional layer of analysis. By comparing the counts of injuries across different flight phases, we can discern whether certain phases are more likely to result in severe consequences. This insight is crucial for understanding the potential risks associated with specific segments of a flight, informing safety measures and protocols.
 ```{r radial_plot, include=FALSE}
 # Creating a filtered dataset for Radial Plot
 flights_ntsb_radial <- flights_ntsb |>
@@ -756,6 +764,9 @@ flights_radial_bar_crashes
 # remaining - titles, some texts
 # interactive - plotly
 # animate - plotly by years or gganimate bar growth
+# sources:
+# gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
+# ploty - https://plotly.com/r/animations/
 ```
 
 ```{r radial_plot_injuries}
@@ -812,11 +823,11 @@ flights_radial_bar_injuries
 # remaining - titles, some texts
 # interactive - plotly
 # animate - plotly by years or gganimate bar growth
+# sources:
+# gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
+# ploty - https://plotly.com/r/animations/
 ```
 
 ## Conclusion
-We can conclude stating that a lot of crashes take place every year but the number of crashes has been decreasing over the past few decades. The number of fatalities has also gone down due to the stringent rules in the Aviation industry. With the fatalities and crashes decreasing over time and more we are moving towards a safer and faster mode of transport which can get us around the globe in a span of a couple hours. 
 
 ## References
-gganimate - https://r-graph-gallery.com/288-animated-barplot-transition.html
-ploty - https://plotly.com/r/animations/
