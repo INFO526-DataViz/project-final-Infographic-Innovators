@@ -398,7 +398,7 @@ flights_radial_bar_crashes <-
          aes(x = fct_rev(flight_phase), y = total_crashes, 
              fill = flight_phase)) +
   geom_bar(stat = "identity", width = 0.8) +
-  geom_text(hjust = 1.2, size = 4.8, 
+  geom_text(hjust = 1.2, size = 4, 
             aes(y = 0, label = comma(total_crashes))) +
   coord_polar(theta = "y") +
   labs(
@@ -420,8 +420,8 @@ flights_radial_bar_crashes <-
     axis.text = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major = element_blank(),
-    plot.title = element_text(size = 20, face = "bold"),
-    plot.subtitle = element_text(size = 15)
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12)
     ) +
   guides(
       fill = guide_legend(
@@ -453,7 +453,7 @@ flights_radial_bar_injuries <-
          aes(x = fct_rev(flight_phase), y = total_injuries, 
              fill = flight_phase)) +
   geom_bar(stat = "identity", width = 0.8) +
-  geom_text(hjust = 1.2, size = 4.8, 
+  geom_text(hjust = 1.2, size = 4, 
             aes(y = 0, label = comma(total_injuries))) +
   coord_polar(theta = "y") +
   labs(
@@ -475,8 +475,8 @@ flights_radial_bar_injuries <-
     axis.text = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major = element_blank(),
-    plot.title = element_text(size = 20, face = "bold"),
-    plot.subtitle = element_text(size = 15)
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12)
     ) +
   guides(
       fill = guide_legend(
@@ -570,10 +570,10 @@ ggplot(
        fill = "Highest Injury Level") +
   theme(
     panel.grid.major = element_blank(),
-    plot.title = element_text(size = 20, face = "bold"),
-    plot.subtitle = element_text(size = 15),
-    axis.text = element_text(size = 12),
-    axis.title = element_text(hjust = 0, size = 12)
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    axis.title = element_text(hjust = 0, size = 10)
     )
 
 ```
@@ -637,7 +637,7 @@ radar_trace_r2 <-
 radar_theta <- c("Jan" , "Feb" , "Mar" , "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec", "Jan")
 ```
 
-```{r radar_chart_plotly, fig.height=4.2, fig.width=4.2}
+```{r radar_chart_plotly, fig.height=4, fig.width=4}
 # Plotting an Interactive Radar Plot using Plotly
 radar_chart <- plot_ly(type = 'scatterpolar',
                fill = 'toself',

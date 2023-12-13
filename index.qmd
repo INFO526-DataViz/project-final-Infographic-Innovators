@@ -24,9 +24,9 @@ This study delves into a comprehensive analysis of aircraft crashes in the Unite
 
 ## Introduction:
 
-The objective of this study is to meticulously examine aircraft crashes' locations, timings, and consequences during the specified timeframe. The research aims to discern correlations, if any, contributing to these incidents and to ascertain whether certain regions are more prone to a higher number of crashes.
+The objective of this study is to meticulously examine aircraft crashes' locations, timings, and consequences during the specified time frame. The research aims to discern correlations, if any, contributing to these incidents and to ascertain whether certain regions are more prone to a higher number of crashes.
 
-The research methodology involves a thorough analysis of the NTSB dataset, employing various data visualization tools and statistical analyses. Specifically, a heatmap is generated to visualize crash frequencies across different regions, while a radial bar plot illustrates crashes during specific flight phases. Additionally, the study investigates crash causes and their correlation with the severity of outcomes through bar plots and stacked area charts. A radar plot is utilized to explore crash occurrences concerning weather conditions and months.
+The research methodology involves a thorough analysis of the NTSB dataset, employing various data visualization tools and statistical analyses. Specifically, a choropleth is generated to visualize crash frequencies across different regions, while a radial bar plot illustrates crashes during specific flight phases. Additionally, the study investigates crash causes and their correlation with the severity of outcomes through bar plots and stacked area charts. A radar plot is utilized to explore crash occurrences concerning weather conditions and months.
 
 ```{r load_packages, message=FALSE, include=FALSE}
 # GETTING THE LIBRARIES
@@ -577,7 +577,7 @@ flights_radial_bar_crashes <-
          aes(x = fct_rev(flight_phase), y = total_crashes, 
              fill = flight_phase)) +
   geom_bar(stat = "identity", width = 0.8) +
-  geom_text(hjust = 1.2, size = 4.8, 
+  geom_text(hjust = 1.2, size = 4, 
             aes(y = 0, label = comma(total_crashes))) +
   coord_polar(theta = "y") +
   labs(
@@ -599,8 +599,8 @@ flights_radial_bar_crashes <-
     axis.text = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major = element_blank(),
-    plot.title = element_text(size = 20, face = "bold"),
-    plot.subtitle = element_text(size = 15)
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12)
     ) +
   guides(
       fill = guide_legend(
@@ -636,7 +636,7 @@ flights_radial_bar_injuries <-
          aes(x = fct_rev(flight_phase), y = total_injuries, 
              fill = flight_phase)) +
   geom_bar(stat = "identity", width = 0.8) +
-  geom_text(hjust = 1.2, size = 4.8, 
+  geom_text(hjust = 1.2, size = 4, 
             aes(y = 0, label = comma(total_injuries))) +
   coord_polar(theta = "y") +
   labs(
@@ -657,9 +657,9 @@ flights_radial_bar_injuries <-
     legend.position = "bottom",
     axis.text = element_blank(),
     panel.grid.minor = element_blank(),
-    panel.grid.major = element_blank(),
-    plot.title = element_text(size = 20, face = "bold"),
-    plot.subtitle = element_text(size = 15)
+    panel.grid.major = element_blank,
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12)
     ) +
   guides(
       fill = guide_legend(
@@ -763,10 +763,10 @@ ggplot(
        fill = "Highest Injury Level") +
   theme(
     panel.grid.major = element_blank(),
-    plot.title = element_text(size = 20, face = "bold"),
-    plot.subtitle = element_text(size = 15),
-    axis.text = element_text(size = 12),
-    axis.title = element_text(hjust = 0, size = 12)
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    axis.title = element_text(hjust = 0, size = 10)
     )
   
 ```
