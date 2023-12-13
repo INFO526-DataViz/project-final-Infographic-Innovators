@@ -12,7 +12,6 @@ format:
     code-overflow: wrap
     embed-resources: true
 editor: visual
-code-fold: true
 execute:
   warning: false
   echo: false
@@ -214,7 +213,11 @@ p <-
 ggplotly(p)
 ```
 
-```{r time_series_gif}
+```{r time_series_gif, echo=TRUE}
+#| code-fold: true
+#| code-summary: "Time Series - Total Fatalities"
+#| fig-alt: "Time series analysis of Total Fatalaties due to air crashed over the year which was visualized using an animation where a flight image is used to signfiy the transition."
+
 # Creating Animated Plot for Total Faltalities
 Image <-
   "images/airplane.png"  #Save Image instead of inserting emoji
@@ -341,9 +344,13 @@ ggplotly(p)
 
 **Findings**
 
-There has been a general decrease in the number of total fatalities from 1980 to 2022. A notable spike in fatalities was observed in 2001, attributed to the 9/11 attacks. Post-2001, a significant decline in fatalities was noted. This can be interpreted as more and more safety measures has been taken into consideration as the time passed by which has lead to the decrease in air crashes. There might be some situations where commercial air crashes happen due to new technology being introduced and pilot's being unable to adapt to it as per this article.
+There has been a general decrease in the number of total fatalities from 1980 to 2022. A notable spike in fatalities was observed in 2001, attributed to the 9/11 attacks. Post-2001, a significant decline in fatalities was noted. This can be interpreted as more and more safety measures has been taken into consideration as the time passed by which has lead to the decrease in air crashes. There might be some situations where commercial air crashes happen due to new technology being introduced and pilot's being unable to adapt to it as per this [article](https://commercial.allianz.com/news-and-insights/expert-risk-articles/how-aviation-safety-has-improved.html).
 
-```{r animated_labels}
+```{r animated_labels, echo=TRUE}
+#| code-fold: true
+#| code-summary: "Time Series - Injuries severity"
+#| fig-alt: "Time series analysis of all injuries which are categorized to fatal, minor and serious due to air crashed over the year which was visualized using an animation where a horizontal line and a labelled text is used to visualize the tranistion. And 2001 crashes is highlighted."
+
 # all 3 plots with label - animated 
 
 
@@ -461,8 +468,11 @@ flights_ntsb_maps <-
   )
 ```
 
-```{r function_hexbin, include=FALSE}
-# Creating a function to plot a Hex-Bin map
+```{r function_hexbin, echo=TRUE}
+#| code-fold: true
+#| code-summary: "Choropleth Map - Temporal analysis"
+
+# Creating a function to plot a map
 getHexBinMap <- function(input_year) {
   plot_data <- flights_ntsb_maps |>
     filter(event_year == input_year)
@@ -510,6 +520,8 @@ for (i in seq_along(years_list)) {
 ```
 
 ```{r animation_hexbin}
+#| fig-alt: "Animation of US maps where each state is highlighted based on the number of crashes occurred across the time."
+
 # making gif using gganimate package
 hex_bin_maps <- list.files(path = "images/map_plot/", full.names = TRUE)
 hex_bin_maps_list <- lapply(hex_bin_maps, image_read)
@@ -530,7 +542,7 @@ hex_bin_maps_animation
 
 **Findings**
 
-Looking at the choropleth map California, Florida, Alaska, Texas has the highest number of crashes. Though the number of crashes has reduced significantly over the time but these states remained at the top in number of crashes. The probable reason might be these states being the east and west border of the Country and consists of more air traffic. And these states also have more air force bases where non-commercial air crashes must have been recorded. Alaska being involved in the list can be related to it's weather conditions and pilot's being over confident in those situation as reported in this article.
+Looking at the choropleth map California, Florida, Alaska, Texas has the highest number of crashes. Though the number of crashes has reduced significantly over the time but these states remained at the top in number of crashes. The probable reason might be these states being the east and west border of the Country and consists of more air traffic. And these states also have more air force bases where non-commercial air crashes must have been recorded. Alaska being involved in the list can be related to it's weather conditions and pilot's being over confident in those situation as reported in this [thread](https://www.quora.com/Why-are-there-so-many-plane-crashes-in-Alaska).
 
 ### Radial Bar Plot
 
@@ -567,9 +579,10 @@ flights_ntsb_radial <- flights_ntsb_radial |>
 flights_ntsb_radial
 ```
 
-```{r radial_plot_crashes}
+```{r radial_plot_crashes, echo=TRUE}
 #| code-fold: true
 #| code-summary: "Radial Bar Plot - Total Crashes"
+#| fig-alt: "Radial Bar Plot visualizing the total number of crashes occurred at different phases of the flight."
 
 # Plotting a Radial Barplot to show the Total Count of Crashes and phase of flight 
 flights_radial_bar_crashes <-
@@ -626,9 +639,10 @@ flights_radial_bar_crashes
 
 The radial bar plot offers an intuitive and visually appealing representation of the distribution of crashes and injuries throughout various phases of flight. In the first graph, the bars radiating from the center depict the count of crashes in each phase, allowing for a quick comparison of their frequencies. This visualization enables the identification of phases that might be particularly prone to incidents, guiding further investigation into the contributing factors.
 
-```{r radial_plot_injuries}
+```{r radial_plot_injuries, echo=TRUE}
 #| code-fold: true
 #| code-summary: "Radial Bar Plot - Total Injuries"
+#| fig-alt: "Radial Bar Plot visualizing the total number of injuries occurred at different phases of the flight."
 
 # Plotting a Radial Barplot to show the Total Count of Injuries and phase of flight 
 flights_radial_bar_injuries <-
@@ -711,28 +725,47 @@ count_waffle <- count |>
   arrange(perc)
 ```
 
-```{r function-waffle}
+```{r function-waffle, echo=TRUE}
+#| code-fold: true
+#| code-summary: "Waffle Chart - Probable Cause Proportion"
+#| fig-alt: "A waffle chart using ggplot and plotly to visualize the proportion probable causes of flight crashes using a flight emoji each waffle square/grid."
+
 waffle_data <- count_waffle %>%
-      slice(rep(1:n(), times = number)) %>%
-      mutate(fill_value = ifelse(row_number() <= sum(floored), floored, floored + 1))
-    
-plot_data <- expand.grid(x = 0:9,y = 0:9) %>%
-      rowwise() |>
-      mutate(index = 1+sum(x * 10 + y >= cumsum(count_waffle$number)),
-             cause = count_waffle$cause_summary[[index]])
-    
-    # Create a waffle plot
-p<- ggplot(plot_data, aes(x, y, color = cause, group=cause), show.legend=F) +
-      geom_text(label = "✈",
-                family = 'sans',
-                size = 8) +
-  scale_color_manual(values=met.brewer("Redon"))+
-      coord_equal()+
-      labs(title="Waffle chart showing different causes of crashes",
-           colour = 'Cause')
+  slice(rep(1:n(), times = number)) %>%
+  mutate(fill_value = ifelse(row_number() <= sum(floored), floored, floored + 1))
+
+plot_data <- expand.grid(x = 0:9, y = 0:9) %>%
+  rowwise() |>
+  mutate(index = 1 + sum(x * 10 + y >= cumsum(count_waffle$number)),
+         cause = count_waffle$cause_summary[[index]])
+
+# Create a waffle plot
+p <-
+  ggplot(plot_data, aes(x, y, color = cause, group = cause), show.legend =
+           F) +
+  geom_text(label = "✈",
+            family = 'sans',
+            size = 8) +
+  scale_color_manual(values = met.brewer("Redon")) +
+  coord_equal() +
+  labs(title = "Waffle chart showing different causes of crashes",
+       colour = 'Cause')
 flight_plot <- ggplotly(p, tooltip = c("color")) |>
-  layout(xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE, title=""),
-         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE, title=""), showlegend= FALSE)
+  layout(
+    xaxis = list(
+      showgrid = FALSE,
+      zeroline = FALSE,
+      showticklabels = FALSE,
+      title = ""
+    ),
+    yaxis = list(
+      showgrid = FALSE,
+      zeroline = FALSE,
+      showticklabels = FALSE,
+      title = ""
+    ),
+    showlegend = FALSE
+  )
 
 flight_plot
 ```
@@ -747,7 +780,11 @@ The waffle chart effectively showcased the distribution of crash causes, emphasi
 
 We plotted the density plot using ggplot's `geom_density` function is to visually analyze the distribution of flight crashes over the years based on their probable causes. By utilizing the `probable_cause_flights` dataset and focusing on the `cause_summary` column, this visualization aims to provide insights into the changing patterns and trends of aviation incidents. The x-axis represents the years, offering a chronological perspective, while the y-axis portrays the density of crashes associated with specific causes. Here, we have focused on the attribute `Pilot's Failure`
 
-```{r distribution}
+```{r distribution, echo=TRUE}
+#| code-fold: true
+#| code-summary: "Distrubtion Chart - Pilot's Fault?"
+#| fig-alt: "A Distrubtion chart to visualize the distribution of the probable causes of flight crashes due to pilot across the years."
+
 ggplot(
   subset(
     probable_cause_flights,
@@ -771,7 +808,6 @@ ggplot(
     axis.text = element_text(size = 10),
     axis.title = element_text(hjust = 0, size = 10)
     )
-  
 ```
 
 **Findings**
@@ -839,7 +875,11 @@ radar_trace_r2 <-
 radar_theta <- c("Jan" , "Feb" , "Mar" , "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec", "Jan")
 ```
 
-```{r radar_chart_plotly}
+```{r radar_chart_plotly, echo=TRUE}
+#| code-fold: true
+#| code-summary: "Radar Chart - Weather Relation"
+#| fig-alt: "A Radar chart visualizing the impact of both months and weather technology involved in air control in air crashes."
+
 # Plotting an Interactive Radar Plot using Plotly
 radar_chart <- plot_ly(type = 'scatterpolar',
                fill = 'toself',
@@ -879,10 +919,20 @@ Over the 1980-2020 period, aviation has witnessed a significant decrease in the 
 
 This collective progress signifies a positive shift towards safer air travel. With fatalities and crashes decreasing over time, the aviation industry is advancing towards a safer and more efficient mode of transport. These improvements align with the industry's goal of providing faster and safer global travel, with flights covering vast distances in just a couple of hours.
 
+::: {.callout-note collapse="true" appearance="minimal"}
 ## References
+
+Time Series info - [2001 crashes](https://en.wikipedia.org/wiki/American_Airlines_Flight_587)
+
+Waffle Plot - [Waffle Chart](https://www.filipr.com/posts/waffle-chart/)
+
+Shiny - [Shiny](https://shiny.posit.co/r/gallery/)
 
 gganimate - [gganimate](https://r-graph-gallery.com/288-animated-barplot-transition.html)
 
 plotly - [plotly](https://plotly.com/r/animations/)
 
 issues - [legend](https://community.plotly.com/t/how-to-remove-aa-from-the-legend/41506)
+
+NTSB Dashboard - [NTSB](https://www.ntsb.gov/safety/data/Pages/GeneralAviationDashboard.aspx)
+:::
