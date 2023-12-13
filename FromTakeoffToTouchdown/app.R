@@ -285,10 +285,10 @@ generate_plots <- function(plot_type) {
       theme_minimal() +
       theme(
         panel.grid.major = element_blank(),
-        plot.title = element_text(size = 20, face = "bold"),
-        plot.subtitle = element_text(size = 15),
-        axis.text = element_text(size = 12),
-        axis.title = element_text(hjust = 0, size = 12)
+        plot.title = element_text(size = 16, face = "bold"),
+        plot.subtitle = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(hjust = 0, size = 10)
       )
     flight_plot <- ggplotly(p)
   }
@@ -324,7 +324,7 @@ ui <- navbarPage(
                    "Flight Crashes vs Causes",
                    "Distribution of cause - Pilot's failure"
                  ),
-                 selected = "Flight Crashes vs US states"
+                 selected = "Time Series Analysis"
                ),
                br(),
                span(
