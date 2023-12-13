@@ -20,13 +20,13 @@ execute:
 
 ## Abstract:
 
-This study delves into a comprehensive analysis of aircraft crashes in the United States spanning from 1980 to 2022. It focuses on exploring crash locations, timings, consequences, and the influencing factors behind these incidents. Leveraging a detailed dataset sourced from the National Transportation Safety Board (NTSB), the research utilizes data visualization techniques and time-series analyses to uncover correlations and trends associated with these aviation mishaps.
+This study delves into a comprehensive analysis of aircraft crashes in the United States spanning from 1980 to 2022. It focuses on exploring crash locations, timings, consequences, and the influencing factors behind these incidents. And the dataset also comprises of crashes with all kinds of airways like commerical, personal, navy etc,. Leveraging a detailed dataset sourced from the National Transportation Safety Board (NTSB), the research utilizes data visualization techniques and time-series analyses to uncover correlations and trends associated with these aviation mishaps.
 
 ## Introduction:
 
 The objective of this study is to meticulously examine aircraft crashes' locations, timings, and consequences during the specified time frame. The research aims to discern correlations, if any, contributing to these incidents and to ascertain whether certain regions are more prone to a higher number of crashes.
 
-The research methodology involves a thorough analysis of the NTSB dataset, employing various data visualization tools and statistical analyses. Specifically, a choropleth is generated to visualize crash frequencies across different regions, while a radial bar plot illustrates crashes during specific flight phases. Additionally, the study investigates crash causes and their correlation with the severity of outcomes through bar plots and stacked area charts. A radar plot is utilized to explore crash occurrences concerning weather conditions and months.
+The research methodology involves a thorough analysis of the NTSB dataset, employing various data visualization tools and statistical analyses. Specifically, a choropleth is generated to visualize crash frequencies across different regions, while a radial bar plot illustrates crashes during specific flight phases. Additionally, the study investigates crash causes and their correlation with the severity of outcomes through waffle chart to visualize proportions and distribution chart to go over the distrubtion of that categegory over the time. A radar plot is utilized to explore crash occurrences concerning weather conditions and months. And then incorporating the whole visualization into a [Shiny App](https://99javc-velamala-bharath.shinyapps.io/fromtakeofftotouchdown/) to make it accessible to everyone.
 
 ```{r load_packages, message=FALSE, include=FALSE}
 # GETTING THE LIBRARIES
@@ -169,7 +169,7 @@ flights_ntsb <- flights_ntsb |>
 
 ## Examining Aircraft Crashes, with a focus on their locations, timings, and consequences
 
-### Timeseries analysis of fatalities, and types of injuries
+### Time series analysis of fatalities, and types of injuries
 
 **Approach**
 
@@ -341,7 +341,7 @@ ggplotly(p)
 
 **Findings**
 
-There has been a general decrease in the number of total fatalities from 1980 to 2022. A notable spike in fatalities was observed in 2001, attributed to the 9/11 attacks. Post-2001, a significant decline in fatalities was noted.
+There has been a general decrease in the number of total fatalities from 1980 to 2022. A notable spike in fatalities was observed in 2001, attributed to the 9/11 attacks. Post-2001, a significant decline in fatalities was noted. This can be interpreted as more and more safety measures has been taken into consideration as the time passed by which has lead to the decrease in air crashes. There might be some situations where commercial air crashes happen due to new technology being introduced and pilot's being unable to adapt to it as per this article.
 
 ```{r animated_labels}
 # all 3 plots with label - animated 
@@ -530,7 +530,7 @@ hex_bin_maps_animation
 
 **Findings**
 
-Looking at the choropleth map Alaska, Arizona, Texas, and Florida has the highest number of crashes.
+Looking at the choropleth map California, Florida, Alaska, Texas has the highest number of crashes. Though the number of crashes has reduced significantly over the time but these states remained at the top in number of crashes. The probable reason might be these states being the east and west border of the Country and consists of more air traffic. And these states also have more air force bases where non-commercial air crashes must have been recorded. Alaska being involved in the list can be related to it's weather conditions and pilot's being over confident in those situation as reported in this article.
 
 ### Radial Bar Plot
 
@@ -611,7 +611,7 @@ flights_radial_bar_crashes <-
         label.position = "bottom",
         label.hjust = 1,
         label.vjust = 1,
-        label.theme = element_text(lineheight = 0.25, size = 14),
+        label.theme = element_text(lineheight = 0.25, size = 12),
         keywidth = 1.5,
         keyheight = 0.5
       )
@@ -657,7 +657,7 @@ flights_radial_bar_injuries <-
     legend.position = "bottom",
     axis.text = element_blank(),
     panel.grid.minor = element_blank(),
-    panel.grid.major = element_blank,
+    panel.grid.major = element_blank(),
     plot.title = element_text(size = 16, face = "bold"),
     plot.subtitle = element_text(size = 12)
     ) +
@@ -670,7 +670,7 @@ flights_radial_bar_injuries <-
         label.position = "bottom",
         label.hjust = 1,
         label.vjust = 1,
-        label.theme = element_text(lineheight = 0.25, size = 14),
+        label.theme = element_text(lineheight = 0.25, size = 12),
         keywidth = 1.5,
         keyheight = 0.5
       )
@@ -685,6 +685,8 @@ flights_radial_bar_injuries
 The second graph, depicting injuries, provides an additional layer of analysis. By comparing the counts of injuries across different flight phases, we can discern whether certain phases are more likely to result in severe consequences. This insight is crucial for understanding the potential risks associated with specific segments of a flight, informing safety measures and protocols.
 
 ## Analysis of Causes of Crashes
+
+We focused on the text report column of the air crashes data which is `probable_cause` and we have summarized the text report using `hugging face` in python which can be found in the folder `Probable_Cause`. We used the summarized text in exploring the probable causes of these crashes.
 
 ### Waffle chart
 
@@ -762,6 +764,7 @@ ggplot(
        y = "Density",
        fill = "Highest Injury Level") +
   theme(
+    legend.position = "bottom",
     panel.grid.major = element_blank(),
     plot.title = element_text(size = 16, face = "bold"),
     plot.subtitle = element_text(size = 12),
@@ -872,9 +875,9 @@ The radar plot serves as an effective means to showcase the multivariate nature 
 
 ## Conclusion
 
-We can conclude stating that a lot of crashes take place every year but the number of crashes has been decreasing over the past few decades. The number of fatalities has also gone down due to the stringent rules in the Aviation industry. With the fatalities and crashes decreasing over time and more we are moving towards a safer and faster mode of transport which can get us around the globe in a span of a couple hours.
+Over the 1980-2020 period, aviation has witnessed a significant decrease in the number of crashes and fatalities. Notably, the events of 9/11 in 2001 led to a spike in fatalities, but overall trends show a consistent decline. The aviation industry's implementation of stringent rules has played a crucial role in enhancing safety. With California, Alaska, Texas, and Florida experiencing higher frequencies. In addition to human factors and mechanical issues, weather patterns also played a role in aviation incidents. A radar plot revealed distinct correlations between specific weather conditions and increased crash occurrences in certain months.
 
-Overall trends indicate a decrease in total fatalities from crashes over the 1980-2020 period, with a notable spike in 2001 attributed to the events of 9/11. Specific regions like Alaska, Arizona, Texas, and Florida exhibited higher crash frequencies. Pilot error emerged as the predominant cause, followed by mechanical failures. Severity of crashes varied based on different causes, as depicted in the stacked area chart. Furthermore, distinct weather patterns correlated with increased crash occurrences in specific months, as revealed by the radar plot.
+This collective progress signifies a positive shift towards safer air travel. With fatalities and crashes decreasing over time, the aviation industry is advancing towards a safer and more efficient mode of transport. These improvements align with the industry's goal of providing faster and safer global travel, with flights covering vast distances in just a couple of hours.
 
 ## References
 
