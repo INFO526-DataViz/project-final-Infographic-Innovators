@@ -590,7 +590,7 @@ flights_radial_bar_crashes <-
          aes(x = fct_rev(flight_phase), y = total_crashes, 
              fill = flight_phase)) +
   geom_bar(stat = "identity", width = 0.8) +
-  geom_text(hjust = 1.2, size = 3.6, 
+  geom_text(hjust = 1.2, size = 3, 
             aes(y = 0, label = comma(total_crashes))) +
   coord_polar(theta = "y") +
   labs(
@@ -650,7 +650,7 @@ flights_radial_bar_injuries <-
          aes(x = fct_rev(flight_phase), y = total_injuries, 
              fill = flight_phase)) +
   geom_bar(stat = "identity", width = 0.8) +
-  geom_text(hjust = 1.2, size = 3.6, 
+  geom_text(hjust = 1.2, size = 3, 
             aes(y = 0, label = comma(total_injuries))) +
   coord_polar(theta = "y") +
   labs(
