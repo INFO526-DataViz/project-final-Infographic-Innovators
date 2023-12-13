@@ -609,6 +609,7 @@ flights_radial_bar_crashes <-
   scale_fill_frontiers() +
   theme(
     legend.position = "bottom",
+    legend.title = element_text(size = 12),
     axis.text = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major = element_blank(),
@@ -669,6 +670,7 @@ flights_radial_bar_injuries <-
   scale_fill_frontiers() +
   theme(
     legend.position = "bottom",
+    legend.title = element_text(size = 12),
     axis.text = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major = element_blank(),
